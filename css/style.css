@@ -243,7 +243,7 @@ h1 {
 
 h2 {
 	font-size: 2em;
-	margin: .75em 0;
+	margin: 1.2em 0 .75em 0;
 }
 
 h3 {
@@ -268,7 +268,8 @@ p {
 	margin: 0 auto;
 	background-color: #313131;
 	border: 0.3125em solid #FF5A09;
-	padding-bottom: 30px;
+	padding-bottom: 1em;
+	margin-bottom: 3em;
 }
 
 /* Makes Badges display inline */
