@@ -1,0 +1,181 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="https://www-11.westarenergy.com/cust_inc/style.css">
+
+<style type="text/css">
+* {
+	font-family: tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+	color: white;
+}
+
+a.link, a.link:visited{
+	font-family: tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+	color: white;
+	text-decoration: none;
+}
+
+a.link:hover, a.link:active {
+	font-family: tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+	color: white;
+	text-decoration: underline;
+}
+</style>
+
+<script language="JavaScript">
+	var DHTML = (document.getElementById || document.all || document.layers);
+	
+	function getObj(name)
+	{
+	  if (document.getElementById)
+	  {
+		this.obj = document.getElementById(name);
+		this.style = document.getElementById(name).style;
+	  }
+	  else if (document.all)
+	  {
+		this.obj = document.all[name];
+		this.style = document.all[name].style;
+	  }
+	  else if (document.layers)
+	  {
+		this.obj = document.layers[name];
+		this.style = document.layers[name];
+	  }
+	}
+	
+	
+	function displaymap(image,win_name)
+	{
+		invi(0);
+		
+		document['image-1'].src=image;
+		//window.open(image,win_name,"top=5,left=30,toolbar=no,width=850,height=625,resizable=yes,location=no,directories=no,scrollbars=yes")
+	}
+	
+	
+	
+	function invi(flag)
+	{
+		if (!DHTML) return;
+		
+		var x = new getObj('area-2');
+		x.style.visibility = 'visible';
+		x.style.position = 'absolute';
+		x.style.top = 0;
+		x.style.left = 0;
+		
+		var y = new getObj('area-1');
+		y.style.visibility = 'hidden'; 
+	}
+	
+	function invi1(flag)
+	{
+		if (!DHTML) return;
+		var x = new getObj('area-2');
+		x.style.visibility = 'hidden'; 
+		
+		var y = new getObj('area-1');
+		y.style.visibility = 'visible';
+		y.style.position = 'absolute';
+		y.style.top = 0;
+		y.style.left = 0;
+	}
+	
+	</script>
+
+</head>
+
+<body topmargin="0" leftmargin="0" onload="invi1(0);">
+
+<div align="center">
+	<table>
+		<tr>
+			<td>
+				<div ID="area-1">
+					<div style="padding: 10px;">Click on a location to see outages by county.</div>
+	
+					<table width=520>
+						<tr>
+							<td>
+								<a href="#">
+								<map name="FPMap0">
+									<area alt="Sedgwick"    	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/SEDGWICK.JPG','Sedgwick')"		shape="polygon" coords="172, 472, 173, 431, 189, 427, 184, 403, 256, 403, 258, 472">
+									<area alt="Shawnee"     	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/SHAWNEE.JPG','Shawnee')"     	shape="polygon" coords="428, 232, 478, 231, 479, 203, 467, 202, 463, 174, 413, 174, 416, 192, 429, 199">
+									<area alt="Wabaunsee"   	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/WABAUNSEE.JPG','Wabaunsee')"   	shape="polygon" coords="401, 185, 387, 178, 371, 182, 365, 185, 365, 201, 353, 201, 351, 233, 365, 233, 366, 244, 415, 246, 415, 193">
+									<area alt="Morris" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/MORRIS.JPG','Morris')" 		shape="polygon" coords="295, 236, 342, 236, 345, 249, 359, 250, 362, 292, 299, 292">
+									<area alt="Allen" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/ALLEN.JPG','Allen')" 			shape="polygon" coords="482, 371, 485, 416, 534, 414, 533, 371">
+									<area alt="Anderson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/ANDERSON.JPG','Anderson')" 		shape="polygon" coords="485, 314, 486, 363, 537, 363, 536, 313">
+									<area alt="Atchison" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/ATCHISON.JPG','Atchison')" 		shape="polygon" coords="524, 100, 469, 100, 469, 128, 537, 128">
+									<area alt="Bourbon" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/BOURBON.JPG','Bourbon')" 		shape="polygon" coords="549, 374, 600, 372, 600, 426, 549, 426">
+									<area alt="Brown" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/BROWN.JPG','Brown')" 			shape="polygon" coords="438, 45, 439, 93, 490, 91, 488, 42">
+									<area alt="Butler" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/BUTLER.JPG','Butler')" 		shape="polygon" coords="263, 365, 344, 365, 345, 468, 263, 467">
+									<area alt="Chase" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CHASE.JPG','Chase')" 			shape="polygon" coords="308, 301, 307, 328, 304, 329, 306, 337, 308, 361, 362, 362, 362, 298">
+									<area alt="Chautauqua" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CHAUTAUQUA.JPG','Chautauqua')" 	shape="polygon" coords="357, 545, 358, 501, 422, 501, 422, 542, 360, 545">
+									<area alt="Cherokee" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CHEROKEE.JPG','Cherokee')" 		shape="polygon" coords="548, 494, 600, 489, 602, 536, 553, 539">
+									<area alt="Clay" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CLAY.JPG','Clay')" 			shape="polygon" coords="232, 119, 277, 117, 274, 178, 230, 178">
+									<area alt="Cloud" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CLOUD.JPG','Cloud')" 			shape="polygon" coords="159, 107, 221, 107, 221, 155, 158, 156">
+									<area alt="Coffey" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/COFFEY.JPG','Coffey')" 		shape="polygon" coords="475, 367, 426, 367, 425, 313, 472, 311">
+									<area alt="Cowley" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/COWLEY.JPG','Cowley')" 		shape="polygon" coords="346, 472, 347, 547, 264, 548, 262, 472">
+									<area alt="Crawford" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/CRAWFORD.JPG','Crawford')" 		shape="polygon" coords="546, 435, 546, 482, 600, 479, 598, 435">
+									<area alt="Dickinson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/DICKINSON.JPG','Dickinson')" 		shape="polygon" coords="235, 208, 235, 279, 285, 279, 285, 237, 290, 223, 282, 217, 275, 192, 234, 192">
+									<area alt="Doniphan" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/DONIPHAN.JPG','Doniphan')" 		shape="polygon" coords="496, 44, 497, 93, 527, 93, 549, 64, 537, 53, 523, 55">
+									<area alt="Douglas" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/DOUGLAS.JPG','Douglas')" 		shape="polygon" coords="484, 228, 485, 242, 533, 240, 532, 209, 518, 206, 514, 200, 499, 204, 486, 205">
+									<area alt="Elk" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/ELK.JPG','Elk')" 			shape="polygon" coords="356, 452, 418, 452, 419, 493, 356, 493">
+									<area alt="Ellsworth" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/ELLSWORTH.JPG','Ellsworth')" 		shape="polygon" coords="86, 238, 147, 238, 148, 286, 87, 286">
+									<area alt="Franklin" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/FRANKLIN.JPG','Franklin')" 		shape="polygon" coords="487, 251, 485, 299, 537, 300, 534, 248">
+									<area alt="Geary" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/GEARY.JPG','Geary')" 			shape="polygon" coords="283, 187, 303, 187, 306, 199, 342, 199, 340, 225, 294, 226, 291, 210, 286, 201">
+									<area alt="Greenwood" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/GREENWOOD.JPG','Greenwood')" 		shape="polygon" coords="372, 356, 415, 356, 415, 438, 357, 438, 356, 372, 373, 372">
+									<area alt="Harvey" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/HARVEY.JPG','Harvey')" 		shape="polygon" coords="193, 399, 193, 361, 254, 358, 254, 396">
+									<area alt="Jackson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/JACKSON.JPG','Jackson')" 		shape="polygon" coords="415, 168, 413, 122, 441, 122, 441, 106, 462, 104, 463, 169">
+									<area alt="Jefferson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/JEFFERSON.JPG','Jefferson')" 		shape="polygon" coords="471, 141, 515, 142, 516, 197, 487, 202, 486, 192, 474, 190, 474, 141">
+									<area alt="Johnson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/JOHNSON.JPG','Johnson')" 		shape="polygon" coords="544, 245, 593, 243, 594, 202, 558, 200, 544, 212">
+									<area alt="Kingman" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/KINGMAN.JPG','Kingman')" 		shape="polygon" coords="87, 483, 163, 482, 160, 432, 88, 432">
+									<area alt="Labette"	 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/LABETTE.JPG','Labette')" 		shape="polygon" coords="488, 487, 537, 486, 541, 537, 489, 538">
+									<area alt="Leavenworth" 	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/LEAVENWORTH.JPG','Leavenworth')" 	shape="polygon" coords="550, 184, 535, 194, 522, 188, 520, 133, 542, 132, 553, 149">
+									<area alt="Lincoln" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/LINCOLN.JPG','Lincoln')" 		shape="polygon" coords="86, 230, 87, 177, 146, 177, 146, 230">
+									<area alt="Linn"        	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/LINN.JPG','Linn')"            shape="polygon" coords="544, 312, 544, 365, 603, 362, 600, 305">
+									<area alt="Lyon" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/LYON.JPG','Lyon')" 			shape="polygon" coords="368, 262, 414, 261, 415, 340, 374, 339">
+									<area alt="Marion" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/MARION.JPG','Marion')" 		shape="polygon" coords="234, 290, 235, 346, 262, 347, 262, 360, 297, 361, 292, 328, 294, 326, 296, 296, 281, 295, 282, 289">
+									<area alt="Marshall" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/MARSHALL.JPG','Marshall')" 		shape="polygon" coords="307, 46, 307, 106, 372, 104, 368, 43">
+									<area alt="McPherson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/MCPHERSON.JPG','McPherson')" 		shape="polygon" coords="158, 283, 219, 283, 221, 342, 158, 343">
+									<area alt="Montgomery" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/MONTGOMERY.JPG','Montgomery')" 	shape="polygon" coords="433, 486, 483, 486, 483, 538, 433, 538">
+									<area alt="Nemaha" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/NEMAHA.JPG','Nemaha')" 		shape="polygon" coords="380, 43, 429, 43, 429, 104, 386, 103">
+									<area alt="Neosho" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/NEOSHO.JPG','Neosho')" 		shape="polygon" coords="488, 425, 489, 475, 539, 476, 537, 425">
+									<area alt="Osage" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/OSAGE.JPG','Osage')" 			shape="polygon" coords="422, 243, 472, 244, 471, 301, 424, 303">
+									<area alt="Ottawa" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/OTTAWA.JPG','Ottawa')" 		shape="polygon" coords="158, 165, 160, 215, 222, 213, 220, 166">
+									<area alt="Pottawatomie"	onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/POTTAWATOMIE.JPG','Pottawatomie')" 	shape="polygon" coords="346, 117, 332, 128, 329, 141, 334, 153, 341, 164, 346, 167, 352, 167, 359, 169, 366, 167, 375, 165, 385, 163, 392, 163, 397, 166, 401, 168, 399, 116">
+									<area alt="Reno" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/RENO.JPG','Reno')" 			shape="polygon" coords="86, 358, 87, 419, 176, 418, 175, 358, 125, 357, 120, 363, 116, 361, 113, 356">
+									<area alt="Rice" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/RICE.JPG','Rice')" 			shape="polygon" coords="90, 298, 89, 346, 150, 344, 150, 296">
+									<area alt="Riley" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/RILEY.JPG','Riley')" 			shape="polygon" coords="290, 118, 337, 117, 327, 126, 319, 133, 319, 141, 322, 149, 325, 158, 333, 164, 335, 169, 339, 171, 345, 171, 350, 171, 353, 173, 353, 184, 311, 186, 305, 175, 290, 173">
+									<area alt="Saline" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/SALINE.JPG','Saline')" 		shape="polygon" coords="159, 226, 218, 226, 219, 272, 160, 272">
+									<area alt="Sumner" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/SUMNER.JPG','Sumner')" 		shape="polygon" coords="171, 479, 259, 479, 260, 551, 172, 553">
+									<area alt="Washington" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/WASHINGTON.JPG','Washington')" 	shape="polygon" coords="233, 43, 295, 43, 295, 104, 233, 107">
+									<area alt="Wilson" 			onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/WILSON.JPG','Wilson')" 		shape="polygon" coords="426, 429, 480, 426, 478, 477, 430, 476">
+									<area alt="Woodson" 		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/WOODSON.JPG','Woodson')" 		shape="polygon" coords="424, 376, 474, 373, 477, 413, 426, 417">
+									<area alt="Wyandotte"  		onclick="displaymap('https://www-11.westarenergy.com/outagemaps/CountyMaps/WYANDOTTE.JPG','Wyandotte')"    shape="polygon" coords="560, 165, 559, 193, 596, 193, 596, 173, 583, 163">
+								</map>
+								<img ID="image-1" border="0" src="https://www-11.westarenergy.com/outagemaps/CountyMaps/ServiceTerritory.JPG" usemap="#FPMap0" width="792" height="583"></a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div ID="area-2" align="center">
+	<div align="left" style="margin: 10px;"><a href="#" onclick="invi1(0);" class="link">Return to main map</a></div>
+				
+	<table width=520>
+		<tr>
+			<td><a href="#" onclick="invi1(0);"><img border="0" name="image-1"></a></td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>
