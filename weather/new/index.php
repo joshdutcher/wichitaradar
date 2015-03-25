@@ -8,7 +8,15 @@ add something about @TornadoAlertApp
 $thispage = 'http://' . $_SERVER[HTTP_HOST] . $_SERVER[SCRIPT_NAME];
 
 // easily just define which tabs I want to have on the site
-$tabs = array('Radar','Satellite','Current Watches','Reflectivity','Outages','Resources','Twitter');
+$tabs = array(
+	'Radar',
+	'Satellite',
+	'Current Watches',
+	'Reflectivity',
+	'Outages',
+	'Resources',
+	'Twitter'
+);
 
 // automatically make the tabs all the same width
 $tabwidth = floor(1000/count($tabs));

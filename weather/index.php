@@ -8,7 +8,15 @@ add something about @TornadoAlertApp
 $thispage = 'http://' . $_SERVER[HTTP_HOST] . $_SERVER[SCRIPT_NAME];
 
 // easily just define which tabs I want to have on the site
-$tabs = array('Radar','Satellite','Current Watches','Reflectivity','Outages','Resources','Twitter');
+$tabs = array(
+	'Radar',
+	'Satellite',
+	'Current Watches',
+	'Reflectivity',
+	'Outages',
+	'Resources',
+	'Twitter'
+);
 
 // automatically make the tabs all the same width
 $tabwidth = floor(1000/count($tabs));
@@ -365,7 +373,7 @@ if ($_REQUEST['refresh'] != 'no') {
 </div>
 <div id="Outages" style="display: none;">
 	<? getMenu("Outages"); ?>
-	<iframe name="outage" id="outage" width="800" height="600" src="maps/westar/map.html" frameborder=0 marginheight=0 marginwidth=0 scrolling="no"></iframe>
+	<iframe name="outage" id="outage" width="1000" height="600" src="http://outagemap.westarenergy.com/external/default.html" frameborder=0 marginheight=0 marginwidth=0 scrolling="auto" style="border; 1px solid black; background-color: #FFF; resize: both;"></iframe>
 </div>
 
 <div id="Resources" style="display: none;">
