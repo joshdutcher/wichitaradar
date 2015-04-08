@@ -22,7 +22,7 @@ h1,h2,h3,h4,h5,h6 {
 .photo-box, .text-box {
     overflow: hidden;
     position: relative;
-    height: 250px;
+    height: 450px;
     text-align: center;
 }
 
@@ -34,7 +34,7 @@ h1,h2,h3,h4,h5,h6 {
     .photo-box img {
         max-width: 100%;
         height: auto;
-        min-height: 250px;
+        min-height: 450px;
     }
 
     .photo-box aside {
@@ -121,6 +121,6 @@ h1,h2,h3,h4,h5,h6 {
     }
 
     .photo-box-thin {
-        height: 250px;
+        height: 450px;
     }
 }
