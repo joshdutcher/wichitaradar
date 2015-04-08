@@ -1,11 +1,14 @@
 <?php
 
+require_once('init.php');
+require_once('functions.php');
+
 /************************************
 TO DO:
 add something about @TornadoAlertApp
 *************************************/
 
-$thispage = 'http://' . $_SERVER[HTTP_HOST] . $_SERVER[SCRIPT_NAME];
+$thispage = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
 
 // easily just define which tabs I want to have on the site
 $tabs = array(
@@ -27,7 +30,7 @@ function getMenu($currentTab) {
 	echo '<!-- currentTab: ' . $currentTab . ' -->';
 	echo '<table border="0" cellspacing="2" cellpadding="3" width="1000" class="tabs">';
 	echo '		<tr>';
-	
+
 	foreach ($tabs as $tab) {
 		if ($currentTab == $tab) {
 			echo "<td bgcolor=\"#666666\" width=\"$tabwidth\" align=\"center\">$tab</td>";
@@ -51,7 +54,7 @@ function getMenu($currentTab) {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="pragma" content="no-cache" />
 <?php
-if ($_REQUEST['refresh'] != 'no') {
+if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] != 'no') {
 	echo "<meta http-equiv=\"refresh\" content=\"300\" />";
 }
 ?>
@@ -71,7 +74,7 @@ if ($_REQUEST['refresh'] != 'no') {
 				echo "tabs[$i] = '$tabs[$i]';" . "\r\n";
 			}
 		?>
-		
+
 		for (i=0; i<tabs.length; i++) {
 			if (tabs[i] == tab) {
 				document.getElementById(tabs[i]).style.display = 'block';
@@ -81,7 +84,7 @@ if ($_REQUEST['refresh'] != 'no') {
 			}
 		}
 	}
-	
+
 	//-->
 </script>
 
@@ -95,7 +98,7 @@ if ($_REQUEST['refresh'] != 'no') {
 	</tr>
 	<tr>
 		<td style="font-family: tahoma, verdana, arial, sans-serif; color: #CCCCCC; font-size: 10px;">
-			<?php if ($_REQUEST['refresh'] == 'no') { ?>
+			<?php if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] == 'no') { ?>
 				<a href="<?=$thispage?>">start refreshing again</a>
 			<?php } else { ?>
 				this page automatically refreshes every five minutes. <a href="<?=$thispage?>?refresh=no">make it stop</a>
@@ -105,9 +108,9 @@ if ($_REQUEST['refresh'] != 'no') {
 	</tr>
 </table>
 <div id="Radar">
-	<? getMenu("Radar"); ?>
+	<?php getMenu("Radar"); ?>
 	<table width="1000" border="0" cellspacing="1" cellpadding="1">
-		<tr> 
+		<tr>
 			<td align="center" valign="top" nowrap>
 
 				<!-- ******************************* -->
@@ -116,21 +119,21 @@ if ($_REQUEST['refresh'] != 'no') {
 
 				<div id="warnings" class="map">
 					<img src="http://sirocco.accuweather.com/adc_images2/english/current/svrwx/400x300/isvrwxNE_.gif"><br/>
-					<img src="http://sirocco.accuweather.com/web_images/svrwx/key/swskeys.gif">								
+					<img src="http://sirocco.accuweather.com/web_images/svrwx/key/swskeys.gif">
 				</div>
-				
+
 				<!-- ******************************* -->
 				<!-- ****** AccuWeather Radar ****** -->
 				<!-- ******************************* -->
-				
+
 				<div id="accuweather_radar" class="map">
 					<iframe name="mapII" id="mapII" width="450" height="450" src="maps/accuweather/map.html" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>
 				</div>
-				
+
                 <!-- ******************************* -->
                 <!-- ****** KAKE radar ************* -->
                 <!-- ******************************* -->
-				
+
 				<div id="kake_radar" class="map">
 					<img src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-kakeland.gif" width="450">
 				</div>
@@ -162,11 +165,11 @@ if ($_REQUEST['refresh'] != 'no') {
 						<a href="http://www.adobe.com/go/getflash/" target="_blank">Get Flash</a>
 					</noscript>
 				</div>
-				
+
                 <!-- ******************************* -->
                 <!-- ****** TWC2 ******************* -->
                 <!-- ******************************* -->
-				
+
 				<div id="twc" class="map">
 					<span style="font-size: 10px;">This map doesn't work in Internet Explorer (you should be using <a href="http://www.google.com/chrome" target="_blank">chrome</a> anyhow):</span>
 					<iframe name="twc" id="twc" width="592" height="405" src="maps/twc/map.html" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>
@@ -202,14 +205,14 @@ if ($_REQUEST['refresh'] != 'no') {
 								}
 							}
 						}
-			
+
 						//dla = default speed or delay between frames
 						ctr=1;
 						dla=150;
 						j=1;
 						stpit=0;
 						restart=0;
-					
+
 						function startIt1(param){
 							if (restart==1){
 								stpit=0;
@@ -219,7 +222,7 @@ if ($_REQUEST['refresh'] != 'no') {
 								restart=0;
 							}
 						}
-			
+
 						function prtIt1(){
 							if (document.images){
 								document.ani1.src=isn[j].src;
@@ -239,7 +242,7 @@ if ($_REQUEST['refresh'] != 'no') {
 								+"or MSIE4+.");
 							}
 						}
-			
+
 						function speedIt1(){
 							if (stpit==0){
 								if (dla>250){
@@ -259,7 +262,7 @@ if ($_REQUEST['refresh'] != 'no') {
 								}
 							}
 						}
-			
+
 						function slowIt1(){
 							if (stpit == 0){
 								if (dla<50){
@@ -280,13 +283,13 @@ if ($_REQUEST['refresh'] != 'no') {
 								}
 							}
 						}
-						
+
 						function testStp1(){
 							if (stpit==0){
 								stpit=1;
 							}
 						}
-			
+
 						function Back1(){
 							stpit=1;
 							restart=1;
@@ -303,7 +306,7 @@ if ($_REQUEST['refresh'] != 'no') {
 							document.ani1.src=isn[j].src;
 							}
 						}
-			
+
 						function Forward1(){
 							stpit=1;
 							restart=1;
@@ -328,7 +331,7 @@ if ($_REQUEST['refresh'] != 'no') {
                 <!-- ******************************* -->
                 <!-- * NOAA base reflectivity loop * -->
                 <!-- ******************************* -->
-				
+
 				<div id="noaabaseloop" class="map">
 					<img src="http://radar.weather.gov/lite/NCR/ICT_loop.gif">
 				</div>
@@ -352,8 +355,8 @@ if ($_REQUEST['refresh'] != 'no') {
 	<!-- ******************************* -->
 	<!-- ***** Accuweather satellite *** -->
 	<!-- ******************************* -->
-	<? getMenu("Satellite"); ?>
-	<table border="0" cellspacing="0" cellpadding="5">	
+	<?php getMenu("Satellite"); ?>
+	<table border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td bgcolor="#E9E9E5" align="center">
 				<img src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" /><br/><br/>
@@ -363,50 +366,50 @@ if ($_REQUEST['refresh'] != 'no') {
 	</table>
 </div>
 <div id="Current Watches" style="display: none;">
-	<? getMenu("Current Watches"); ?>
+	<?php getMenu("Current Watches"); ?>
 	These are convective watches, so this will be relevant for things like thunderstorms and tornadoes. Not so much for winter storms.<br/>
 	<iframe width="900" height="600" scrolling="auto" src="http://www.spc.noaa.gov/products/watch/"></iframe>
 </div>
 <div id="Reflectivity" style="display: none;">
-	<? getMenu("Reflectivity"); ?>
+	<?php getMenu("Reflectivity"); ?>
 	<iframe width="900" height="600" scrolling="auto" src="http://radar.weather.gov/radar.php?product=N0R&rid=ICT&loop=yes"></iframe>
 </div>
 <div id="Outages" style="display: none;">
-	<? getMenu("Outages"); ?>
+	<?php getMenu("Outages"); ?>
 	<iframe name="outage" id="outage" width="1000" height="600" src="http://outagemap.westarenergy.com/external/default.html" frameborder=0 marginheight=0 marginwidth=0 scrolling="auto" style="border; 1px solid black; background-color: #FFF; resize: both;"></iframe>
 </div>
 
 <div id="Resources" style="display: none;">
-	<? getMenu("Resources"); ?>
+	<?php getMenu("Resources"); ?>
 
 	<!--h2>Forums</h2>
 	<ul>
 		<li><a href="http://www.stormtrack.org/forum/forumdisplay.php?f=7" target="_blank">stormtrack.org</a> (look for a thread titled with today's date and the word "FCST" for forecasts, "NOW" for current reports)</li>
 	</ul-->
-	
+
 	<h2>Streaming Video from Storm Chasers</h2>
 	<ul>
 		<li><a href="http://www.chasertv.com/" target="_blank">ChaserTV</a> "Live Weather Video On Demand"</li>
 		<li><a href="http://www.severestudios.com/livechase" target="_blank">Severestudios.com</a> "The Leader in Live Severe Weather Streaming"</li>
-		<li><a href="http://www.tornadovideos.net/full-screen-chaser-video.php" target="_blank">Tornadovideos.net</a></li>
+		<li><a href="https://tvnweather.com/live" target="_blank">TVNWeather/Tornadovideos.net</a> "Live Storm Chasing"</li>
 	</ul>
-	
+
 	<h2>Live Audio/Radio</h2>
 	<ul>
 		<!--li><a href="http://audiostream.wunderground.com/njenslin/wichita.mp3.m3u">NOAA weather radio for Wichita, from wunderground.com</a> live stream opens in your external audio player like windows media player or winamp</li-->
 		<li><a href="http://www.radioreference.com/apps/audio/?ctid=970" target="_blank">RadioReference</a> Excellent collection of scanner feeds from Sedgwick County & Wichita area LEO agencies, emergency services, etc</li>
-		<li><a href="javascript:void(window.open('http://player.streamtheworld.com/jbroadcast/?CALLSIGN=KFDIFM',%20'KFDI',%20'width=737,height=625,status=no,resizable=no,scrollbars=yes'))">KFDI radio</a> during storms, hands down the absolute best local radio storm coverage, with mobile spotters. Country music the rest of the time. Opens in a popup window.</li>
+		<li><a href="javascript:void(window.open('http://player.streamtheworld.com/liveplayer.php?callsign=KFDIFM',%20'KFDI',%20'width=737,height=625,status=no,resizable=no,scrollbars=yes'))">KFDI radio</a> during storms, hands down the absolute best local radio storm coverage, with mobile spotters. Country music the rest of the time. Opens in a popup window.</li>
 		<li><a href="http://scanwichita.com/listen.php" target="_blank">ScanWichita.com</a> Another great site with local area LEO and Emergency Services feeds, including Mid-Continent Approach Control</li>
 	</ul>
-	
+
 	<h2>Other Stuff</h2>
 	<ul>
-		<li><a href="http://wichway.org/WichWay/CameraTour/CameraTour.aspx" target="_blank">KanDrive Camera Tours</a> Multiple webcam views of traffic and road conditions along a Wichita area route of your chice, on a single web page. Choose from US-54, I-235, I-35, K-96, and I-135</li>
+		<li><a href="http://wichway.org/wichway/CameraTours" target="_blank">KanDrive Camera Tours</a> Multiple webcam views of traffic and road conditions along a Wichita area route of your chice, on a single web page. Choose from US-54, I-235, I-35, K-96, and I-135</li>
 	</ul>
 </div>
 
 <div id="Twitter" style="display: none;">
-	<? getMenu("Twitter"); ?>
+	<?php getMenu("Twitter"); ?>
 	<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 	<p>This is a live stream of weather related tweets. Inspired by <a href="http://twitter.com/#!/myz06vette" target="_blank">@myz06vette</a>'s page, <a href="http://www.ksstorms.com/">ksstorms.com</a>.</p>
 	<p>Sometimes Twitter gets strange and these don't work right.</p>

@@ -32,9 +32,7 @@ div.map {
 }
 
 h2 {
-	font-size: 0.875em;
 	font-variant: small-caps;
-	font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .orange {
@@ -45,9 +43,9 @@ h2 {
 	margin: 3px;
 	width: 1000px;
 }
-	
+
 #intellicast {
-	width: 500px;	
+	width: 500px;
 }
 
 .twtr_header {
