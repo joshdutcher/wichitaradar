@@ -61,6 +61,28 @@ if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] != 'no') {
 <meta name="keywords" content="Wichita Weather, Wichita, Weather, Radar, Satellite, Animation, Map, Watches, Warnings, Thunderstorms, Tornado, Storm warning, tornado warning, tornado watch" />
 <meta name="description" content="Your one-stop shop for animated radar and satellite maps of Wichita area weather, including satellite, radar, watches and warnings, and power outages." />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
+<meta name="application-name" content="Josh's Weather Station"/>
+<meta name="msapplication-TileColor" content="#313131" />
+<meta name="msapplication-TileImage" content="mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+
 </head>
 
 <script language="javascript" type="text/javascript">
@@ -107,243 +129,69 @@ if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] != 'no') {
 		<td align="right" style="font-family: tahoma, verdana, arial, sans-serif; color: #CCCCCC; font-size: 10px;"><a href="/about.php">about this page</a></td>
 	</tr>
 </table>
+
+<?php
+	$maps = array(
+		'warnings' => false,
+		'accuweather_radar' => array(
+			'width' => '450',
+			'height' => '450'
+		),
+		'kake_radar' => false
+	);
+
+	$maps2 = array(
+		'twc_interactive' => false,
+		'twc' => array(
+			'width' => '592',
+			'height' => '405',
+			'note' => 'This map doesn\'t work in Internet Explorer (you should be using <a href="http://www.google.com/chrome" target="_blank">chrome</a> anyhow)'
+		),
+		'ksn_radar' => false,
+		'noaabaseloop' => false,
+		'twc_doppler' => array(
+			'width' => '600',
+			'height' => '405',
+			'note' => 'This map somehow guesses your location, so sorry if it\'s wrong (visiting <a href="http://www.weather.com/" target="_blank">weather.com</a> might fix it)'
+		)
+	);
+?>
+
 <div id="Radar">
 	<?php getMenu("Radar"); ?>
 	<table width="1000" border="0" cellspacing="1" cellpadding="1">
 		<tr>
 			<td align="center" valign="top" nowrap>
-
-				<!-- ******************************* -->
-                <!-- ****** Watches & Warnings ***** -->
-                <!-- ******************************* -->
-
-				<div id="warnings" class="map">
-					<img src="http://sirocco.accuweather.com/adc_images2/english/current/svrwx/400x300/isvrwxNE_.gif"><br/>
-					<img src="http://sirocco.accuweather.com/web_images/svrwx/key/swskeys.gif">
-				</div>
-
-				<!-- ******************************* -->
-				<!-- ****** AccuWeather Radar ****** -->
-				<!-- ******************************* -->
-
-				<div id="accuweather_radar" class="map">
-					<iframe name="mapII" id="mapII" width="450" height="450" src="maps/accuweather/map.html" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>
-				</div>
-
-                <!-- ******************************* -->
-                <!-- ****** KAKE radar ************* -->
-                <!-- ******************************* -->
-
-				<div id="kake_radar" class="map">
-					<img src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-kakeland.gif" width="450">
-				</div>
+				<?php
+					foreach ($maps as $map => $iframe) {
+						echo '<div id="' . $map . '" class="map">';
+						if (is_array($iframe)) {
+							if (isset($iframe['note']) && $iframe['note'] != '') {
+								echo '<span style="font-size: 10px;">' . $iframe['note'] . '</span>';
+							}
+							echo '<iframe name="' . $map . '" id="' . $map . '" width="'. $iframe['width'] . '" height="' . $iframe['height'] . '" src="maps/' . $map . '.php" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>';
+						} else {
+							require('maps/' . $map . '.php');
+						}
+						echo '</div>';
+					}
+				?>
 			</td>
 			<td align="left" valign="top">
-
-                <!-- ******************************* -->
-                <!-- ****** TWC interactive ******** -->
-                <!-- ******************************* -->
-
-				<div id="twc_interactive" class="map">
-					<script src="http://www.weather.com/common/flash/wxgold/AC_OETags.js" language="javascript"></script>
-					<script src="http://www.weather.com/common/flash8MapUtil.js" language="javascript"></script>
-					<SCRIPT LANGUAGE="JavaScript1.2" SRC="http://www.weather.com/maps/interactive/config/beta/InteractiveMapConfig.js?2007011"></SCRIPT>
-					<script language="JavaScript1.2">
-						<!--
-							if(isFlashAvailable()){
-								if(isFlashVer8Available()){
-									getFlashObjectTag("http://image.weather.com/web/flash/FMMain.swf",600,508, "flashid", "wxAnimateOnStart=true&viewPortWidth=600&viewPortHeight=405&lat=37.67&long=-97.36&initialWeatherLayerType=radar&trackingBaseURL=x.weather.com&initialZoomLevel=7&productID=9&panFrameAlpha=60&config="+freeSiteInteractiveMapXMLConfig,"#FFFFFF");
-								}
-								else{getFlashVerNotAvailableMessage();}
-							}else {
-								getFlashNotAvailableMessage();
+				<?php
+					foreach ($maps2 as $map => $iframe) {
+						echo '<div id="' . $map . '" class="map">';
+						if (is_array($iframe)) {
+							if (isset($iframe['note']) && $iframe['note'] != '') {
+								echo '<span style="font-size: 10px;">' . $iframe['note'] . '</span>';
 							}
-						// -->
-					</script>
-					<noscript>
-						This content requires the Adobe Flash Player and a browser with JavaScript enabled.
-						<a href="http://www.adobe.com/go/getflash/" target="_blank">Get Flash</a>
-					</noscript>
-				</div>
-
-                <!-- ******************************* -->
-                <!-- ****** TWC2 ******************* -->
-                <!-- ******************************* -->
-
-				<div id="twc" class="map">
-					<span style="font-size: 10px;">This map doesn't work in Internet Explorer (you should be using <a href="http://www.google.com/chrome" target="_blank">chrome</a> anyhow):</span>
-					<iframe name="twc" id="twc" width="592" height="405" src="maps/twc/map.html" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>
-				</div>
-
-                <!-- ******************************* -->
-                <!-- ****** KSN Radar ************** -->
-                <!-- ******************************* -->
-
-				<div id="ksn_radar" class="map">
-					<!-- Begin pkg: iwradar rev3 -->
-					<script language="JavaScript" type="text/javascript">
-
-						<!-- Hide from JavaScript-Impaired Browsers
-						if (document.images) {
-							//Total frames represented by 18 followed by 17, frames 13-18 are repeats of 12
-							isn=new Array();
-							for (i=1;i<18;i++) {
-								isn[i]=new Image();
-								if (i<17){
-									// Use 0 placeholder in filename when i is less than 10
-									if (i<10){
-										isn[i].src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_0"+i+".jpg";
-									} else {
-										if (i<13){
-											isn[i].src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_"+i+".jpg";
-										} else {
-											isn[i].src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_12.jpg";
-										}
-									}
-								} else {
-									isn[i].src="/images/inv.gif";
-								}
-							}
+							echo '<iframe name="' . $map . '" id="' . $map . '" width="'. $iframe['width'] . '" height="' . $iframe['height'] . '" src="maps/' . $map . '.php" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>';
+						} else {
+							require('maps/' . $map . '.php');
 						}
-
-						//dla = default speed or delay between frames
-						ctr=1;
-						dla=150;
-						j=1;
-						stpit=0;
-						restart=0;
-
-						function startIt1(param){
-							if (restart==1){
-								stpit=0;
-							}
-							if (stpit<1){
-								setTimeout("prtIt1()",dla);
-								restart=0;
-							}
-						}
-
-						function prtIt1(){
-							if (document.images){
-								document.ani1.src=isn[j].src;
-								j++;
-								if (j>16){
-									j=1
-								}
-								if (stpit==1){
-									stpit=0;
-								}
-								else{
-									startIt1();
-									}
-								}
-							else{
-								alert("You need a JavaScript 1.1 compatible browser. We recommmend Netscape 3+ "
-								+"or MSIE4+.");
-							}
-						}
-
-						function speedIt1(){
-							if (stpit==0){
-								if (dla>250){
-									dla-=250;
-									if (dla<150){
-										dla=100;
-									}
-								}
-								else{
-									dla-=50;
-									if (dla<50){
-										dla-=25;
-										if (dla<25){
-											dla=25;
-										}
-									}
-								}
-							}
-						}
-
-						function slowIt1(){
-							if (stpit == 0){
-								if (dla<50){
-									dla+=25;
-								}
-								else{
-									if (dla<150){
-										dla+=50;
-									}
-									else{
-										if (dla<=2150){
-											dla+=250;
-											if (dla>2150){
-												dla=2500;
-											}
-										}
-									}
-								}
-							}
-						}
-
-						function testStp1(){
-							if (stpit==0){
-								stpit=1;
-							}
-						}
-
-						function Back1(){
-							stpit=1;
-							restart=1;
-							if (document.images){
-								j--;
-								if (j<1){
-									j=12
-								}
-								else{
-									if (j>12){
-										j=1
-									}
-								}
-							document.ani1.src=isn[j].src;
-							}
-						}
-
-						function Forward1(){
-							stpit=1;
-							restart=1;
-							if (document.images){
-								j++;
-								if (j>12){
-									j=1
-								}
-							document.ani1.src=isn[j].src;
-							}
-						}
-					// End Hiding -->
-					</script>
-					<script type="text/javascript" language="JavaScript1.1">
-						startIt1();
-					</script>
-
-					<!--- here is the actual map image -->
-					<img name="ani1" border=0 src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" alt="Radar image" width="600" height="450" />
-				</div>
-
-                <!-- ******************************* -->
-                <!-- * NOAA base reflectivity loop * -->
-                <!-- ******************************* -->
-
-				<div id="noaabaseloop" class="map">
-					<img src="http://radar.weather.gov/lite/NCR/ICT_loop.gif">
-				</div>
-
-                <!-- ******************************* -->
-                <!-- ****** TWC doppler ************ -->
-                <!-- ******************************* -->
-
-				<div id="twc_doppler" class="map">
-					<span style="font-size: 10px;">This map somehow guesses your location, so sorry if it's wrong (visiting <a href="http://www.weather.com/" target="_blank">weather.com</a> might fix it)</span><br/>
-					<iframe name="mapI" id="mapI" width=600 height=405 src="maps/weather/map.html"	frameborder=0 marginheight=0 marginwidth=0 scrolling="no"></iframe>
-				</div>
+						echo '</div>';
+					}
+				?>
 			</td>
 		</tr>
 	</table>
