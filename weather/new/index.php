@@ -18,40 +18,94 @@ add something about @TornadoAlertApp
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
 
-    <div class="pure-g">
-        <div class="photo-box u-1 u-med-1-3 u-lrg-1-4">
-            <?php require('maps/warnings.php'); ?>
-            <?php /*
-            <a href="http://www.dillonmcintosh.tumblr.com/">
-                <img src="http://24.media.tumblr.com/d6b9403c704c3e5aa1725c106e8a9430/tumblr_mvyxd9PUpZ1st5lhmo1_1280.jpg"
-                     alt="Beach">
-            </a>
-            */ ?>
+    <?php /*
 
-            <aside class="photo-box-caption">
-                <span>Watches &and; Warnings</span>
-            </aside>
+    <div style="float: left;">
+        <?php require('maps/warnings.php'); ?>
+    </div>
+
+    <div style="float: left;">
+        <?php require('maps/kake_radar.php'); ?>
+    </div>
+
+    <div style="float: left;">
+        <?php require('maps/ksn_radar.php'); ?>
+    </div>
+
+    <div style="float: left;">
+        <?php require('maps/noaabaseloop.php'); ?>
+    </div>
+
+    <div style="float: left;">
+        <?php require('maps/twc.php'); ?>
+    </div>
+
+    <br style="clear: both" />
+
+    */ ?>
+
+
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <?php
+                require('maps/weather_gov_wwa.php');
+
+                /*
+                <a href="http://www.dillonmcintosh.tumblr.com/">
+                    <img src="http://24.media.tumblr.com/d6b9403c704c3e5aa1725c106e8a9430/tumblr_mvyxd9PUpZ1st5lhmo1_1280.jpg"
+                         alt="Beach">
+                </a>
+
+                <aside class="photo-box-caption">
+                    <span>Watches &and; Warnings</span>
+                </aside>
+                */
+            ?>
         </div>
 
-        <div class="text-box u-1 u-med-2-3 u-lrg-3-4">
-            <div class="l-box">
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <?php
+                require('maps/kake_radar.php');
+
+                /*
                 <h1 class="text-box-head">Photos from around the world</h1>
                 <p class="text-box-subhead">A collection of beautiful photos gathered from Unsplash.com.</p>
-            </div>
+                */
+            ?>
         </div>
 
-        <div class="photo-box u-1 u-med-1-2 u-lrg-1-3">
-            <a href="http://ngkhanhlinh.dunked.com/">
-                <img src="http://31.media.tumblr.com/aa1779a718c2844969f23c4f5dec86b1/tumblr_mvyxhonf601st5lhmo1_1280.jpg"
-                     alt="Meadow">
-            </a>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <?php
+                require('maps/noaabaseloop.php');
 
-            <aside class="photo-box-caption">
-                <span>
-                    by <a href="http://ngkhanhlinh.dunked.com/">Linh Nguyen</a>
-                </span>
-            </aside>
+                /*
+                <a href="http://ngkhanhlinh.dunked.com/">
+                    <img src="http://31.media.tumblr.com/aa1779a718c2844969f23c4f5dec86b1/tumblr_mvyxhonf601st5lhmo1_1280.jpg"
+                         alt="Meadow">
+                </a>
+
+                <aside class="photo-box-caption">
+                    <span>
+                        by <a href="http://ngkhanhlinh.dunked.com/">Linh Nguyen</a>
+                    </span>
+                </aside>
+                */
+            ?>
         </div>
+
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <?php
+                require('maps/warnings.php');
+            ?>
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <?php
+                require('maps/intellicast_wwa.php');
+            ?>
+        </div>
+
+        <?php /*
 
         <div class="photo-box u-1 u-med-1-2 u-lrg-1-3">
             <a href="http://www.nilssonlee.se/">
@@ -140,6 +194,8 @@ add something about @TornadoAlertApp
                 </p>
             </div>
         </div>
+        */
+        ?>
     </div>
 
     <?php require_once('includes/footer.php'); ?>

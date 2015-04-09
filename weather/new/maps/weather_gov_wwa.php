@@ -1,0 +1,1 @@
+<img class="pure-img-responsive" src="http://www.weather.gov/wwamap/png/ict.png" />

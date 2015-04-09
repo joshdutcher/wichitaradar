@@ -37,13 +37,20 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="css/layouts/gallery-grid-old-ie.css">
-        <link rel="stylesheet" href="css/layouts/gallery-old-ie.css">
+    	<?php
+        	//<link rel="stylesheet" href="css/layouts/gallery-grid-old-ie.css">
+        	//<link rel="stylesheet" href="css/layouts/gallery-old-ie.css">
+        ?>
         <link rel="stylesheet" href="css/layouts/side-menu-old-ie.css">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="css/layouts/gallery-grid.css">
-        <link rel="stylesheet" href="css/layouts/gallery.css">
+    	<?php
+        	//<link rel="stylesheet" href="css/layouts/gallery-grid.css">
+        	//<link rel="stylesheet" href="css/layouts/gallery.css">
+    	?>
         <link rel="stylesheet" href="css/layouts/side-menu.css">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <!--<![endif]-->
+
 </head>

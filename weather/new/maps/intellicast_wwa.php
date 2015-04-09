@@ -1,0 +1,2 @@
+<img class="pure-img-responsive" src="http://images.intellicast.com/images/legends/WatchWarnLegend.gif" style="margin-bottom: -4px;"><br/>
+<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/WatchWarning/R06.jpg">
