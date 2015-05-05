@@ -22,8 +22,6 @@
 						isn[i].src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_12.jpg";
 					}
 				}
-			} else {
-				isn[i].src="/images/inv.gif";
 			}
 		}
 	}
@@ -64,87 +62,11 @@
 			+"or MSIE4+.");
 		}
 	}
-
-	function speedIt1(){
-		if (stpit==0){
-			if (dla>250){
-				dla-=250;
-				if (dla<150){
-					dla=100;
-				}
-			}
-			else{
-				dla-=50;
-				if (dla<50){
-					dla-=25;
-					if (dla<25){
-						dla=25;
-					}
-				}
-			}
-		}
-	}
-
-	function slowIt1(){
-		if (stpit == 0){
-			if (dla<50){
-				dla+=25;
-			}
-			else{
-				if (dla<150){
-					dla+=50;
-				}
-				else{
-					if (dla<=2150){
-						dla+=250;
-						if (dla>2150){
-							dla=2500;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	function testStp1(){
-		if (stpit==0){
-			stpit=1;
-		}
-	}
-
-	function Back1(){
-		stpit=1;
-		restart=1;
-		if (document.images){
-			j--;
-			if (j<1){
-				j=12
-			}
-			else{
-				if (j>12){
-					j=1
-				}
-			}
-		document.ani1.src=isn[j].src;
-		}
-	}
-
-	function Forward1(){
-		stpit=1;
-		restart=1;
-		if (document.images){
-			j++;
-			if (j>12){
-				j=1
-			}
-		document.ani1.src=isn[j].src;
-		}
-	}
 // End Hiding -->
 </script>
-<script type="text/javascript" language="JavaScript1.1">
-	startIt1();
+<script type="text/javascript">
+	setTimeout("prtIt1()",150);
 </script>
 
 <!--- here is the actual map image -->
-<img name="ani1" border=0 src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" alt="Radar image" width="600" height="450" />
+<img name="ani1" border=0 class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" alt="Radar image" />

@@ -6,6 +6,12 @@ require_once('includes/functions.php');
 /************************************
 TO DO:
 add something about @TornadoAlertApp
+
+http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=english&FcstType=graphical
+
+purecss.io
+
+animation: http://awardwinningfjords.com/2012/03/08/image-sequences.html
 *************************************/
 
 ?>
@@ -14,6 +20,12 @@ add something about @TornadoAlertApp
 <html lang="en">
 <?php require_once('includes/header.php'); ?>
 <body>
+
+<style>
+#layout {
+    /*background-color: black;*/
+}
+</style>
 
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
@@ -47,8 +59,12 @@ add something about @TornadoAlertApp
 
     <div class="pure-g">
         <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <div id="myImage"></div>
             <?php
-                require('maps/weather_gov_wwa.php');
+                require('maps/ksn_radar.php');
+                require('maps/kake_radar.php');
+                require('maps/noaabaseloop.php');
+
 
                 /*
                 <a href="http://www.dillonmcintosh.tumblr.com/">
@@ -65,7 +81,7 @@ add something about @TornadoAlertApp
 
         <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
             <?php
-                require('maps/kake_radar.php');
+                require('maps/intellicast_wwa.php');
 
                 /*
                 <h1 class="text-box-head">Photos from around the world</h1>
@@ -76,7 +92,9 @@ add something about @TornadoAlertApp
 
         <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
             <?php
-                require('maps/noaabaseloop.php');
+                require('maps/warnings.php');
+                require('maps/weather_gov_wwa.php');
+
 
                 /*
                 <a href="http://ngkhanhlinh.dunked.com/">
@@ -90,18 +108,6 @@ add something about @TornadoAlertApp
                     </span>
                 </aside>
                 */
-            ?>
-        </div>
-
-        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-            <?php
-                require('maps/warnings.php');
-            ?>
-        </div>
-
-        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-            <?php
-                require('maps/intellicast_wwa.php');
             ?>
         </div>
 
@@ -203,6 +209,9 @@ add something about @TornadoAlertApp
 
 
 <script src="js/ui.js"></script>
+<script type="text/javascript">
+	//$(goAnimate);
+</script>
 
 
 </body>
