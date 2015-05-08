@@ -12,6 +12,10 @@ http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=engl
 purecss.io
 
 animation: http://awardwinningfjords.com/2012/03/08/image-sequences.html
+
+bing maps like on KSNW?
+
+hourly forecast
 *************************************/
 
 ?>
