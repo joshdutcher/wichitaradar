@@ -1,7 +1,7 @@
 <?php
 
 $menu = array(
-	'Home' => 'index.php',
+	'Radar' => 'index.php',
 	'Satellite' => 'satellite.php',
 	'Current Watches' => 'watches.php',
 	'Reflectivity' => 'reflectivity.php',
@@ -21,7 +21,7 @@ $menu = array(
 
 <div id="menu">
     <div class="pure-menu">
-        <a class="pure-menu-heading" href="#">Company</a>
+        <a class="pure-menu-heading" href="index.php">Home</a>
 
         <ul class="pure-menu-list">
         <?php

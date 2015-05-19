@@ -1,50 +1,40 @@
-function rightNow() {
-	if (window['performance'] && window['performance']['now']) {
-		return window['performance']['now']();
-	} else {
-		return +(new Date());
-	}
-}
+function animateFrames(frames, pauseFrames, delay, prefix, suffix, img, leadingZero) {
+	var currentFrame = 1,
+		totalFrames = frames + pauseFrames;
 
-
-function animateLoop(animFrames, delayFrames, animSpeed, targetElm) {
-	// animFrames = 12
-	// delayFrames = 6
-	// animSpeed = 150ms
-	// targetElm = $('#myImage')
-	totalFrames = animFrames + delayFrames;
-	for (i=1;i<totalFrames;i++) {
-
-	}
-
-}
-
-
-function goAnimate() {
-	var fps          = 3,
-		currentFrame = 0,
-		totalFrames  = 11,
-		img          = document.getElementById("myImage"),
-		currentTime  = rightNow();
-
-	(function animloop(time){
-		var delta = (time - currentTime) / 1000;
-
-		currentFrame += (delta * fps);
-
-		var frameNum = Math.floor(currentFrame);
-
-		if (frameNum >= totalFrames) {
-			currentFrame = frameNum = 0;
+	setInterval(function() {
+		if (currentFrame <= totalFrames) {
+			if (currentFrame <= frames) {
+				if (leadingZero) {
+					showFrame = (currentFrame < 10 ? "0" : "") + currentFrame;
+				} else {
+					showFrame = currentFrame;
+				}
+			} else {
+				showFrame = frames;
+			}
 		}
+		currentFrame = currentFrame % totalFrames + 1;
 
-		requestAnimationFrame(animloop);
+		var url = prefix + showFrame + suffix;
+		//$(div).html('<img src="' + url + '" class="pure-img-responsive" />');
+		$(img).attr('src', url);
+	}, delay);
+}
 
-		//img.src = "http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_" +
-
-		img.src = "http://wx.ksn.com/weather/images/ksn_ks_radar_" +
-		(frameNum < 10 ? "0" : "") + frameNum + ".jpg";
-
-		currentTime = time;
-	})(currentTime);
+function preloadImages(frames, prefix, suffix, leadingZero) {
+	// preload images
+	console.log('frames: ' + frames + ' prefix: ' + prefix + ' suffix: ' + suffix);
+	isn=new Array();
+	for (i=1;i<frames+1;i++) {
+		isn[i]=new Image();
+		if (i<frames){
+			// Use 0 placeholder in filename when i is less than 10
+			if (i<10 && leadingZero){
+				isn[i].src=prefix + '0' + i + suffix;
+			} else {
+				isn[i].src=prefix + i + suffix;
+			}
+		}
+	}
 }
