@@ -11,6 +11,8 @@ http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=engl
 
 purecss.io
 
+get all assets the same, either local or remote
+
 bing maps like on KSNW?
 
 hourly forecast
@@ -18,50 +20,41 @@ hourly forecast
 
 ?>
 
-<!doctype html>
-<html lang="en">
 <?php require_once('includes/header.php'); ?>
 <body>
-
-<style>
-.pure-g {
-    background-color: black;
-}
-</style>
 
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
 
-    <div class="pure-g">
-        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-        	<!-- ****** KSN radar ************** -->
-        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
-        	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
-
-			<!-- ****** KAKE radar ************* -->
-			<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-kakeland.gif">
-
-			<!-- * NOAA base reflectivity loop * -->
-			<img class="pure-img-responsive" src="http://radar.weather.gov/lite/NCR/ICT_loop.gif">
-        </div>
-
-        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-			<!-- ****** Wunderground radar ***** -->
-            <img class="pure-img-responsive" src="http://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=ICT&brand=wui&num=6&delay=15&type=N0R&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=0&lightning=0&smooth=0&rand=23867719&lat=0&lon=0&label=you">
+    <div class="pure-g" id="mainbody">
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+        	<!-- ****** Intellicast radar ****** -->
+        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" />
 
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
+
+			<!-- ****** KAKE radar ************* -->
+			<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-kakeland.gif">
         </div>
 
-        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+        	<!-- ****** KSN radar ************** -->
+        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
+
+        	<!-- ****** Another KSN radar ****** -->
+        	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
+
+        	<!-- ****** Weather.com ************ -->
         	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
-            <?php
-                //require('maps/weather_gov_wwa.php');
-            	//require('maps/twc_doppler.php');
-            ?>
-        	<!-- ****** Intellicast wwa ******** -->
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/images/legends/WatchWarnLegend.gif" style="margin-bottom: -4px;"><br/>
-			<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/WatchWarning/R06.jpg">
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+			<!-- ****** Wunderground radar ***** -->
+            <img class="pure-img-responsive" src="http://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=ICT&brand=wui&num=6&delay=15&type=N0R&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=0&lightning=0&smooth=0&rand=23867719&lat=0&lon=0&label=you">
+
+			<!-- * NOAA base reflectivity loop * -->
+			<img class="pure-img-responsive" src="http://radar.weather.gov/lite/NCR/ICT_loop.gif">
         </div>
     </div>
 

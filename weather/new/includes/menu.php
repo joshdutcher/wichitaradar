@@ -1,14 +1,15 @@
 <?php
 
 $menu = array(
-	'Radar' => 'index.php',
-	'Satellite' => 'satellite.php',
-	'Current Watches' => 'watches.php',
-	'Reflectivity' => 'reflectivity.php',
-	'Outages' => 'outages.php',
-	'Resources' => 'resources.php',
-	'Twitter' => 'twitter.php',
-	'About' => 'about.php'
+	'Radar' => array('url' => 'index.php', 'tooltip' => 'What you really came here for'),
+	'Base Reflectivity' => array('url' => 'reflectivity.php', 'tooltip' => ''),
+	'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
+	'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
+	'Outlook' => array('url' => 'outlook.php', 'tooltip' => ''),
+	'Outages' => array('url' => 'outages.php', 'tooltip' => ''),
+	'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
+	'Twitter' => array('url' => 'twitter.php', 'tooltip' => ''),
+	'About' => array('url' => 'about.php', 'tooltip' => '')
 );
 
 ?>
@@ -26,7 +27,7 @@ $menu = array(
         <ul class="pure-menu-list">
         <?php
         	foreach ($menu as $item => $file) {
-        		echo '<li class="pure-menu-item"><a href="' . $file . '" class="pure-menu-link">' . $item . '</a></li>';
+        		echo '<li class="pure-menu-item"><a href="' . $file['url'] . '" class="pure-menu-link" title="' . $file['tooltip'] . '">' . $item . '</a></li>';
         	}
         ?>
         </ul>

@@ -1,0 +1,50 @@
+/****
+	Overrides for the default styling of the layout(s)
+****/
+
+html {
+	background-color: #000;
+}
+
+#menu .pure-menu-heading {
+	background-color: #666;
+}
+
+#menu .pure-menu li a:hover,
+#menu .pure-menu li a:focus {
+    color: #FFF;
+}
+
+
+
+/*
+When setting the primary font stack, apply it to the Pure grid units along
+with `html`, `button`, `input`, `select`, and `textarea`. Pure Grids use
+specific font stacks to ensure the greatest OS/browser compatibility.
+*/
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    /*font-family: Georgia, Times, "Times New Roman", serif;*/
+}
+
+
+
+
+
+/****
+	other misc css
+****/
+
+.twtr_header {
+	font-family: "lucida grande", lucida, hevetica, arial, sans-serif;
+	font-size: 1em;
+	font-weight: bold;
+	color: #87c2ed;
+}
+
+#accuweather_sat{
+	background-color: #E9E9E5;
+	text-align: center;
+	margin: 5px;
+}

@@ -1,9 +1,12 @@
+<!doctype html>
+<html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Wichita Weather, Wichita, Weather, Radar, Satellite, Animation, Map, Watches, Warnings, Thunderstorms, Tornado, Storm warning, tornado warning, tornado watch" />
 	<meta name="description" content="Your one-stop shop for animated radar and satellite maps of Wichita area weather, including satellite, radar, watches and warnings, and power outages." />
-    <title>Josh's Weather Station</title>
+    <title>Josh's Weather Station v2.0</title>
     <meta http-equiv="pragma" content="no-cache" />
 
 	<?php
@@ -37,21 +40,15 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
     <!--[if lte IE 8]>
-    	<?php
-        	//<link rel="stylesheet" href="css/layouts/gallery-grid-old-ie.css">
-        	//<link rel="stylesheet" href="css/layouts/gallery-old-ie.css">
-        ?>
         <link rel="stylesheet" href="css/layouts/side-menu-old-ie.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    	<?php
-        	//<link rel="stylesheet" href="css/layouts/gallery-grid.css">
-        	//<link rel="stylesheet" href="css/layouts/gallery.css">
-    	?>
         <link rel="stylesheet" href="css/layouts/side-menu.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <!--<![endif]-->
+
+    <link rel="stylesheet" href="css/wx.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
