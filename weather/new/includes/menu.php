@@ -6,7 +6,6 @@ $menu = array(
 	'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
 	'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
 	'Outlook' => array('url' => 'outlook.php', 'tooltip' => ''),
-	'Outages' => array('url' => 'outages.php', 'tooltip' => ''),
 	'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
 	'Twitter' => array('url' => 'twitter.php', 'tooltip' => ''),
 	'About' => array('url' => 'about.php', 'tooltip' => '')

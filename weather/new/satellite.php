@@ -13,7 +13,7 @@
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
 
-    <div class="pure-g" id="mainbody">
+    <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<div id="accuweather_sat">
 				<img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" /><br/><br/>

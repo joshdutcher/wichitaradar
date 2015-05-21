@@ -4,18 +4,21 @@ require_once('includes/init.php');
 //require_once('includes/functions.php');
 
 /************************************
+css & responsive framework:
+	purecss.io
+color palette:
+	http://paletton.com/#uid=73y0u0k+bFooMYfHB+5YtpFVIew
+favicon generator:
+	http://www.favicomatic.com/
+
 TO DO:
-add something about @TornadoAlertApp
+	get all assets the same, either local or remote
+	bing maps like on KSNW?
+	hourly forecast
+	add something about @TornadoAlertApp
+	http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=english&FcstType=graphical
+	http://forecast.weather.gov/jetstream/doppler/ridge_download.htm
 
-http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=english&FcstType=graphical
-
-purecss.io
-
-get all assets the same, either local or remote
-
-bing maps like on KSNW?
-
-hourly forecast
 *************************************/
 
 ?>
@@ -26,7 +29,7 @@ hourly forecast
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
 
-    <div class="pure-g" id="mainbody">
+    <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<!-- ****** Intellicast radar ****** -->
         	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" />
@@ -34,19 +37,22 @@ hourly forecast
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
 
-			<!-- ****** KAKE radar ************* -->
-			<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-kakeland.gif">
+        	<!-- ****** TWC Doppler ************ -->
+        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-        	<!-- ****** KSN radar ************** -->
+			<!-- ****** KAKE Doppler SCKS ****** -->
+        	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Zone-SC.gif" />
+
+			<!-- ****** KAKE Doppler ICT ******* -->
+        	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
+
+        	<!-- ****** KSN Pinpoint ********** -->
         	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
 
-        	<!-- ****** Another KSN radar ****** -->
+        	<!-- ****** KSN Southcentral radar * -->
         	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
-
-        	<!-- ****** Weather.com ************ -->
-        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">

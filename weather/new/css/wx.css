@@ -1,29 +1,54 @@
 /****
-	Overrides for the default styling of the layout(s)
+	Overrides for the default styling of purecss's layout(s)
 ****/
 
 html {
-	background-color: #000;
+	background-color: #202020;
+}
+
+a {
+	color: #FFC000;
+}
+
+#menu {
+	background-color: #014884;
 }
 
 #menu .pure-menu-heading {
-	background-color: #666;
+	background-color: #45A6F7;
 }
 
 #menu .pure-menu li a:hover,
 #menu .pure-menu li a:focus {
+    background-color: #0A8FFC;
     color: #FFF;
 }
 
+#menu .pure-menu-link {
+	color: #45A6F7;
+}
 
+.pure-u {
+	text-align: center !important;
+}
+
+.header {
+	border-bottom: 1px solid #014884;
+}
+
+.header h1, .header h2 {
+	color: #45A6F7;
+}
 
 /*
 When setting the primary font stack, apply it to the Pure grid units along
 with `html`, `button`, `input`, `select`, and `textarea`. Pure Grids use
 specific font stacks to ensure the greatest OS/browser compatibility.
 */
-html, button, input, select, textarea,
+html, body, button, input, select, textarea,
 .pure-g [class *= "pure-u"] {
+	font-family: 'Open Sans', sans-serif;
+	color: #8F8F8F;
     /* Set your content font stack here: */
     /*font-family: Georgia, Times, "Times New Roman", serif;*/
 }
@@ -36,11 +61,16 @@ html, button, input, select, textarea,
 	other misc css
 ****/
 
-.twtr_header {
-	font-family: "lucida grande", lucida, hevetica, arial, sans-serif;
-	font-size: 1em;
-	font-weight: bold;
-	color: #87c2ed;
+.textbox {
+	width: 90%;
+	text-align: center;
+	background-color: #014884;
+	color: #FFF !important;
+	font-size: 0.8em;
+	border-top: 1px solid #45A6F7;
+	border-bottom: 1px solid #45A6F7;
+	padding: 0.5em 1em;
+	margin: 1em auto;
 }
 
 #accuweather_sat{

@@ -30,7 +30,7 @@
 	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 	<link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
 	<meta name="application-name" content="Josh's Weather Station"/>
-	<meta name="msapplication-TileColor" content="#313131" />
+	<meta name="msapplication-TileColor" content="#202020" />
 	<meta name="msapplication-TileImage" content="mstile-144x144.png" />
 	<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
 	<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
@@ -48,6 +48,7 @@
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <!--<![endif]-->
 
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/wx.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
