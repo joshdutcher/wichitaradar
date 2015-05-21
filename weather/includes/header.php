@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Wichita Weather, Wichita, Weather, Radar, Satellite, Animation, Map, Watches, Warnings, Thunderstorms, Tornado, Storm warning, tornado warning, tornado watch" />
-	<meta name="description" content="Your one-stop shop for animated radar and satellite maps of Wichita area weather, including satellite, radar, watches and warnings, and power outages." />
+	<meta name="description" content="Your one-stop shop for animated radar and satellite maps of Wichita area weather, including radar, satellite, watches/warnings, and more info." />
     <title>Josh's Weather Station v2.0</title>
     <meta http-equiv="pragma" content="no-cache" />
 
