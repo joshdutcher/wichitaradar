@@ -12,11 +12,7 @@ favicon generator:
 
 TO DO:
 	get all assets the same, either local or remote
-	bing maps like on KSNW?
 	hourly forecast
-	add something about @TornadoAlertApp
-	http://forecast.weather.gov/MapClick.php?lat=37.6874&lon=-97.3427&unit=0&lg=english&FcstType=graphical
-	http://forecast.weather.gov/jetstream/doppler/ridge_download.htm
 
 *************************************/
 
