@@ -7,6 +7,25 @@
 		background-color: #FFF;
 		text-align: center;
 	}
+
+	#weathergov_legend {
+		background-color: #4C484A;
+		color: #FFF;
+		text-align: left;
+		font-size: 0.6em;
+		margin: 0 auto;
+		border-spacing: 2px;
+		border-collapse: separate;
+	}
+
+	#weathergov_legend td {
+		padding: 1px 4px;
+	}
+
+	.legend_cell {
+		border: 2px solid black;
+		width: 15px;
+	}
 </style>
 
 <div id="layout">
@@ -27,123 +46,46 @@
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-        	<img class="pure-img-responsive" src="http://www.weather.gov/wwamap/png/ict.png">
-<?php /*
-      			<table width='150' border='1' cellspacing='0' cellpadding='0'>
+			<img class="pure-img-responsive" src="http://www.weather.gov/wwamap/png/ict.png"><br/>
+			<table id="weathergov_legend">
+				<tr>
+					<td class="legend_cell" style="background-color: #FF0000;"></td>
+					<td>Tornado Warning</td>
+					<td class="legend_cell" style="background-color: #8B0000;"></td>
+					<td>Flash Flood Warning</td>
+				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #FFFF00;"></td>
+					<td>Tornado Watch</td>
+					<td class="legend_cell" style="background-color: #2E8B57;"></td>
+					<td>Flash Flood Watch</td>
 
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=tornado warning">Tornado Warning</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/FF0000.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=flash flood warning">Flash Flood Warning</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/8B0000.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=severe weather statement">Severe Weather Statement</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/00FFFF.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=flood warning">Flood Warning</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/00FF00.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=tornado watch">Tornado Watch</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/FFFF00.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=flash flood watch">Flash Flood Watch</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/2E8B57.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=flood advisory">Flood Advisory</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/00FF7F.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=hazardous weather outlook">Hazardous Weather Outlook</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/EEE8AA.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-       				<tr>
-        				<td valign='top' width='2'></td>
-        				<td valign='top' width='125'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='125' height='3' border='0'></td>
-        				<td valign='top' width='20'></td>
-        				<td valign='top' width='2'></td>
-       				</tr>
-       				<tr>
-        				<td valign='top' align='left' width='2'></td>
-        				<td valign='top' align='left' width='125'><a href="http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ict&wwa=short term forecast">Short Term Forecast</a></td>
-        				<td valign='top' align='right' width='20'><img src='http://forecast.weather.gov/wwamap/gif/98FB98.gif' width='20' height='12' border='1'></td><td valign='top' align='left' width='2'></td>
-       				</tr>
-
-     			<tr>
-      				<td colspan='4'><img src='http://forecast.weather.gov/wwamap/gif/spacer.gif' width='150' height='3' border='0'></td>
-     			</tr>
-    			</table>
-    			*/ ?>
+				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #FFA500;"></td>
+					<td>Severe Thunderstorm Warning</td>
+					<td class="legend_cell" style="background-color: #00FF00;"></td>
+					<td>Flood Warning</td>
+				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #DB7093;"></td>
+					<td>Severe Thunderstorm Watch</td>
+					<td class="legend_cell" style="background-color: #00FF7F;"></td>
+					<td>Flood Advisory</td>
+				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #00FFFF;"></td>
+					<td>Severe Weather Statement</td>
+					<td class="legend_cell" style="background-color: #D2B48C;"></td>
+					<td>Wind Advisory</td>
+				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #EEE8AA;"></td>
+					<td>Hazardous Weather Outlook</td>
+					<td class="legend_cell" style="background-color: #98FB98;"></td>
+					<td>Short Term Forecast</td>
+				</tr>
+			</table>
         </div>
     </div>
 
