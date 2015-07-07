@@ -31,7 +31,7 @@ $menu = array(
         		}
         		echo '<li class="' . $class . '">';
         		if (isset($file['new'])) {
-        			echo '<div class="new-menu-link"><img id="new" src="/weather/img/new.png"></div>';
+        			echo '<div class="new-menu-link"><img id="new" src="' . $imgpath . 'new.png"></div>';
         		}
         		echo '<a href="' . $file['url'] . '" class="pure-menu-link" title="' . $file['tooltip'] . '">' . $item . '</a>';
         		echo '</li>';
