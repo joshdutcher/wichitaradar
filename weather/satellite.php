@@ -2,21 +2,13 @@
 <?php require_once('includes/header.php'); ?>
 <body>
 
-<style>
-	#accuweather_sat{
-		background-color: #E9E9E5;
-		text-align: center;
-		display: inline-block;
-	}
-</style>
-
 <div id="layout">
     <?php require_once('includes/menu.php'); ?>
 
     <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-        	<div id="accuweather_sat">
-				<img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" /><br/><br/>
+        	<div class="accuweather">
+				<img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" /><br/>
 				<img class="pure-img-responsive" src="http://vortex.accuweather.com/adc2004/common/images/keys/400x40/sat_ei.gif" />
 			</div>
         </div>

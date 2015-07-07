@@ -6,6 +6,7 @@ $menu = array(
 	'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
 	'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
 	'Outlook' => array('url' => 'outlook.php', 'tooltip' => ''),
+	'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => '', 'new' => true),
 	'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
 	'Twitter' => array('url' => 'twitter.php', 'tooltip' => ''),
 	'About' => array('url' => 'about.php', 'tooltip' => '')
@@ -21,12 +22,19 @@ $menu = array(
 
 <div id="menu">
     <div class="pure-menu">
-        <a class="pure-menu-heading" href="index.php">Home</a>
-
         <ul class="pure-menu-list">
         <?php
         	foreach ($menu as $item => $file) {
-        		echo '<li class="pure-menu-item"><a href="' . $file['url'] . '" class="pure-menu-link" title="' . $file['tooltip'] . '">' . $item . '</a></li>';
+        		$class = 'pure-menu-item';
+        		if (basename($_SERVER['PHP_SELF']) == $file['url']) {
+        			$class .= ' selected';
+        		}
+        		echo '<li class="' . $class . '">';
+        		if (isset($file['new'])) {
+        			echo '<div class="new-menu-link"><img id="new" src="/weather/img/new.png"></div>';
+        		}
+        		echo '<a href="' . $file['url'] . '" class="pure-menu-link" title="' . $file['tooltip'] . '">' . $item . '</a>';
+        		echo '</li>';
         	}
         ?>
         </ul>

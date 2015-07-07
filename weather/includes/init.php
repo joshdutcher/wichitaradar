@@ -3,7 +3,7 @@
 ini_set('display_errors',true);
 
 if (!defined('ROOT')) {
-	define('ROOT', dirname(dirname(dirname(__FILE__))));
+	define('ROOT', dirname(dirname(__FILE__)));
 }
 
 ?>

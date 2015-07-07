@@ -14,8 +14,12 @@ a {
 	background-color: #014884;
 }
 
-#menu .pure-menu-heading {
+#menu .pure-menu-item.selected {
 	background-color: #45A6F7;
+}
+
+#menu .pure-menu-item.selected a {
+	color: #FFF;
 }
 
 #menu .pure-menu li a:hover,
@@ -26,6 +30,16 @@ a {
 
 #menu .pure-menu-link {
 	color: #45A6F7;
+}
+
+#menu .new-menu-link {
+	position: absolute;
+	z-index: 1;
+	padding: 0 3px;
+}
+
+#menu .new-menu-link img#new {
+	height: 20px;
 }
 
 .pure-u {
@@ -73,8 +87,9 @@ html, body, button, input, select, textarea,
 	margin: 1em auto;
 }
 
-#accuweather_sat{
-	background-color: #E9E9E5;
-	text-align: center;
-	margin: 5px;
+.accuweather {
+	background-color: #FFF;
+	display: inline-block;
+	padding: 5px 5px 0 5px;
+	margin-bottom: 5px;
 }
