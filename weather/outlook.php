@@ -14,10 +14,6 @@
     	<div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 			<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-forecast-7day-SC.jpeg" />
 			<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/wx_weekly_640.jpg" />
-			<div class="pure-u textbox">
-				The following are experimental
-			</div>
-			<img class="pure-img-responsive" src="http://www.kwch.com/image/view/-/23064696/highRes/475/-/maxh/480/maxw/640/-/g8m8l2z/-/AM-FORECAST-IMAGE.jpg" />
 			<img class="pure-img-responsive" src="http://image.weather.com/images/maps/forecast/map_wkpln_day1_3uscn_enus_720x486.jpg" />
     	</div>
     	<div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
