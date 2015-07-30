@@ -73,7 +73,11 @@ TO DO:
 			prefix: 'http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_',
 			suffix: '.jpg'
 		}
-		$.when(preloadImages(ksn.frames, ksn.prefix, ksn.suffix, true)).then(animateFrames(ksn.frames, 5, 150, ksn.prefix, ksn.suffix, '#ksnLoop', true));
+		$.when(
+			preloadImages(ksn.frames, ksn.prefix, ksn.suffix, true)
+		).then(
+			animateFrames(ksn.frames, 5, 150, ksn.prefix, ksn.suffix, '#ksnLoop', true)
+		);
 
 		// NEW KSN RADAR
 		var newksn = {
@@ -81,7 +85,11 @@ TO DO:
 			prefix: 'http://wx.ksn.com/weather/images/ksn_sc_radar_',
 			suffix: '.jpg'
 		}
-		$.when(preloadImages(newksn.frames, newksn.prefix, newksn.suffix, true)).then(animateFrames(newksn.frames, 5, 200, newksn.prefix, newksn.suffix, '#newKsnLoop', true));
+		$.when(
+			preloadImages(newksn.frames, newksn.prefix, newksn.suffix, true)
+		).then(
+			animateFrames(newksn.frames, 5, 200, newksn.prefix, newksn.suffix, '#newKsnLoop', true)
+		);
 
 		// WEATHER.COM
 		var weathercom = {
@@ -89,7 +97,11 @@ TO DO:
 			prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
 			suffix: 'L.jpg'
 		}
-		$.when(preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)).then(animateFrames(weathercom.frames, 2, 600, weathercom.prefix, weathercom.suffix, '#weathercom', false));
+		$.when(
+			preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
+		).then(
+			animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
+		);
 	});
 </script>
 
