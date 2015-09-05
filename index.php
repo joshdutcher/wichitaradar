@@ -88,7 +88,7 @@
 		    <p>I've been a web developer since 2000, and was tinkering with HTML as early as 1996. I've been fascinated by the Internet and its capabilities since the moment it came into my home. I started my career programming in ASP Classic, spent about three years programming in ColdFusion, and most recently have been working in PHP/MySql.</p>
 
 		    <h2>Education</h2>
-		    <p>I put my career on hold in 2010 to finish my degree. I moved to Lawrence, KS, enrolled at the University of Kansas (Rock Chalk Jayhawk!), and got a web development job at the School of Education. I graduated from the School of Business with a Bachelor's degree in Information Systems and Technology in December of 2013, and now I'm looking for work in Wichita, KS.</p>
+		    <p>In 2010 I put my career on hold to finish my degree. I moved to Lawrence, KS, enrolled at the University of Kansas (Rock Chalk Jayhawk!), and got a web development job at the School of Education. I graduated from the School of Business with a Bachelor's degree in Information Systems and Technology in December of 2013, moved back to Wichita and went back to work..</p>
 
             <h2>Links to Useful Things</h2>
 
