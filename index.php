@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!--
+        You right clicked. You viewed source. You found this.
+
+        I hope it's everything you dreamed it would be.
+    -->
+
     <meta name="viewport" content="initial-scale=1">
     <title>joshdutcher.com</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css"/>
@@ -82,15 +88,20 @@
             <p class="type-me" data-offset-padding="500">A bit about me:</p>
         </div>
         <div class="container">
-            <p><img src="img/infographic.png" alt="Infographic of my resume"></p>
+            <h2>Resume</h2>
+            <p><a href="http://www.joshsresume.com/">Check out my resume!</a></p>
 
             <h2>Career</h2>
-		    <p>I've been a web developer since 2000, and was tinkering with HTML as early as 1996. I've been fascinated by the Internet and its capabilities since the moment it came into my home. I started my career programming in ASP Classic, spent about three years programming in ColdFusion, and most recently have been working in PHP/MySql.</p>
+            <p>I've been a web developer since 2000, and was tinkering with HTML as early as 1996. I've been fascinated by the Internet and its capabilities since the moment it came into my home. I started my career programming in ASP Classic, spent about three years programming in ColdFusion, and most recently have been working in PHP/MySql.</p>
+
+            <h2>Corny Infographic</h2>
+            <?php // infographic from visualize.me ?>
+            <p><img src="img/infographic.png" alt="Infographic of my resume"></p>
 
 		    <h2>Education</h2>
-		    <p>In 2010 I put my career on hold to finish my degree. I moved to Lawrence, KS, enrolled at the University of Kansas (Rock Chalk Jayhawk!), and got a web development job at the School of Education. I graduated from the School of Business with a Bachelor's degree in Information Systems and Technology in December of 2013, moved back to Wichita and went back to work..</p>
+		    <p>In 2010 I put my career on hold to finish my degree. I moved to Lawrence, KS and enrolled at the University of Kansas (Rock Chalk Jayhawk!), and in 2013 I graduated from the School of Business with a Bachelor's degree in Information Systems and Technology, moved back to Wichita and went back to work.</p>
 
-            <h2>Links to Useful Things</h2>
+            <h2>Links to Things</h2>
 
             <p>
                 LinkedIn<br/><a href="http://www.linkedin.com/in/joshdutcher">
@@ -99,13 +110,9 @@
                 <br/><br/>
 
                 GitHub<br/><iframe src="https://githubbadge.appspot.com/joshdutcher?a=0" width="200" style="border: 0;height: 142px;width: 200px;overflow: hidden;"></iframe>
-
-                <br/>
-
-                Resume (pdf)<br/><a href="files/Josh%20Dutcher%20resume.pdf"><img src="img/resume.png" alt="Thumbnail of my resume"></a>
             </p>
 
-            <h2>Gaudy widget</h2>
+            <h2>Gaudy Widget</h2>
 
             <div class="badge-container">
 

@@ -1,6 +1,6 @@
 /*
 	colors:
-	#313131 (dark gray)
+	#1A1A1A (dark gray)
 	#FF5A09 (orange)
 	#F3843E (paler orange)
 	#FF9900 (yellow orange)
@@ -24,7 +24,7 @@ body {
 	height: 100%;
 	color: #AAA;
 	font-family: "droid-sans", tahoma, verdana, sans-serif;
-	background-color: #313131;
+	background-color: #1A1A1A;
 }
 
 img {
@@ -138,10 +138,10 @@ header > * {
 }
 
 .storied, #scroll-tab {
-	background-image: url("../img/escheresque_ste.png");
-	/*background-image: url("../img/use_your_illusion.png");*/
+	/*background-image: url("../img/escheresque_ste.png");
+	background-image: url("../img/use_your_illusion.png");*/
 	background-attachment: fixed;
-	background-color: #313131;
+	background-color: #1A1A1A;
 }
 
 #scroll-tab {
@@ -266,7 +266,7 @@ p {
 .badge-container {
 	width: 700px;
 	margin: 0 auto;
-	background-color: #313131;
+	background-color: #1A1A1A;
 	border: 0.3125em solid #FF5A09;
 	padding-bottom: 1em;
 	margin-bottom: 3em;
