@@ -6,8 +6,8 @@ $menu = array(
 	'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
 	'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
 	'Outlook' => array('url' => 'outlook.php', 'tooltip' => ''),
-	'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => '', 'new' => true),
-	'Earthquakes?' => array('url' => 'earthquakes.php', 'tooltip' => '', 'new' => true),
+	'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => ''),
+	'Earthquakes' => array('url' => 'earthquakes.php', 'tooltip' => ''),
 	'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
 	'Twitter' => array('url' => 'twitter.php', 'tooltip' => ''),
 	'About' => array('url' => 'about.php', 'tooltip' => '')
