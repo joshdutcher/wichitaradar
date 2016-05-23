@@ -10,7 +10,7 @@
 			Taken from the lowest (½°) elevation scan, base reflectivity is
 			excellent for surveying the region around the radar to look for precipitation. However, remember the radar beam
 			increases in elevation as distance increases from the radar.
-			<a href="http://forecast.weather.gov/jetstream/doppler/baserefl.htm">Learn More</a>
+			<a href="http://www.k3jae.com/wxbrexplained.php">Learn More</a>
 		</div>
 
 		<div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
