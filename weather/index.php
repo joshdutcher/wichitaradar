@@ -33,8 +33,11 @@ TO DO:
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
 
-        	<!-- ****** TWC Doppler ************ -->
-        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
+        	<!-- ****** TWC Doppler ************ --><!--
+        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" --> />
+
+        	<!-- ****** KSN Pinpoint ********** -->
+        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -43,9 +46,6 @@ TO DO:
 
 			<!-- ****** KAKE Doppler ICT ******* -->
         	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
-
-        	<!-- ****** KSN Pinpoint ********** -->
-        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
 
         	<!-- ****** KSN Southcentral radar * -->
         	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
@@ -92,16 +92,16 @@ TO DO:
 		);
 
 		// WEATHER.COM
-		var weathercom = {
-			frames: 5,
-			prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
-			suffix: 'L.jpg'
-		}
-		$.when(
-			preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
-		).then(
-			animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
-		);
+		// var weathercom = {
+		// 	frames: 5,
+		// 	prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
+		// 	suffix: 'L.jpg'
+		// }
+		// $.when(
+		// 	preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
+		// ).then(
+		// 	animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
+		// );
 	});
 </script>
 
