@@ -33,8 +33,10 @@ TO DO:
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
 
-        	<!-- ****** TWC Doppler ************ --><!--
-        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" --> />
+        	<?php /*
+        	<!-- ****** TWC Doppler ************ -->
+        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
+        	*/ ?>
 
         	<!-- ****** KSN Pinpoint ********** -->
         	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
@@ -91,17 +93,19 @@ TO DO:
 			animateFrames(newksn.frames, 5, 200, newksn.prefix, newksn.suffix, '#newKsnLoop', true)
 		);
 
-		// WEATHER.COM
-		// var weathercom = {
-		// 	frames: 5,
-		// 	prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
-		// 	suffix: 'L.jpg'
-		// }
-		// $.when(
-		// 	preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
-		// ).then(
-		// 	animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
-		// );
+		<?php /*
+		WEATHER.COM
+		var weathercom = {
+			frames: 5,
+			prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
+			suffix: 'L.jpg'
+		}
+		$.when(
+			preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
+		).then(
+			animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
+		);
+		*/ ?>
 	});
 </script>
 
