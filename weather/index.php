@@ -10,10 +10,8 @@ color palette:
 favicon generator:
 	http://www.favicomatic.com/
 
-TO DO:
+TODO:
 	get all assets the same, either local or remote
-	hourly forecast
-	http://www.spc.noaa.gov/products/activity_loop.gif
 
 *************************************/
 

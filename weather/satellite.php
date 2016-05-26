@@ -22,14 +22,14 @@
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+
+            <img class="pure-img-responsive" src="http://mp1.met.psu.edu/~fxg1/SAT_SC/satir_1.gif" id="psu" />
             <img class="pure-img-responsive" src="https://icons.wxug.com/data/640x480/2xsp_vi_anim.gif" />
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/Satellite/ceusa.jpg" />
-            <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/SatelliteIR/sln.jpg" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/SatelliteLoop/hiusa_None_anim.gif"  />
-            <img class="pure-img-responsive" src="http://www.ssd.noaa.gov/PS/PCPN/DATA/RT/NA/IR4/20.jpg" />
+            <img class="pure-img-responsive" src="http://www.weather.gov/images/nws/satellite_images/6.jpg" id="wgovsat" />
         </div>
     </div>
 
@@ -37,6 +37,37 @@
 </div>
 
 <script src="js/ui.js"></script>
+
+<script>
+// function preloadImages(frames, prefix, suffix, leadingZero) {
+// function animateFrames(frames, pauseFrames, delay, prefix, suffix, img, leadingZero) {
+
+	$(function() {
+		// mp1.met.psu.edu
+		var psu = {
+			frames: 24,
+			prefix: 'http://mp1.met.psu.edu/~fxg1/SAT_SC/satir_',
+			suffix: '.gif'
+		}
+		$.when(
+			preloadImages(psu.frames, psu.prefix, psu.suffix, false)
+		).then(
+			animateFrames(psu.frames, 5, 150, psu.prefix, psu.suffix, '#psu', false)
+		);
+
+		// weather.gov
+		var wgov = {
+			frames: 6,
+			prefix: 'http://www.weather.gov/images/nws/satellite_images/',
+			suffix: '.jpg'
+		}
+		$.when(
+			preloadImages(wgov.frames, wgov.prefix, wgov.suffix, false)
+		).then(
+			animateFramesReverse(wgov.frames, 5, 250, wgov.prefix, wgov.suffix, '#wgovsat', false)
+		);
+	});
+</script>
 
 </body>
 </html>
