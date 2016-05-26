@@ -21,7 +21,7 @@
 		    <p>Updates include a visual overhaul and most importantly, responsive design. This means the site should look
 		    100% better on mobile devices - smartphones, iPads, etc. I also added some new maps and removed some crappy ones.</p>
 
-		    <h2 class="content-subhead">But what is this for?</h2>
+		    <h2 class="content-subhead">What is this for?</h2>
 
 		    <p>My name is Josh Dutcher.  I originally put this weather page together so I could keep track of the weather if my satellite dish went out.
 		    I'm a web developer, so I just built it by harvesting source code from other sites.  I don't have permission
@@ -29,9 +29,9 @@
 		    anticipated it being used by anyone other than myself, so I just tossed it up on my server.  I certainly don't make any
 		    money from it or anything like that - it's just a resource for people who find it useful.</p>
 
-		    <p>The main home page with all the radars automatically refreshes every five minutes. It does this
-		    because those radar animations get cached and need to be reloaded periodically in order to stay current. Auto refresh allows this
-		    to happen automatically without you having to hit F5 all the time.</p>
+		    <p>The main home page with all the radars and the satellite page automatically refresh every five minutes. They do this
+		    because those animations only load once, when you load the page, and after a while they become outdated. Auto-refreshing the page
+            reloads those animations automatically without you having to hit F5 all the time.</p>
 
 		    <p>As a general rule, most sites including this one work better in Google Chrome or Firefox than they do in Internet Explorer.</p>
 

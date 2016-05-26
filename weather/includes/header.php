@@ -10,7 +10,7 @@
     <meta http-equiv="pragma" content="no-cache" />
 
 	<?php
-	if (basename($_SERVER["PHP_SELF"], '.php') == 'index') {
+	if (basename($_SERVER["PHP_SELF"], '.php') == 'index' || basename($_SERVER["PHP_SELF"], '.php') == 'satellite') {
 		// 300 ms = 5 minutes
 		echo '<meta http-equiv="refresh" content="300" />';
 	}
