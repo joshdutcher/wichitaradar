@@ -35,17 +35,21 @@ TODO:
         	<!-- ****** TWC Doppler ************ -->
         	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
         	*/ ?>
-
-        	<!-- ****** KSN Pinpoint ********** -->
-        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+        	<?php /*
+        	// kake stopped updating these?
 			<!-- ****** KAKE Doppler SCKS ****** -->
         	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Zone-SC.gif" />
 
 			<!-- ****** KAKE Doppler ICT ******* -->
         	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
+        	*/
+        	?>
+
+        	<!-- ****** KSN Pinpoint ********** -->
+        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
 
         	<!-- ****** KSN Southcentral radar * -->
         	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
