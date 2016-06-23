@@ -2,8 +2,8 @@
 
 $menu = array(
 	'Radar' => array('url' => 'index.php', 'tooltip' => 'What you really came here for'),
+    'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
 	'Base Reflectivity' => array('url' => 'reflectivity.php', 'tooltip' => ''),
-	'Satellite' => array('url' => 'satellite.php', 'tooltip' => ''),
 	'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
 	'Outlook' => array('url' => 'outlook.php', 'tooltip' => ''),
 	'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => ''),
