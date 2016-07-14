@@ -51,8 +51,11 @@ TODO:
         	<!-- ****** KSN Pinpoint ********** -->
         	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
 
-        	<!-- ****** KSN Southcentral radar * -->
+        	<!-- ****** KSN Southcentral radar **** -->
         	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
+
+            <!-- ****** KSN KS radar ***** -->
+            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_ks_radar_01.jpg" id="newKsnKSLoop" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -94,6 +97,18 @@ TODO:
 		).then(
 			animateFrames(newksn.frames, 5, 200, newksn.prefix, newksn.suffix, '#newKsnLoop', true)
 		);
+
+        // NEW KSN KS RADAR
+        var newksnks = {
+            frames: 12,
+            prefix: 'http://wx.ksn.com/weather/images/ksn_ks_radar_',
+            suffix: '.jpg'
+        }
+        $.when(
+            preloadImages(newksnks.frames, newksnks.prefix, newksnks.suffix, true)
+        ).then(
+            animateFrames(newksnks.frames, 5, 200, newksnks.prefix, newksnks.suffix, '#newKsnKSLoop', true)
+        );
 
 		<?php /*
 		WEATHER.COM
