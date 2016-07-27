@@ -29,7 +29,7 @@
 			<h2 class="content-subhead">Other Stuff</h2>
 			<ul>
 				<li><a href="http://outagemap.westarenergy.com/external/default.html" target="_blank">Westar Power Outages</a> Westar's map of current power outages</li>
-				<li><a href="http://wichway.org/wichway/CameraTours" target="_blank">KanDrive Camera Tours</a> Multiple webcam views of traffic and road conditions along a Wichita area route of your chice, on a single web page. Choose from US-54, I-235, I-35, K-96, and I-135</li>
+				<li><a href="http://wichway.org/wichway/CameraTours" target="_blank">KanDrive Camera Tours</a> Multiple webcam views of traffic and road conditions along a Wichita area route of your choice, on a single web page. Choose from US-54, I-235, I-35, K-96, and I-135</li>
 			</ul>
 		</div>
 	</div>
