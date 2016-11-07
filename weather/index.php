@@ -1,27 +1,27 @@
 <?php
 
-require_once('includes/init.php');
+require_once 'includes/init.php';
 
 /************************************
 css & responsive framework:
-	purecss.io
+purecss.io
 color palette:
-	http://paletton.com/#uid=73y0u0k+bFooMYfHB+5YtpFVIew
+http://paletton.com/#uid=73y0u0k+bFooMYfHB+5YtpFVIew
 favicon generator:
-	http://www.favicomatic.com/
+http://www.favicomatic.com/
 
 TODO:
-	get all assets the same, either local or remote
+get all assets the same, either local or remote
 
-*************************************/
+ *************************************/
 
 ?>
 
-<?php require_once('includes/header.php'); ?>
+<?php require_once 'includes/header.php';?>
 <body>
 
 <div id="layout">
-    <?php require_once('includes/menu.php'); ?>
+    <?php require_once 'includes/menu.php';?>
 
     <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -32,30 +32,35 @@ TODO:
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
 
         	<?php /*
-        	<!-- ****** TWC Doppler ************ -->
-        	<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
-        	*/ ?>
+<!-- ****** TWC Doppler ************ -->
+<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
+ */;?>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<?php /*
-        	// kake stopped updating these?
-			<!-- ****** KAKE Doppler SCKS ****** -->
-        	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Zone-SC.gif" />
+// kake stopped updating these?
+<!-- ****** KAKE Doppler SCKS ****** -->
+<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Zone-SC.gif" />
 
-			<!-- ****** KAKE Doppler ICT ******* -->
-        	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
-        	*/
-        	?>
+<!-- ****** KAKE Doppler ICT ******* -->
+<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
+ */
+;?>
 
-        	<!-- ****** KSN Pinpoint ********** -->
-        	<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
+        	<?php /*
+<!-- ****** KSN Pinpoint ********** -->
+<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
+ */
+;?>
+            <!-- ****** KSN KS radar ***** -->
+            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_ks_radar_01.jpg" id="newKsnKSLoop" />
 
         	<!-- ****** KSN Southcentral radar **** -->
         	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
 
-            <!-- ****** KSN KS radar ***** -->
-            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_ks_radar_01.jpg" id="newKsnKSLoop" />
+            <!-- ****** KSN Wichita radar **** -->
+            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_wichita_radar_01.jpg" id="ksnWichitaLoop" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -67,13 +72,26 @@ TODO:
         </div>
     </div>
 
-    <?php require_once('includes/footer.php'); ?>
+    <?php require_once 'includes/footer.php';?>
 </div>
 
 <script src="js/ui.js"></script>
 
 <script>
 	$(function() {
+        // KSN WICHITA LOOP
+        var ksnWichita = {
+            frames: 12,
+            prefix: 'http://wx.ksn.com/weather/images/ksn_wichita_radar_',
+            suffix: '.jpg'
+        }
+        $.when(
+            preloadImages(ksnWichita.frames, ksnWichita.prefix, ksnWichita.suffix, true)
+        ).then(
+            animateFrames(ksnWichita.frames, 5, 200, ksnWichita.prefix, ksnWichita.suffix, '#ksnWichitaLoop', true)
+        );
+
+        /*
 		// KSN RADAR
 		var ksn = {
 			frames: 12,
@@ -85,6 +103,7 @@ TODO:
 		).then(
 			animateFrames(ksn.frames, 5, 150, ksn.prefix, ksn.suffix, '#ksnLoop', true)
 		);
+        */
 
 		// NEW KSN RADAR
 		var newksn = {
@@ -111,18 +130,18 @@ TODO:
         );
 
 		<?php /*
-		WEATHER.COM
-		var weathercom = {
-			frames: 5,
-			prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
-			suffix: 'L.jpg'
-		}
-		$.when(
-			preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
-		).then(
-			animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
-		);
-		*/ ?>
+WEATHER.COM
+var weathercom = {
+frames: 5,
+prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
+suffix: 'L.jpg'
+}
+$.when(
+preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
+).then(
+animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
+);
+ */;?>
 	});
 </script>
 
