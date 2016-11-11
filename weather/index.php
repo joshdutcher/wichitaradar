@@ -12,6 +12,7 @@ http://www.favicomatic.com/
 
 TODO:
 get all assets the same, either local or remote
+https://github.com/emartinez-usgs/earthquake-widget
 
  *************************************/
 
@@ -26,7 +27,7 @@ get all assets the same, either local or remote
     <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<!-- ****** Intellicast radar ****** -->
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" />
+            <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" border="0" />
 
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
