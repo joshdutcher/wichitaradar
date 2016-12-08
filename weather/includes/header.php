@@ -8,13 +8,25 @@
 	<meta name="description" content="Your one-stop shop for animated radar and satellite maps of Wichita area weather, including radar, satellite, watches/warnings, and more info." />
     <title>Josh's Weather Station v2.0</title>
     <meta http-equiv="pragma" content="no-cache" />
+<?php
+// 300 seconds = 5 minutes
+// 3600 seconds = 1 hour
 
-	<?php
-	if (basename($_SERVER["PHP_SELF"], '.php') == 'index' || basename($_SERVER["PHP_SELF"], '.php') == 'satellite') {
-		// 300 ms = 5 minutes
-		echo '<meta http-equiv="refresh" content="300" />';
-	}
-	?>
+$auto_refresh_pages = [
+    'index'        => 300,
+    'satellite'    => 300,
+    'reflectivity' => 300,
+    'outlook'      => 1800,
+    'watches'      => 600,
+    'twitter'      => 300,
+];
+
+$pagename = basename($_SERVER["PHP_SELF"], '.php');
+
+if (array_key_exists($pagename, $auto_refresh_pages)) {
+    echo "  <meta http-equiv=\"refresh\" content=\"{$auto_refresh_pages[$pagename]}\" />";
+}
+?>
 
 	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
 	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png" />
