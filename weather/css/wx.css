@@ -42,6 +42,13 @@ a {
 	height: 20px;
 }
 
+#menu .menu-footer {
+	font-size: 0.8em !important;
+	padding-left: 3px;
+	position: absolute;
+	bottom: 3px;
+}
+
 .pure-u {
 	text-align: center !important;
 }

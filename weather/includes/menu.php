@@ -13,6 +13,9 @@ $menu = array(
     'About'             => array('url' => 'about.php', 'tooltip' => ''),
 );
 
+$loadtime = new DateTime('now');
+$loadtime->setTimezone(new DateTimeZone('America/Chicago'));
+
 ?>
 
 <!-- Menu toggle -->
@@ -38,6 +41,11 @@ foreach ($menu as $item => $file) {
     echo '</li>';
 }
 ?>
+
         </ul>
+    </div>
+    <div class="menu-footer">
+        <?php echo $loadtime->format('H:i:s'); ?><br/>
+        <?php echo $loadtime->format('Y-m-d'); ?>
     </div>
 </div>
