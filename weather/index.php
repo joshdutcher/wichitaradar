@@ -80,16 +80,46 @@ https://github.com/emartinez-usgs/earthquake-widget
 
 <script>
 	$(function() {
-        // KSN WICHITA LOOP
-        var ksnWichita = {
-            frames: 12,
-            prefix: 'http://wx.ksn.com/weather/images/ksn_wichita_radar_',
-            suffix: '.jpg'
+        // NEW KSN KS RADAR
+        var newksnks = {
+            numImages: 12,
+            urlPrefix: 'http://wx.ksn.com/weather/images/ksn_ks_radar_',
+            urlSuffix: '.jpg',
+            leadingZero: true,
+            startingFrame: 1
         }
         $.when(
-            preloadImages(ksnWichita.frames, ksnWichita.prefix, ksnWichita.suffix, true)
+            preloadImages(newksnks)
         ).then(
-            animateFrames(ksnWichita.frames, 5, 200, ksnWichita.prefix, ksnWichita.suffix, '#ksnWichitaLoop', true)
+            animateFrames(newksnks, 5, 200, '#newKsnKSLoop')
+        );
+
+        // NEW KSN RADAR
+        var newksn = {
+            numImages: 12,
+            urlPrefix: 'http://wx.ksn.com/weather/images/ksn_sc_radar_',
+            urlSuffix: '.jpg',
+            leadingZero: true,
+            startingFrame: 1
+        }
+        $.when(
+            preloadImages(newksn)
+        ).then(
+            animateFrames(newksn, 5, 200, '#newKsnLoop')
+        );
+
+        // KSN WICHITA LOOP
+        var ksnWichita = {
+            numImages: 12,
+            urlPrefix: 'http://wx.ksn.com/weather/images/ksn_wichita_radar_',
+            urlSuffix: '.jpg',
+            leadingZero: true,
+            startingFrame: 1
+        }
+        $.when(
+            preloadImages(ksnWichita)
+        ).then(
+            animateFrames(ksnWichita, 5, 200, '#ksnWichitaLoop')
         );
 
         /*
@@ -104,45 +134,19 @@ https://github.com/emartinez-usgs/earthquake-widget
 		).then(
 			animateFrames(ksn.frames, 5, 150, ksn.prefix, ksn.suffix, '#ksnLoop', true)
 		);
-        */
 
-		// NEW KSN RADAR
-		var newksn = {
-			frames: 12,
-			prefix: 'http://wx.ksn.com/weather/images/ksn_sc_radar_',
-			suffix: '.jpg'
-		}
-		$.when(
-			preloadImages(newksn.frames, newksn.prefix, newksn.suffix, true)
-		).then(
-			animateFrames(newksn.frames, 5, 200, newksn.prefix, newksn.suffix, '#newKsnLoop', true)
-		);
-
-        // NEW KSN KS RADAR
-        var newksnks = {
-            frames: 12,
-            prefix: 'http://wx.ksn.com/weather/images/ksn_ks_radar_',
-            suffix: '.jpg'
+        // WEATHER.COM
+        var weathercom = {
+            frames: 5,
+            prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
+            suffix: 'L.jpg'
         }
         $.when(
-            preloadImages(newksnks.frames, newksnks.prefix, newksnks.suffix, true)
+            preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
         ).then(
-            animateFrames(newksnks.frames, 5, 200, newksnks.prefix, newksnks.suffix, '#newKsnKSLoop', true)
+            animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
         );
-
-		<?php /*
-WEATHER.COM
-var weathercom = {
-frames: 5,
-prefix: 'http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/',
-suffix: 'L.jpg'
-}
-$.when(
-preloadImages(weathercom.frames, weathercom.prefix, weathercom.suffix, false)
-).then(
-animateFrames(weathercom.frames, 2, 300, weathercom.prefix, weathercom.suffix, '#weathercom', false)
-);
- */;?>
+        */
 	});
 </script>
 

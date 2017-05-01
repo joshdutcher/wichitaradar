@@ -1,65 +1,69 @@
-function preloadImages(frames, prefix, suffix, leadingZero) {
+function preloadImages(fileInfo) {
+	// get image file names
+	var imageFileNames = getImageFileNames(fileInfo);
+
 	// preload images
-	isn=new Array();
-	for (i=1;i<frames+1;i++) {
-		isn[i]=new Image();
-		if (i<frames){
-			// Use 0 placeholder in filename when i is less than 10
-			if (i<10 && leadingZero){
-				isn[i].src=prefix + '0' + i + suffix;
-			} else {
-				isn[i].src=prefix + i + suffix;
-			}
-		}
+	var imageArray = new Array();
+	for (i=0;i<imageFileNames.length;i++) {
+		imageArray[i]     = new Image();
+		imageArray[i].src = imageFileNames[i];
 	}
 }
 
-function animateFrames(frames, pauseFrames, delay, prefix, suffix, img, leadingZero) {
-	var currentFrame = 1,
-		totalFrames = frames + pauseFrames;
-
-	setInterval(function() {
-		if (currentFrame <= totalFrames) {
-			if (currentFrame <= frames) {
-				if (leadingZero) {
-					showFrame = (currentFrame < 10 ? "0" : "") + currentFrame;
-				} else {
-					showFrame = currentFrame;
-				}
-			} else {
-				showFrame = frames;
-			}
+function getImageFileNames(fileInfo) {
+    if (("URLs" in fileInfo) && fileInfo.URLs.length > 0) {
+        return fileInfo.URLs;
+    }
+	var lastImage  = fileInfo.startingFrame + fileInfo.numImages - 1;
+	var fileNames  = new Array();
+	var imgCounter = 0;
+	for (i=fileInfo.startingFrame;i<=lastImage;i++) {
+		if (fileInfo.leadingZero && i <= 9) {
+			fileNames[imgCounter] = fileInfo.urlPrefix + '0' + i + fileInfo.urlSuffix;
+		} else {
+			fileNames[imgCounter] = fileInfo.urlPrefix + i + fileInfo.urlSuffix;
 		}
-		currentFrame = currentFrame % totalFrames + 1;
-
-		var url = prefix + showFrame + suffix;
-		$(img).attr('src', url);
-	}, delay);
+		imgCounter++;
+	}
+	return fileNames;
 }
 
-function animateFramesReverse(frames, pauseFrames, delay, prefix, suffix, img, leadingZero) {
-	var totalFrames = frames + pauseFrames;
-	var currentFrame = frames;
-	var showFrame = frames;
+function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse=false) {
+	console.log(fileInfo);
+    var imageFileNames = getImageFileNames(fileInfo);
+    if (imageFileNames.length == 0) {
+        return;
+    }
+	if (reverse) {
+		imageFileNames = imageFileNames.reverse();
+	}
 
-	setInterval(function() {
-		if (currentFrame > 0) {
-			if (currentFrame <= frames) {
-				if (leadingZero) {
-					showFrame = (currentFrame < 10 ? "0" : "") + currentFrame;
-				} else {
-					showFrame = currentFrame;
-				}
-			} else {
-				showFrame = 1;
-			}
-			currentFrame--;
-		}
-		if (currentFrame == 0) {
-			currentFrame = totalFrames;
-		}
+	var totalFrames = fileInfo.numImages + pauseFrames;
+	var frameTimer = 0;
+	var lastImageIndex = imageFileNames.length-1;
 
-		var url = prefix + showFrame + suffix;
-		$(img).attr('src', url);
-	}, delay);
+    if (imageFileNames.length == 1) {
+        // if there's only one image there's no need to animate/rotate them
+        $(imgDomId).attr('src', imageFileNames[0]);
+        return;
+    } else {
+        // if we got here, imageFileNames.length is > 1
+        setInterval(function() {
+    		if (frameTimer <= lastImageIndex) {
+    			showFrame = frameTimer;
+    		} else {
+    			showFrame = lastImageIndex;
+    		}
+
+    		// $(imgDomId+'_frametimer').html(frameTimer);
+    		// $(imgDomId+'_showframe').html(showFrame);
+    		// $(imgDomId+'_url').html(imageFileNames[showFrame]);
+
+    		$(imgDomId).attr('src', imageFileNames[showFrame]);
+
+    		if (frameTimer++ == totalFrames-1) {
+    			frameTimer = 0;
+    		}
+    	}, frameDelay);
+    }
 }
