@@ -28,9 +28,9 @@ abstract class Jetpack_Sync_Module {
 	public function reset_data() {
 	}
 
-	public function enqueue_full_sync_actions( $config ) {
-		// in subclasses, return the number of items enqueued
-		return 0;
+	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
+		// in subclasses, return the number of actions enqueued, and next module state (true == done)
+		return array( 0, true );
 	}
 
 	public function estimate_full_sync_actions( $config ) {
@@ -58,50 +58,54 @@ abstract class Jetpack_Sync_Module {
 		return false;
 	}
 
-	protected function enqueue_all_ids_as_action( $action_name, $table_name, $id_field, $where_sql ) {
+	protected function enqueue_all_ids_as_action( $action_name, $table_name, $id_field, $where_sql, $max_items_to_enqueue, $state ) {
 		global $wpdb;
 
 		if ( ! $where_sql ) {
 			$where_sql = '1 = 1';
 		}
 
-		$items_per_page = 1000;
-		$page           = 1;
-		$chunk_count    = 0;
-		$previous_id    = 0;
-		$listener       = Jetpack_Sync_Listener::get_instance();
-		while ( $ids = $wpdb->get_col( "SELECT {$id_field} FROM {$table_name} WHERE {$where_sql} AND {$id_field} > {$previous_id} ORDER BY {$id_field} ASC LIMIT {$items_per_page}" ) ) {
+		$items_per_page   = 1000;
+		$page             = 1;
+		$chunk_count      = 0;
+		$previous_max_id  = $state ? $state : '~0';
+		$listener         = Jetpack_Sync_Listener::get_instance();
+
+		// count down from max_id to min_id so we get newest posts/comments/etc first
+		while ( $ids = $wpdb->get_col( "SELECT {$id_field} FROM {$table_name} WHERE {$where_sql} AND {$id_field} < {$previous_max_id} ORDER BY {$id_field} DESC LIMIT {$items_per_page}" ) ) {
 			// Request posts in groups of N for efficiency
 			$chunked_ids = array_chunk( $ids, self::ARRAY_CHUNK_SIZE );
+
+			// if we hit our row limit, process and return
+			if ( $chunk_count + count( $chunked_ids ) >= $max_items_to_enqueue ) {
+				$remaining_items_count = $max_items_to_enqueue - $chunk_count;
+				$remaining_items = array_slice( $chunked_ids, 0, $remaining_items_count );
+
+				$listener->bulk_enqueue_full_sync_actions( $action_name, $remaining_items );
+
+				$last_chunk = end( $remaining_items );
+				return array( $remaining_items_count + $chunk_count, end( $last_chunk ) );
+			}
 
 			$listener->bulk_enqueue_full_sync_actions( $action_name, $chunked_ids );
 
 			$chunk_count += count( $chunked_ids );
 			$page += 1;
-			$previous_id = end( $ids );
+			$previous_max_id = end( $ids );
 		}
 
-		return $chunk_count;
+		return array( $chunk_count, true );
 	}
 
-	protected function get_metadata( $ids, $meta_type ) {
+	protected function get_metadata( $ids, $meta_type, $meta_key_whitelist ) {
 		global $wpdb;
 		$table = _get_meta_table( $meta_type );
 		$id    = $meta_type . '_id';
 		if ( ! $table ) {
 			return array();
 		}
-		$private_meta_whitelist_sql = '';
-		$meta_module = Jetpack_Sync_Modules::get_module( "meta" );
-		
-		switch( $meta_type ) {
-			case 'post':
-				$private_meta_whitelist_sql = "'" . implode( "','", array_map( 'esc_sql', $meta_module->get_post_meta_whitelist() ) ) . "'";
-				break;
-			case 'comment':
-				$private_meta_whitelist_sql = "'" . implode( "','", array_map( 'esc_sql', $meta_module->get_comment_meta_whitelist() ) ) . "'";
-				break;
-		}
+
+		$private_meta_whitelist_sql = "'" . implode( "','", array_map( 'esc_sql', $meta_key_whitelist ) ) . "'";
 
 		return array_map( 
 			array( $this, 'unserialize_meta' ), 
@@ -110,6 +114,18 @@ abstract class Jetpack_Sync_Module {
 				" AND meta_key IN ( $private_meta_whitelist_sql ) "
 				, OBJECT )
 		);
+	}
+
+	public function init_listeners_for_meta_type( $meta_type, $callable ) {
+		add_action( "added_{$meta_type}_meta", $callable, 10, 4 );
+		add_action( "updated_{$meta_type}_meta", $callable, 10, 4 );
+		add_action( "deleted_{$meta_type}_meta", $callable, 10, 4 );
+	}
+
+	public function init_meta_whitelist_handler( $meta_type, $whitelist_handler ) {
+		add_filter( "jetpack_sync_before_enqueue_added_{$meta_type}_meta", $whitelist_handler );
+		add_filter( "jetpack_sync_before_enqueue_updated_{$meta_type}_meta", $whitelist_handler );
+		add_filter( "jetpack_sync_before_enqueue_deleted_{$meta_type}_meta", $whitelist_handler );
 	}
 
 	protected function get_term_relationships( $ids ) {

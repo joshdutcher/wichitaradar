@@ -32,6 +32,10 @@ class Jetpack_Sync_Module_Comments extends Jetpack_Sync_Module {
 				add_action( $comment_action_name, $callable, 10, 2 );
 			}
 		}
+
+		// listen for meta changes
+		$this->init_listeners_for_meta_type( 'comment', $callable );
+		$this->init_meta_whitelist_handler( 'comment', array( $this, 'filter_meta' ) );
 	}
 
 	public function init_full_sync_listeners( $callable ) {
@@ -55,9 +59,9 @@ class Jetpack_Sync_Module_Comments extends Jetpack_Sync_Module {
 		add_filter( 'jetpack_sync_before_send_jetpack_full_sync_comments', array( $this, 'expand_comment_ids' ) );
 	}
 
-	public function enqueue_full_sync_actions( $config ) {
+	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
 		global $wpdb;
-		return $this->enqueue_all_ids_as_action( 'jetpack_full_sync_comments', $wpdb->comments, 'comment_ID', $this->get_where_sql( $config ) );
+		return $this->enqueue_all_ids_as_action( 'jetpack_full_sync_comments', $wpdb->comments, 'comment_ID', $this->get_where_sql( $config ), $max_items_to_enqueue, $state );
 	}
 
 	public function estimate_full_sync_actions( $config ) {
@@ -125,6 +129,15 @@ class Jetpack_Sync_Module_Comments extends Jetpack_Sync_Module {
 		return $comment;
 	}
 
+	// Comment Meta
+	function is_whitelisted_comment_meta( $meta_key ) {
+		return in_array( $meta_key, Jetpack_Sync_Settings::get_setting( 'comment_meta_whitelist' ) );
+	}
+
+	function filter_meta( $args ) {
+		return ( $this->is_whitelisted_comment_meta( $args[2] ) ? $args : false );
+	}
+
 	public function expand_comment_ids( $args ) {
 		$comment_ids = $args[0];
 		$comments    = get_comments( array(
@@ -134,7 +147,7 @@ class Jetpack_Sync_Module_Comments extends Jetpack_Sync_Module {
 
 		return array(
 			$comments,
-			$this->get_metadata( $comment_ids, 'comment' ),
+			$this->get_metadata( $comment_ids, 'comment', Jetpack_Sync_Settings::get_setting( 'comment_meta_whitelist' ) ),
 		);
 	}
 }

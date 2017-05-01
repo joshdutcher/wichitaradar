@@ -78,7 +78,9 @@ class Jetpack_Sync_Defaults {
 		'jetpack_activated',
 		'jetpack_available_modules',
 		'jetpack_autoupdate_plugins',
+		'jetpack_autoupdate_plugins_translations',
 		'jetpack_autoupdate_themes',
+		'jetpack_autoupdate_themes_translations',
 		'jetpack_autoupdate_core',
 		'carousel_background_color',
 		'carousel_display_exif',
@@ -104,6 +106,9 @@ class Jetpack_Sync_Defaults {
 		'users_can_register',
 		'active_plugins',
 		'uninstall_plugins',
+		'advanced_seo_front_page_description', // Jetpack_SEO_Utils::FRONT_PAGE_META_OPTION
+		'advanced_seo_title_formats', // Jetpack_SEO_Titles::TITLE_FORMATS_OPTION
+		'jetpack_api_cache_enabled',
 	);
 
 	static $default_constants_whitelist = array(
@@ -123,6 +128,7 @@ class Jetpack_Sync_Defaults {
 		'DISABLE_WP_CRON',
 		'ALTERNATE_WP_CRON',
 		'WP_CRON_LOCK_TIMEOUT',
+		'PHP_VERSION'
 	);
 
 	static $default_callable_whitelist = array(
@@ -139,6 +145,7 @@ class Jetpack_Sync_Defaults {
 		'taxonomies'                       => array( 'Jetpack_Sync_Functions', 'get_taxonomies' ),
 		'post_types'                       => array( 'Jetpack_Sync_Functions', 'get_post_types' ),
 		'post_type_features'               => array( 'Jetpack_Sync_Functions', 'get_post_type_features' ),
+		'shortcodes'                       => array( 'Jetpack_Sync_Functions', 'get_shortcodes' ),
 		'rest_api_allowed_post_types'      => array( 'Jetpack_Sync_Functions', 'rest_api_allowed_post_types' ),
 		'rest_api_allowed_public_metadata' => array( 'Jetpack_Sync_Functions', 'rest_api_allowed_public_metadata' ),
 		'sso_is_two_step_required'         => array( 'Jetpack_SSO_Helpers', 'is_two_step_required' ),
@@ -159,6 +166,9 @@ class Jetpack_Sync_Defaults {
 		'snitch',
 		'secupress_log_action',
 		'http',
+		'bwg_gallery',
+		'bwg_album',
+		'idx_page',
 	);
 
 	static $default_post_checksum_columns = array(
@@ -232,6 +242,7 @@ class Jetpack_Sync_Defaults {
 		'switch_like_status',
 		'videopress_guid',
 		'vimeo_poster_image',
+		'advanced_seo_description', // Jetpack_SEO_Posts::DESCRIPTION_META_KEY
 	);
 
 	static $comment_meta_whitelist = array(
@@ -295,6 +306,7 @@ class Jetpack_Sync_Defaults {
 	static $default_upload_max_rows = 500;
 	static $default_sync_wait_time = 10; // seconds, between syncs
 	static $default_sync_wait_threshold = 5; // only wait before next send if the current send took more than X seconds
+	static $default_enqueue_wait_time = 10; // wait between attempting to continue a full sync, via requests
 	static $default_max_queue_size = 1000;
 	static $default_max_queue_lag = 900; // 15 minutes
 	static $default_queue_max_writes_sec = 100; // 100 rows a second
@@ -302,9 +314,12 @@ class Jetpack_Sync_Defaults {
 	static $default_post_meta_whitelist = array();
 	static $default_comment_meta_whitelist = array();
 	static $default_disable = 0; // completely disable sending data to wpcom
-	static $default_avoid_wp_cron = 0; // don't use cron to enqueue full syncs - do it inline. Warning: Can time out for larger sites!
-	static $default_render_filtered_content = 1; // render post_filtered_content
+	static $default_sync_via_cron = 1; // use cron to sync
+	static $default_render_filtered_content = 0; // render post_filtered_content
+	static $default_max_enqueue_full_sync = 100; // max number of items to enqueue at a time when running full sync
+	static $default_max_queue_size_full_sync = 1000; // max number of total items in the full sync queue
 	static $default_sync_callables_wait_time = MINUTE_IN_SECONDS; // seconds before sending callables again
 	static $default_sync_constants_wait_time = HOUR_IN_SECONDS; // seconds before sending constants again
 	static $default_sync_queue_lock_timeout = 120; // 2 minutes
+	static $default_cron_sync_time_limit = 30; // 30 seconds
 }

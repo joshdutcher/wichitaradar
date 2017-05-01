@@ -80,9 +80,12 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 
 		echo $args['before_widget'];
 
-		if ( isset( $instance['title'] ) ) {
-			/** This filter is documented in core/src/wp-includes/default-widgets.php */
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+		$title = isset( $instance['title'] ) ? $instance['title'] : '';
+		
+		/** This filter is documented in core/src/wp-includes/default-widgets.php */
+		$title = apply_filters( 'widget_title', $title );
+		if ( ! empty( $title ) ) {
+			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
 		// Start tag output
@@ -143,8 +146,8 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 
 		echo $args['after_widget'];
 
-		/** This action is documented in modules/widgets/social-media-icons.php */
-		do_action( 'jetpack_bump_stats_extras', 'widget', 'twitter_timeline' );
+		/** This action is documented in modules/widgets/gravatar-profile.php */
+		do_action( 'jetpack_stats_extra', 'widget_view', 'twitter_timeline' );
 	}
 
 

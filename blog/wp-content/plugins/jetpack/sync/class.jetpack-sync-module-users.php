@@ -65,7 +65,7 @@ class Jetpack_Sync_Module_Users extends Jetpack_Sync_Module {
 		// this create a new user object and stops the passing of the object by reference.
 		$user = unserialize( serialize( $user ) );
 
-		if ( is_object( $user->data ) ) {
+		if ( is_object( $user ) && is_object( $user->data ) ) {
 			unset( $user->data->user_pass );
 		}
 
@@ -98,7 +98,10 @@ class Jetpack_Sync_Module_Users extends Jetpack_Sync_Module {
 	public function expand_logout_username( $args, $user_id ) {
 		$user  = get_userdata( $user_id );
 		$user  = $this->sanitize_user( $user );
-		$login = $user->data->user_login;
+		$login = '';
+		if( is_object( $user ) && is_object( $user->data ) ) {
+			$login = $user->data->user_login;
+		}
 
 		return array( $login, $user );
 	}
@@ -173,9 +176,9 @@ class Jetpack_Sync_Module_Users extends Jetpack_Sync_Module {
 		}
 	}
 
-	public function enqueue_full_sync_actions( $config ) {
+	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
 		global $wpdb;
-		return $this->enqueue_all_ids_as_action( 'jetpack_full_sync_users', $wpdb->usermeta, 'user_id', $this->get_where_sql( $config ) );
+		return $this->enqueue_all_ids_as_action( 'jetpack_full_sync_users', $wpdb->usermeta, 'user_id', $this->get_where_sql( $config ), $max_items_to_enqueue, $state );
 	}
 
 	public function estimate_full_sync_actions( $config ) {
