@@ -17,7 +17,7 @@ class GetXML
         $this->localCache = new LocalCache($cacheAge);
     }
 
-    public function getAndWriteXML($filename)
+    public function getXML($filename)
     {
         $filepath = $this->localPath . $filename;
 
@@ -39,7 +39,11 @@ class GetXML
             curl_close($ch);
 
             $this->writeFile($content, $filename);
+        } else {
+            $content = file_get_contents($filepath);
         }
+
+        return $content;
     }
 
     protected function writeFile($content, $filename)

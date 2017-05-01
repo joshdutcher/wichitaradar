@@ -29,7 +29,6 @@ function getImageFileNames(fileInfo) {
 }
 
 function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse=false) {
-	console.log(fileInfo);
     var imageFileNames = getImageFileNames(fileInfo);
     if (imageFileNames.length == 0) {
         return;

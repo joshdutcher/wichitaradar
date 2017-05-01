@@ -3,94 +3,6 @@
 <iframe src="https://embed.windytv.com/?37.805,-97.339,6,temp,message,marker,metric.wind.mph,metric.temp.F" width="750" height="500" frameborder="0"></iframe>
  */
 
-// die();
-
-// $dataUrl = 'http://www.weather.gov/source/ict/wxstory/wxstory.xml';
-// $xml     = Utilities::getExternalXML($dataUrl);
-// die();
-
-// $xml         = new SimpleXMLElement($content);
-// $graphicasts = $xml->xpath('/*/graphicasts/graphicast');
-// // var_dump($graphicasts);
-// foreach ($graphicasts as $graphicast) {
-//     // print_r($graphicast);
-//     // var_dump($graphicast->title);
-//     // var_dump($graphicast->description);
-//     // var_dump($graphicast->ImageLoop);
-//     // var_dump($graphicast->StartTime->__toString());
-//     // $StartTime = date('Y/m/d H:i:s', $graphicast->StartTime->__toString());
-//     $starttime = new \DateTime();
-//     $starttime->setTimeStamp($graphicast->StartTime->__toString());
-//     echo $starttime->format('Y-m-d H:i:s') . "<br>";
-//     // var_dump($starttime);
-//     // echo "StartTime: {$graphicast->StartTime->__toString()} ({$StartTime})<br/>";
-// }
-// // while (list(, $node) = each($result)) {
-// //     var_dump($node);
-// // }
-// die();
-
-// // $storyXML2 = simplexml_load_string($content);
-// // print_r($storyXML2);
-
-// // parsing begins here:
-// libxml_use_internal_errors(true);
-// $doc = new DOMDocument();
-// if ($doc->loadXML($content)) {
-
-// } else {
-//     die('fail');
-// }
-
-// // use xpath
-// $xpath = new DOMXPath($doc);
-// // "//div[@id='StoryContent']//img[contains(@class, 'cq-dd-image')][1]/@src",
-
-// //*[@id="image_tiles"]/div/div[1]/div/li[2]/a/img
-
-// $graphicasts = $xpath->query("graphicasts");
-// var_dump($graphicasts);
-// foreach ($graphicasts as $graphicast) {
-//     var_dump($graphicast);
-//     echo $graphicast->StartTime . "<br/>";
-//     echo $graphicast->EndTime . "<br/>";
-// }
-// die();
-
-// if ($descriptions->length !== 0) {
-//     foreach ($descriptions as $description) {
-//         $metatags['description'][] = $this->cleanContent($description->value);
-//     }
-// }
-
-// // get open graph meta tags
-// $og_metas = $xpath->query('//*/meta[starts-with(@property, \'og:\')]');
-// foreach ($og_metas as $og_meta) {
-//     $property       = $og_meta->getAttribute('property');
-//     $metatagContent = $this->cleanContent($og_meta->getAttribute('content'));
-//     $tags_we_want   = [
-//         'og:title',
-//         'og:description',
-//     ];
-
-//     if (in_array($property, $tags_we_want)) {
-//         $metatags[$property] = $metatagContent;
-//     }
-// }
-
-// $ae               = new ArticleExtractor;
-// $stripped_content = $ae->getContent($content);
-// $stripped_content = $this->cleanContent($stripped_content);
-
-// $return_data = [
-//     'success'    => true,
-//     'html_title' => $html_title,
-//     'meta_tags'  => $metatags,
-//     'content'    => $stripped_content,
-// ];
-
-// return $return_data;
-
 require_once 'includes/init.php';
 
 // sometimes http://www.weather.gov/ict/ has only one weather story image up, sometimes 3 or 4. the problem is
@@ -101,10 +13,24 @@ use Utilities\GetXML;
 
 $dataUrl  = 'http://www.weather.gov/source/ict/wxstory/wxstory.xml';
 $cacheAge = '3600'; // 1 hour, in seconds
-$getXML   = new GetXML($dataUrl, $cacheAge);
-
 $filename = 'wxstory.xml';
-$getXML->getAndWriteXML($filename);
+
+$getXML     = new GetXML($dataUrl, $cacheAge);
+$xmlContent = $getXML->getXML($filename);
+
+$xml         = new SimpleXMLElement($xmlContent);
+$graphicasts = $xml->xpath('//*/graphicasts/graphicast');
+
+$wxstoryImgArray = [];
+foreach ($graphicasts as $graphicast) {
+    $timeNow  = time();
+    $endTime  = $graphicast->EndTime->__toString();
+    $radar    = (boolean) $graphicast->radar->__toString();
+    $imageUrl = $graphicast->SmallImage->__toString();
+    if ($timeNow < $endTime && !$radar) {
+        $wxstoryImgArray[] = $imageUrl;
+    }
+}
 
 require_once 'includes/header.php';
 ?>
@@ -158,26 +84,29 @@ require_once 'includes/header.php';
 
     function getWeatherStoryUrls() {
         var weatherStoryUrls = new Array();
-        $.ajax({
-            type: "GET",
-            url: '/scraped/xml/wxstory.xml',
-            cache: false,
-            async: false,
-            dataType: "xml",
-            success: function(data) {
-                $(data).find('graphicasts').each(function() {
-                    $(this).children().each(function() {
-                        var exp = $(this).find("EndTime").text()
-                        var img = $(this).find("SmallImage").text()
-                        var rad = $(this).find("radar").text()
-                        milliseconds = (new Date).getTime();
-                        if ((milliseconds/1000) < exp && rad == 0) {
-                            weatherStoryUrls.push(img);
-                        }
-                    })
-                });
-            }
-        });
+        weatherStoryUrls.push("<?php echo implode($wxstoryImgArray, '","'); ?>");
+
+        // $.ajax({
+        //     type: "GET",
+        //     url: '/scraped/xml/wxstory.xml',
+        //     cache: false,
+        //     async: false,
+        //     dataType: "xml",
+        //     success: function(data) {
+        //         $(data).find('graphicasts').each(function() {
+        //             $(this).children().each(function() {
+        //                 var exp = $(this).find("EndTime").text()
+        //                 var img = $(this).find("SmallImage").text()
+        //                 var rad = $(this).find("radar").text()
+        //                 milliseconds = (new Date).getTime();
+        //                 if ((milliseconds/1000) < exp && rad == 0) {
+        //                     weatherStoryUrls.push(img);
+        //                 }
+        //             })
+        //         });
+        //     }
+        // });
+        // console.log(weatherStoryUrls);
         return weatherStoryUrls;
     }
 </script>
