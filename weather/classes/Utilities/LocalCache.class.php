@@ -13,7 +13,10 @@ class LocalCache
 
     public function expired($filepath)
     {
-        return time() - filemtime($filepath) > $this->cacheAge;
+        if (file_exists($filepath)) {
+            return time() - filemtime($filepath) > $this->cacheAge;
+        } else {
+            return true; // file doesn't exist; we want to pull it
+        }
     }
-
 }

@@ -105,7 +105,7 @@ $getXML   = new GetXML($dataUrl, $cacheAge);
 
 $filename = 'wxstory.xml';
 $getXML->getAndWriteXML($filename);
-die();
+
 require_once 'includes/header.php';
 ?>
 
