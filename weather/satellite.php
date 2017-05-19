@@ -21,7 +21,6 @@
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/SatelliteLoop/hiusa_None_anim.gif"  /><br/>
-            <span id="wgovsattext"></span><br/>
             <img class="pure-img-responsive" src="http://www.weather.gov/images/nws/satellite_images/6.jpg" id="wgovsat" />
         </div>
     </div>
