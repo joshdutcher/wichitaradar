@@ -11,4 +11,4 @@ if (!defined('ROOT')) {
     define('ROOT', dirname(dirname(__FILE__)));
 }
 
-$imgpath = (strpos($_SERVER['HTTP_HOST'], 'wx.joshdutcher.com') !== false) ? '/img/' : '/weather/img';
+$imgpath = (strpos($_SERVER['HTTP_HOST'], 'wx.joshdutcher') !== false) ? '/img/' : '/weather/img/';
