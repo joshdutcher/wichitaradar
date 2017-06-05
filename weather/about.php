@@ -1,12 +1,12 @@
-<?php require_once('includes/init.php'); ?>
+<?php require_once 'includes/init.php';?>
 
 <!doctype html>
 <html lang="en">
-<?php require_once('includes/header.php'); ?>
+<?php require_once 'includes/header.php';?>
 <body>
 
 <div id="layout">
-    <?php require_once('includes/menu.php'); ?>
+    <?php require_once 'includes/menu.php';?>
 
 
     <div id="main">
@@ -16,12 +16,7 @@
         </div>
 
         <div class="content">
-            <h2 class="content-subhead">Welcome to Version 2.0 of wx.joshdutcher.com!</h2>
-
-		    <p>Updates include a visual overhaul and most importantly, responsive design. This means the site should look
-		    100% better on mobile devices - smartphones, iPads, etc. I also added some new maps and removed some crappy ones.</p>
-
-		    <h2 class="content-subhead">What is this for?</h2>
+            <h2 class="content-subhead">Welcome to wx.joshdutcher.com!</h2>
 
 		    <p>My name is Josh Dutcher.  I originally put this weather page together so I could keep track of the weather if my satellite dish went out.
 		    I'm a web developer, so I just built it by harvesting source code from other sites.  I don't have permission
@@ -33,7 +28,7 @@
 		    because those animations only load once, when you load the page, and after a while they become outdated. Auto-refreshing the page
             reloads those animations automatically without you having to hit F5 all the time.</p>
 
-		    <p>As a general rule, most sites including this one work better in Google Chrome or Firefox than they do in Internet Explorer.</p>
+		    <p>As a general rule, most sites including this one work better in Google Chrome or Firefox than they do in Internet Explorer or Edge.</p>
 
 		    <p>Bookmark the site at <a href="http://wx.joshdutcher.com/">wx.joshdutcher.com</a></p>
 
@@ -41,7 +36,7 @@
         </div>
     </div>
 
-    <?php require_once('includes/footer.php'); ?>
+    <?php require_once 'includes/footer.php';?>
 </div>
 
 
