@@ -4,17 +4,34 @@ require_once JETPACK__PLUGIN_DIR . '/sync/class.jetpack-sync-module.php';
 
 class Jetpack_Sync_Module_WooCommerce extends Jetpack_Sync_Module {
 
-	private $meta_whitelist = array(
+	private $order_item_meta_whitelist = array(
+		// https://github.com/woocommerce/woocommerce/blob/master/includes/data-stores/class-wc-order-item-product-store.php#L20
 		'_product_id',
 		'_variation_id',
 		'_qty',
+		// Tax ones also included in below class
+		// https://github.com/woocommerce/woocommerce/blob/master/includes/data-stores/class-wc-order-item-fee-data-store.php#L20
 		'_tax_class',
+		'_tax_status',
 		'_line_subtotal',
 		'_line_subtotal_tax',
 		'_line_total',
 		'_line_tax',
 		'_line_tax_data',
-		'_visibility',
+		// https://github.com/woocommerce/woocommerce/blob/master/includes/data-stores/class-wc-order-item-shipping-data-store.php#L20
+		'method_id',
+		'cost',
+		'total_tax',
+		'taxes',
+		// https://github.com/woocommerce/woocommerce/blob/master/includes/data-stores/class-wc-order-item-tax-data-store.php#L20
+		'rate_id',
+		'label',
+		'compound',
+		'tax_amount',
+		'shipping_tax_amount',
+		// https://github.com/woocommerce/woocommerce/blob/master/includes/data-stores/class-wc-order-item-coupon-data-store.php
+		'discount_amount',
+		'discount_amount_tax',
 	);
 
 	private $order_item_table_name;
@@ -22,6 +39,14 @@ class Jetpack_Sync_Module_WooCommerce extends Jetpack_Sync_Module {
 	public function __construct() {
 		global $wpdb;
 		$this->order_item_table_name = $wpdb->prefix . 'woocommerce_order_items';
+
+		// options, constants and post meta whitelists
+		add_filter( 'jetpack_sync_options_whitelist', array( $this, 'add_woocommerce_options_whitelist' ), 10 );
+		add_filter( 'jetpack_sync_constants_whitelist', array( $this, 'add_woocommerce_constants_whitelist' ), 10 );
+		add_filter( 'jetpack_sync_post_meta_whitelist', array( $this, 'add_woocommerce_post_meta_whitelist' ), 10 );
+
+		add_filter( 'jetpack_sync_before_enqueue_woocommerce_new_order_item', array( $this, 'filter_order_item' ) );
+		add_filter( 'jetpack_sync_before_enqueue_woocommerce_update_order_item', array( $this, 'filter_order_item' ) );
 	}
 
 	function name() {
@@ -37,16 +62,9 @@ class Jetpack_Sync_Module_WooCommerce extends Jetpack_Sync_Module {
 		// order items
 		add_action( 'woocommerce_new_order_item', $callable, 10, 4 );
 		add_action( 'woocommerce_update_order_item', $callable, 10, 4 );
-		add_filter( 'jetpack_sync_before_enqueue_woocommerce_new_order_item', array( $this, 'filter_order_item' ) );
-		add_filter( 'jetpack_sync_before_enqueue_woocommerce_update_order_item', array( $this, 'filter_order_item' ) );
 
 		// order item meta
 		$this->init_listeners_for_meta_type( 'order_item', $callable );
-
-		// options, constants and post meta whitelists
-		add_filter( 'jetpack_sync_options_whitelist', array( $this, 'add_woocommerce_options_whitelist' ), 10 );
-		add_filter( 'jetpack_sync_constants_whitelist', array( $this, 'add_woocommerce_constants_whitelist' ), 10 );
-		add_filter( 'jetpack_sync_post_meta_whitelist', array( $this, 'add_woocommerce_post_meta_whitelist' ), 10 );
 	}
 
 	public function init_full_sync_listeners( $callable ) {
@@ -63,7 +81,8 @@ class Jetpack_Sync_Module_WooCommerce extends Jetpack_Sync_Module {
 	}
 
 	public function filter_order_item( $args ) {
-		$args[1] = $this->build_order_item( $args[1] );
+		// Make sure we always have all the data - prior to WooCommerce 3.0 we only have the user supplied data in the second argument and not the full details
+		$args[1] = $this->build_order_item( $args[0] );
 		return $args;
 	}
 
@@ -80,24 +99,13 @@ class Jetpack_Sync_Module_WooCommerce extends Jetpack_Sync_Module {
 
 		return array(
 			$order_items,
-			$this->get_metadata( $order_item_ids, 'order_item', $this->meta_whitelist )
+			$this->get_metadata( $order_item_ids, 'order_item', $this->order_item_meta_whitelist ),
 		);
 	}
 
-	public function build_order_item( $order_item ) {
-		if ( is_numeric( $order_item ) ) {
-			global $wpdb;
-			return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->order_item_table_name WHERE order_item_id = %d", $order_item ) );
-		} elseif ( is_array( $order_item ) ) {
-			return $order_item;
-		} else {
-			return (object)array(
-				'order_item_id'   => $order_item->get_id(),
-				'order_item_type' => $order_item->get_type(),
-				'order_item_name' => $order_item->get_name(),
-				'order_id'        => $order_item->get_order_id(),
-			);
-		}
+	public function build_order_item( $order_item_id ) {
+		global $wpdb;
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->order_item_table_name WHERE order_item_id = %d", $order_item_id ) );
 	}
 
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {

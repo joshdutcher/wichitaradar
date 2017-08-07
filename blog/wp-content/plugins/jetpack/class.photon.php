@@ -51,12 +51,13 @@ class Jetpack_Photon {
 		// Images in post content and galleries
 		add_filter( 'the_content', array( __CLASS__, 'filter_the_content' ), 999999 );
 		add_filter( 'get_post_galleries', array( __CLASS__, 'filter_the_galleries' ), 999999 );
+		add_filter( 'widget_media_image_instance', array( __CLASS__, 'filter_the_image_widget' ), 999999 );
 
 		// Core image retrieval
 		add_filter( 'image_downsize', array( $this, 'filter_image_downsize' ), 10, 3 );
 
 		// Responsive image srcset substitution
-		add_filter( 'wp_calculate_image_srcset', array( $this, 'filter_srcset_array' ), 10, 4 );
+		add_filter( 'wp_calculate_image_srcset', array( $this, 'filter_srcset_array' ), 10, 5 );
 		add_filter( 'wp_calculate_image_sizes', array( $this, 'filter_sizes' ), 1, 2 ); // Early so themes can still easily filter.
 
 		// Helpers for maniuplated images
@@ -197,27 +198,25 @@ class Jetpack_Photon {
 					// WP Attachment ID, if uploaded to this site
 					if (
 						preg_match( '#class=["|\']?[^"\']*wp-image-([\d]+)[^"\']*["|\']?#i', $images['img_tag'][ $index ], $attachment_id ) &&
-						(
-							0 === strpos( $src, $upload_dir['baseurl'] ) ||
-							/**
-							 * Filter whether an image using an attachment ID in its class has to be uploaded to the local site to go through Photon.
-							 *
-							 * @module photon
-							 *
-							 * @since 2.0.3
-							 *
-							 * @param bool false Was the image uploaded to the local site. Default to false.
-							 * @param array $args {
-							 * 	 Array of image details.
-							 *
-							 * 	 @type $src Image URL.
-							 * 	 @type tag Image tag (Image HTML output).
-							 * 	 @type $images Array of information about the image.
-							 * 	 @type $index Image index.
-							 * }
-							 */
-							apply_filters( 'jetpack_photon_image_is_local', false, compact( 'src', 'tag', 'images', 'index' ) )
-						)
+						0 === strpos( $src, $upload_dir['baseurl'] ) &&
+						/**
+						 * Filter whether an image using an attachment ID in its class has to be uploaded to the local site to go through Photon.
+						 *
+						 * @module photon
+						 *
+						 * @since 2.0.3
+						 *
+						 * @param bool false Was the image uploaded to the local site. Default to false.
+						 * @param array $args {
+						 * 	 Array of image details.
+						 *
+						 * 	 @type $src Image URL.
+						 * 	 @type tag Image tag (Image HTML output).
+						 * 	 @type $images Array of information about the image.
+						 * 	 @type $index Image index.
+						 * }
+						 */
+						apply_filters( 'jetpack_photon_image_is_local', false, compact( 'src', 'tag', 'images', 'index' ) )
 					) {
 						$attachment_id = intval( array_pop( $attachment_id ) );
 
@@ -386,6 +385,24 @@ class Jetpack_Photon {
 		unset( $this_gallery ); // break the reference.
 
 		return $galleries;
+	}
+
+
+	/**
+	 * Runs the image widget through photon.
+	 *
+	 * @param array $instance Image widget instance data.
+	 * @return array
+	 */
+	public static function filter_the_image_widget( $instance ) {
+		if ( Jetpack::is_module_active( 'photon' ) && ! $instance['attachment_id'] && $instance['url'] ) {
+			jetpack_photon_url( $instance['url'], array(
+				'w' => $instance['width'],
+				'h' => $instance['height'],
+			) );
+		}
+
+		return $instance;
 	}
 
 	/**
@@ -626,7 +643,10 @@ class Jetpack_Photon {
 	 * @uses Jetpack_Photon::strip_image_dimensions_maybe, Jetpack::get_content_width
 	 * @return array An array of Photon image urls and widths.
 	 */
-	public function filter_srcset_array( $sources, $size_array, $image_src, $image_meta ) {
+	public function filter_srcset_array( $sources = array(), $size_array = array(), $image_src = array(), $image_meta = array(), $attachment_id = 0 ) {
+		if ( ! is_array( $sources ) ) {
+			return $sources;
+		}
 		$upload_dir = wp_get_upload_dir();
 
 		foreach ( $sources as $i => $source ) {
@@ -643,8 +663,8 @@ class Jetpack_Photon {
 			list( $width, $height ) = Jetpack_Photon::parse_dimensions_from_filename( $url );
 
 			// It's quicker to get the full size with the data we have already, if available
-			if ( isset( $image_meta['file'] ) ) {
-				$url = trailingslashit( $upload_dir['baseurl'] ) . $image_meta['file'];
+			if ( ! empty( $attachment_id ) ) {
+				$url = wp_get_attachment_url( $attachment_id );
 			} else {
 				$url = Jetpack_Photon::strip_image_dimensions_maybe( $url );
 			}

@@ -47,6 +47,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 
 		// Load API endpoints
 		require_once JETPACK__PLUGIN_DIR . '_inc/lib/core-api/class.jetpack-core-api-module-endpoints.php';
+		require_once JETPACK__PLUGIN_DIR . '_inc/lib/core-api/class.jetpack-core-api-site-endpoints.php';
 
 		self::$user_permissions_error_msg = esc_html__(
 			'You do not have the correct user permissions to perform this action.
@@ -62,6 +63,17 @@ class Jetpack_Core_Json_Api_Endpoints {
 		$module_list_endpoint = new Jetpack_Core_API_Module_List_Endpoint();
 		$module_data_endpoint = new Jetpack_Core_API_Module_Data_Endpoint();
 		$module_toggle_endpoint = new Jetpack_Core_API_Module_Toggle_Endpoint( new Jetpack_IXR_Client() );
+		$site_endpoint = new Jetpack_Core_API_Site_Endpoint();
+
+		register_rest_route( 'jetpack/v4', '/jitm', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'callback' => __CLASS__ . '::get_jitm_message',
+		) );
+
+		register_rest_route( 'jetpack/v4', '/jitm', array(
+			'methods'  => WP_REST_Server::CREATABLE,
+			'callback' => __CLASS__ . '::delete_jitm_message'
+		) );
 
 		// Get current connection status of Jetpack
 		register_rest_route( 'jetpack/v4', '/connection', array(
@@ -102,6 +114,13 @@ class Jetpack_Core_Json_Api_Endpoints {
 			'methods' => WP_REST_Server::READABLE,
 			'callback' => __CLASS__ . '::get_site_data',
 			'permission_callback' => __CLASS__ . '::view_admin_page_permission_check',
+		) );
+
+		// Get current site data
+		register_rest_route( 'jetpack/v4', '/site/features', array(
+			'methods' => WP_REST_Server::READABLE,
+			'callback' => array( $site_endpoint, 'get_features' ),
+			'permission_callback' => array( $site_endpoint , 'can_request' ),
 		) );
 
 		// Confirm that a site in identity crisis should be in staging mode
@@ -301,6 +320,27 @@ class Jetpack_Core_Json_Api_Endpoints {
 			'callback' => __CLASS__ . '::get_plugin',
 			'permission_callback' => __CLASS__ . '::activate_plugins_permission_check',
 		) );
+	}
+
+	/**
+	 * @param $request WP_REST_Request
+	 *
+	 * @return array
+	 */
+	public static function get_jitm_message( $request ) {
+		require_once( JETPACK__PLUGIN_DIR . 'class.jetpack-jitm.php' );
+
+		$jitm = Jetpack_JITM::init();
+
+		return $jitm->get_messages( $request['message_path'], urldecode_deep( $request['query'] ) );
+	}
+
+	public static function delete_jitm_message( $request ) {
+		require_once( JETPACK__PLUGIN_DIR . 'class.jetpack-jitm.php' );
+
+		$jitm = Jetpack_JITM::init();
+
+		return $jitm->dismiss( $request['id'], $request['feature_class'] );
 	}
 
 	/**
@@ -1630,6 +1670,15 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'jp_group'          => 'settings',
 			),
 
+			// Apps card on dashboard
+			'dismiss_dash_app_card' => array(
+				'description'       => '',
+				'type'              => 'boolean',
+				'default'           => 0,
+				'validate_callback' => __CLASS__ . '::validate_boolean',
+				'jp_group'          => 'settings',
+			),
+
 		);
 
 		// Add modules to list so they can be toggled
@@ -1874,7 +1923,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 			return true;
 		}
 
-		if ( ! class_exists( 'Sharing_Service' ) && ! @include( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
+		if ( ! class_exists( 'Sharing_Service' ) && ! include_once( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
 			return new WP_Error( 'invalid_param', esc_html__( 'Failed loading required dependency Sharing_Service.', 'jetpack' ) );
 		}
 		$sharer = new Sharing_Service();
@@ -1914,7 +1963,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 			return true;
 		}
 
-		if ( ! class_exists( 'Sharing_Service' ) && ! @include( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
+		if ( ! class_exists( 'Sharing_Service' ) && ! include_once( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
 			return new WP_Error( 'invalid_param', esc_html__( 'Failed loading required dependency Sharing_Service.', 'jetpack' ) );
 		}
 
@@ -1942,7 +1991,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 			return new WP_Error( 'invalid_param', sprintf( esc_html__( "%s must be a string prefixed with 'custom-' and followed by a numeric ID.", 'jetpack' ), $param ) );
 		}
 
-		if ( ! class_exists( 'Sharing_Service' ) && ! @include( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
+		if ( ! class_exists( 'Sharing_Service' ) && ! include_once( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
 			return new WP_Error( 'invalid_param', esc_html__( 'Failed loading required dependency Sharing_Service.', 'jetpack' ) );
 		}
 		$sharer = new Sharing_Service();
@@ -2118,7 +2167,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 				// Protect
 				$options['jetpack_protect_key']['current_value'] = get_site_option( 'jetpack_protect_key', false );
 				if ( ! function_exists( 'jetpack_protect_format_whitelist' ) ) {
-					@include( JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php' );
+					include_once( JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php' );
 				}
 				$options['jetpack_protect_global_whitelist']['current_value'] = jetpack_protect_format_whitelist();
 				break;
@@ -2144,7 +2193,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 
 			case 'sharedaddy':
 				// It's local, but it must be broken apart since it's saved as an array.
-				if ( ! class_exists( 'Sharing_Service' ) && ! @include( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
+				if ( ! class_exists( 'Sharing_Service' ) && ! include_once( JETPACK__PLUGIN_DIR . 'modules/sharedaddy/sharing-service.php' ) ) {
 					break;
 				}
 				$sharer = new Sharing_Service();
@@ -2154,7 +2203,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 
 			case 'after-the-deadline':
 				if ( ! function_exists( 'AtD_get_options' ) ) {
-					@include( JETPACK__PLUGIN_DIR . 'modules/after-the-deadline.php' );
+					include_once( JETPACK__PLUGIN_DIR . 'modules/after-the-deadline.php' );
 				}
 				$atd_options = array_merge( AtD_get_options( get_current_user_id(), 'AtD_options' ), AtD_get_options( get_current_user_id(), 'AtD_check_when' ) );
 				unset( $atd_options['name'] );
@@ -2170,7 +2219,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 			case 'stats':
 				// It's local, but it must be broken apart since it's saved as an array.
 				if ( ! function_exists( 'stats_get_options' ) ) {
-					@include( JETPACK__PLUGIN_DIR . 'modules/stats.php' );
+					include_once( JETPACK__PLUGIN_DIR . 'modules/stats.php' );
 				}
 				$options = self::split_options( $options, stats_get_options() );
 				break;

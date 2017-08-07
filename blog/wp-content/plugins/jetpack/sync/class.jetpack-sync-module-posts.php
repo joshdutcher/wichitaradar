@@ -5,7 +5,9 @@ require_once dirname( __FILE__ ) . '/class.jetpack-sync-settings.php';
 class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 
 	private $just_published = array();
+	private $just_trashed = array();
 	private $action_handler;
+	private $import_end = false;
 
 	public function name() {
 		return 'posts';
@@ -20,6 +22,7 @@ class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 	}
 
 	public function set_defaults() {
+		$this->import_end = false;
 	}
 
 	public function init_listeners( $callable ) {
@@ -33,12 +36,74 @@ class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 
 		add_action( 'deleted_post', $callable, 10 );
 		add_action( 'jetpack_published_post', $callable, 10, 2 );
+		add_action( 'jetpack_trashed_post', $callable, 10, 2 );
+
 		add_action( 'transition_post_status', array( $this, 'save_published' ), 10, 3 );
 		add_filter( 'jetpack_sync_before_enqueue_wp_insert_post', array( $this, 'filter_blacklisted_post_types' ) );
 
 		// listen for meta changes
 		$this->init_listeners_for_meta_type( 'post', $callable );
 		$this->init_meta_whitelist_handler( 'post', array( $this, 'filter_meta' ) );
+
+		add_action( 'export_wp', $callable );
+		add_action( 'jetpack_sync_import_end', $callable );
+
+		// Movable type, RSS, Livejournal
+		add_action( 'import_done', array( $this, 'sync_import_done' ) );
+
+		// WordPress, Blogger, Livejournal, woo tax rate
+		add_action( 'import_end', array( $this, 'sync_import_end' ) );
+	}
+
+	public function sync_import_done( $importer ) {
+		// We already ran an send the import
+		if ( $this->import_end ) {
+			return;
+		}
+		/**
+		 * Sync Event that tells that the import is finished
+		 *
+		 * @since 5.0.0
+		 *
+		 * $param string $importer
+		 */
+		do_action( 'jetpack_sync_import_end', $importer );
+		$this->import_end = true;
+	}
+
+	public function sync_import_end() {
+		// We already ran an send the import
+		if ( $this->import_end ) {
+			return;
+		}
+
+		$this->import_end = true;
+		$importer         = 'unknown';
+		$backtrace        = wp_debug_backtrace_summary( null, 0, false );
+		if ( $this->is_importer( $backtrace, 'Blogger_Importer' ) ) {
+			$importer = 'blogger';
+		}
+
+		if ( 'unknown' === $importer && $this->is_importer( $backtrace, 'WC_Tax_Rate_Importer' ) ) {
+			$importer = 'woo-tax-rate';
+		}
+
+		if ( 'unknown' === $importer && $this->is_importer( $backtrace, 'WP_Import' ) ) {
+			$importer = 'wordpress';
+		}
+
+		/** This filter is already documented in sync/class.jetpack-sync-module-posts.php */
+		do_action( 'jetpack_sync_import_end', $importer );
+	}
+
+	private function is_importer( $backtrace, $class_name ) {
+		foreach ( $backtrace as $trace ) {
+			if ( strpos( $trace, $class_name ) !== false ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function init_full_sync_listeners( $callable ) {
@@ -90,7 +155,12 @@ class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 	 * @return array
 	 */
 	function expand_wp_insert_post( $args ) {
-		return array( $args[0], $this->filter_post_content_and_add_links( $args[1] ), $args[2] );
+		$post_id      = $args[0];
+		$post         = $args[1];
+		$update       = $args[2];
+		$is_auto_save = isset( $args[3] ) ? $args[3] : false; //See https://github.com/Automattic/jetpack/issues/7372
+
+		return array( $post_id, $this->filter_post_content_and_add_links( $post ), $update, $is_auto_save );
 	}
 
 	function filter_blacklisted_post_types( $args ) {
@@ -241,11 +311,26 @@ class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 		if ( 'publish' === $new_status && 'publish' !== $old_status ) {
 			$this->just_published[] = $post->ID;
 		}
+
+		if ( 'trash' === $new_status && 'trash' !== $old_status ) {
+			$this->just_trashed[] = $post->ID;
+		}
 	}
 
-	public function wp_insert_post( $post_ID, $post, $update ) {
-		call_user_func( $this->action_handler, $post_ID, $post, $update );
+	public function wp_insert_post( $post_ID, $post = null, $update = null ) {
+		if ( ! is_numeric( $post_ID ) || is_null( $post ) ) {
+			return;
+		}
+
+		if ( Jetpack_Constants::get_constant( 'DOING_AUTOSAVE' ) ) {
+			$is_auto_save = true;
+		} else {
+			$is_auto_save = false;
+		}
+
+		call_user_func( $this->action_handler, $post_ID, $post, $update, $is_auto_save );
 		$this->send_published( $post_ID, $post );
+		$this->send_trashed( $post_ID, $post );
 	}
 
 	public function send_published( $post_ID, $post ) {
@@ -279,6 +364,28 @@ class Jetpack_Sync_Module_Posts extends Jetpack_Sync_Module {
 		do_action( 'jetpack_published_post', $post_ID, $flags );
 
 		$this->just_published = array_diff( $this->just_published, array( $post_ID ) );
+	}
+
+	public function send_trashed( $post_ID, $post ) {
+		if ( ! in_array( $post_ID, $this->just_trashed ) ) {
+			return;
+		}
+
+		// Post revisions cause race conditions where this send_published add the action before the actual post gets synced
+		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
+			return;
+		}
+
+		/**
+		 * Action that gets synced when a post type gets trashed.
+		 *
+		 * @since 4.9.0
+		 *
+		 * @param int $post_ID
+		 */
+		do_action( 'jetpack_trashed_post', $post_ID );
+
+		$this->just_trashed = array_diff( $this->just_trashed, array( $post_ID ) );
 	}
 
 	public function expand_post_ids( $args ) {
