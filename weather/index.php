@@ -31,37 +31,17 @@ https://github.com/emartinez-usgs/earthquake-widget
 
 			<!-- ****** Accuweather radar ****** -->
         	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
-
-        	<?php /*
-<!-- ****** TWC Doppler ************ -->
-<img class="pure-img-responsive" src="http://image.weather.com/looper/archive/us_ddc_closeradar_large_usen/1L.jpg" id="weathercom" />
- */;?>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-        	<?php /*
-// kake stopped updating these?
-<!-- ****** KAKE Doppler SCKS ****** -->
-<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Zone-SC.gif" />
-
-<!-- ****** KAKE Doppler ICT ******* -->
-<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-radar-Wichita.gif" />
- */
-;?>
-
-        	<?php /*
-<!-- ****** KSN Pinpoint ********** -->
-<img class="pure-img-responsive" src="http://cache1.intelliweather.net/imagery/KSNW/rad_ks_wichita_640x480_01.jpg" id="ksnLoop" />
- */
-;?>
             <!-- ****** KSN KS radar ***** -->
-            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_ks_radar_01.jpg" id="newKsnKSLoop" />
+            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
 
         	<!-- ****** KSN Southcentral radar **** -->
-        	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_01.jpg" id="newKsnLoop" />
+        	<img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
 
             <!-- ****** KSN Wichita radar **** -->
-            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_wichita_radar_01.jpg" id="ksnWichitaLoop" />
+            <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -80,46 +60,47 @@ https://github.com/emartinez-usgs/earthquake-widget
 
 <script>
 	$(function() {
-        // NEW KSN KS RADAR
+        // KSN KS RADAR
         var newksnks = {
-            numImages: 12,
+            numImages: 8,
             urlPrefix: 'http://wx.ksn.com/weather/images/ksn_ks_radar_',
             urlSuffix: '.jpg',
-            leadingZero: true,
+            leadingZero: false,
             startingFrame: 1
         }
         $.when(
             preloadImages(newksnks)
         ).then(
-            animateFrames(newksnks, 5, 200, '#newKsnKSLoop')
+            // function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse=false) {
+            animateFrames(newksnks, 5, 400, '#ksnKSLoop', true)
         );
 
-        // NEW KSN RADAR
+        // KSN SC KS RADAR
         var newksn = {
-            numImages: 12,
+            numImages: 8,
             urlPrefix: 'http://wx.ksn.com/weather/images/ksn_sc_radar_',
             urlSuffix: '.jpg',
-            leadingZero: true,
+            leadingZero: false,
             startingFrame: 1
         }
         $.when(
             preloadImages(newksn)
         ).then(
-            animateFrames(newksn, 5, 200, '#newKsnLoop')
+            animateFrames(newksn, 5, 400, '#ksnSCKSLoop', true)
         );
 
         // KSN WICHITA LOOP
         var ksnWichita = {
-            numImages: 12,
+            numImages: 8,
             urlPrefix: 'http://wx.ksn.com/weather/images/ksn_wichita_radar_',
             urlSuffix: '.jpg',
-            leadingZero: true,
+            leadingZero: false,
             startingFrame: 1
         }
         $.when(
             preloadImages(ksnWichita)
         ).then(
-            animateFrames(ksnWichita, 5, 200, '#ksnWichitaLoop')
+            animateFrames(ksnWichita, 5, 400, '#ksnWichitaLoop', true)
         );
 
         /*
