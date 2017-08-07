@@ -72,7 +72,7 @@ https://github.com/emartinez-usgs/earthquake-widget
             preloadImages(newksnks)
         ).then(
             // function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse=false) {
-            animateFrames(newksnks, 5, 400, '#ksnKSLoop', true)
+            animateFrames(newksnks, 5, 300, '#ksnKSLoop', true)
         );
 
         // KSN SC KS RADAR
@@ -86,7 +86,7 @@ https://github.com/emartinez-usgs/earthquake-widget
         $.when(
             preloadImages(newksn)
         ).then(
-            animateFrames(newksn, 5, 400, '#ksnSCKSLoop', true)
+            animateFrames(newksn, 5, 300, '#ksnSCKSLoop', true)
         );
 
         // KSN WICHITA LOOP
@@ -100,7 +100,7 @@ https://github.com/emartinez-usgs/earthquake-widget
         $.when(
             preloadImages(ksnWichita)
         ).then(
-            animateFrames(ksnWichita, 5, 400, '#ksnWichitaLoop', true)
+            animateFrames(ksnWichita, 5, 300, '#ksnWichitaLoop', true)
         );
 
         /*
