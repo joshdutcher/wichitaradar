@@ -1,126 +1,68 @@
-$(document).ready(function(){
-	// Cache the Window object
-	$window = $(window);
+function preloadImages(fileInfo) {
+	// get image file names
+	var imageFileNames = getImageFileNames(fileInfo);
 
-
-
-
-	/*
-	----------------------------------------------------------
-	**     Parallax Scrolling                               **
-	**     Author: Mohiuddin Parekh                         **
-	**     http://www.mohi.me                               **
-	**     @mohiuddinparekh                                 **
-	----------------------------------------------------------
-	*/
-
-	$('section[data-type="background"]').each(function(){
-		var $bgobj = $(this); // assigning the object
-
-		$(window).scroll(function() {
-
-			// Scroll the background at var speed
-			// the yPos is a negative value because we're scrolling it UP!								
-			// var yPos = -($window.scrollTop() / $bgobj.data('speed'));
-			var yPos = -( ($window.scrollTop() - $bgobj.offset().top) / $bgobj.data('speed'));
-
-			// Put together our final background position
-			var coords = '50% '+ yPos + 'px';
-
-			// Move the background
-			$bgobj.css({ backgroundPosition: coords });
-
-		}); // window scroll Ends
-	});	
-
-	// Create HTML5 elements for IE's sake
-
-	// document.createElement("article");
-	document.createElement("section");
-
-
-
-
-
-
-
-	// init the typewriter text
-	setOffset();
-	$('.type-me').typewriter({
-		auto: false,
-		interval: 100,
-		caret: {
-			visible: true,
-			blink: true,
-			interval: 1000
-		}
-	});
-
-	$(window).scroll(function() {
-		checkType();
-	})
-
-
-
-	/*
-	**********************************************************
-	***    stuff for loading Treehouse badges              ***
-	**********************************************************
-	*/
-	var e = "joshdutcher",
-
-	// Treehouse Json 
-	t = "http://teamtreehouse.com/" + e + ".json",
-
-	// Badges JQuery Identifier    
-	n = $("#badges"),
-
-	// Badges Array    
-	r = [],
-
-	// Badges Count
-	i = 0;
-
-	// Json Parse Treehouse User Badges Info
-	$.getJSON(t, function (e) {
-		// User Json Parse Select Badges Info
-		var t = e.badges;
-
-		// Format Each badge's HTML
-		$.each(t, function (e, t) {
-			r += '<li><a href="' + t.url + '" target="_blank"><img src="' + t.icon_url + '" alt="' + t.name + '" title="' + t.name + '"/></a></li>';
-			i++
-		});
-
-		// Append Badge to #badges
-		n.append(r);
-
-		// Header Badges count generator
-		$("#treehouse-count").append('I have earned ' + i + ' badges at Treehouse!');
-	});
-
-
-
-
-
-
-
-
-
-
-}); 
-
-
-function checkType() {
-	var $nextEl = $(".type-me[data-status='ready']:first")
-	if ( $nextEl.data('offset') <= $(window).scrollTop() + ($nextEl.data('offset-padding') || 0) && $nextEl.data('status') == 'ready' ) {
-		$nextEl.attr( 'data-status', 'typed' ).typewriter('type');
+	// preload images
+	var imageArray = new Array();
+	for (i=0;i<imageFileNames.length;i++) {
+		imageArray[i]     = new Image();
+		imageArray[i].src = imageFileNames[i];
 	}
 }
 
-function setOffset() {
-	$('.type-me').each(function() {
-		var offSet = $(this).offset().top; 
-		$(this).data('offset', offSet).attr({'data-status': 'ready'}); 
-	})
+function getImageFileNames(fileInfo) {
+    if (("URLs" in fileInfo) && fileInfo.URLs.length > 0) {
+        return fileInfo.URLs;
+    }
+	var lastImage  = fileInfo.startingFrame + fileInfo.numImages - 1;
+	var fileNames  = new Array();
+	var imgCounter = 0;
+	for (i=fileInfo.startingFrame;i<=lastImage;i++) {
+		if (fileInfo.leadingZero && i <= 9) {
+			fileNames[imgCounter] = fileInfo.urlPrefix + '0' + i + fileInfo.urlSuffix;
+		} else {
+			fileNames[imgCounter] = fileInfo.urlPrefix + i + fileInfo.urlSuffix;
+		}
+		imgCounter++;
+	}
+	return fileNames;
+}
+
+function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse=false) {
+    var imageFileNames = getImageFileNames(fileInfo);
+    if (imageFileNames.length == 0) {
+        return;
+    }
+	if (reverse) {
+		imageFileNames = imageFileNames.reverse();
+	}
+
+	var totalFrames = fileInfo.numImages + pauseFrames;
+	var frameTimer = 0;
+	var lastImageIndex = imageFileNames.length-1;
+
+    if (imageFileNames.length == 1) {
+        // if there's only one image there's no need to animate/rotate them
+        $(imgDomId).attr('src', imageFileNames[0]);
+        return;
+    } else {
+        // if we got here, imageFileNames.length is > 1
+        setInterval(function() {
+    		if (frameTimer <= lastImageIndex) {
+    			showFrame = frameTimer;
+    		} else {
+    			showFrame = lastImageIndex;
+    		}
+
+    		// $(imgDomId+'_frametimer').html(frameTimer);
+    		// $(imgDomId+'_showframe').html(showFrame);
+    		// $(imgDomId+'_url').html(imageFileNames[showFrame]);
+
+    		$(imgDomId).attr('src', imageFileNames[showFrame]);
+
+    		if (frameTimer++ == totalFrames-1) {
+    			frameTimer = 0;
+    		}
+    	}, frameDelay);
+    }
 }
