@@ -12,11 +12,11 @@
     <div id="main">
         <div class="header">
             <h1>About this site</h1>
-            <h2>wx.joshdutcher.com</h2>
+            <h2>wichitaradar.com</h2>
         </div>
 
         <div class="content">
-            <h2 class="content-subhead">Welcome to wx.joshdutcher.com!</h2>
+            <h2 class="content-subhead">Welcome to wichitaradar.com!</h2>
 
 		    <p>My name is Josh Dutcher.  I originally put this weather page together so I could keep track of the weather if my satellite dish went out.
 		    I'm a web developer, so I just built it by harvesting source code from other sites.  I don't have permission
@@ -30,7 +30,7 @@
 
 		    <p>As a general rule, most sites including this one work better in Google Chrome or Firefox than they do in Internet Explorer or Edge.</p>
 
-		    <p>Bookmark the site at <a href="http://wx.joshdutcher.com/">wx.joshdutcher.com</a></p>
+		    <p>Bookmark the site at <a href="http://wichitaradar.com/">wichitaradar.com</a></p>
 
 		    <p>I can be contacted at josh.dutcher at joshdutcher dot com.</p>
         </div>
