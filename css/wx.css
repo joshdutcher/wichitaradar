@@ -2,7 +2,7 @@
 	Overrides for the default styling of purecss's layout(s)
 ****/
 
-html {
+html, body {
 	background-color: #252525;
 }
 
