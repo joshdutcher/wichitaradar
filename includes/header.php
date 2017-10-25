@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Wichita Weather, Wichita, Weather, Radar, Satellite, Animation, Map, Watches, Warnings, Thunderstorms, Tornado, Storm warning, tornado warning, tornado watch" />
 	<meta name="description" content="Collection of animated radar and satellite maps of Wichita area weather, including radar, satellite, watches/warnings, and more info." />
-    <title>Josh's Weather Station</title>
+    <title>Wichita Radar</title>
     <meta http-equiv="pragma" content="no-cache" />
 <?php
 // 300 seconds = 5 minutes
@@ -41,7 +41,7 @@ if (array_key_exists($pagename, $auto_refresh_pages)) {
 	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 	<link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
-	<meta name="application-name" content="Josh's Weather Station"/>
+	<meta name="application-name" content="Wichita Radar"/>
 	<meta name="msapplication-TileColor" content="#202020" />
 	<meta name="msapplication-TileImage" content="mstile-144x144.png" />
 	<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
