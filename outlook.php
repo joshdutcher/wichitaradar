@@ -45,7 +45,7 @@ require_once 'includes/header.php';
 <?php
 foreach ($wxstoryImgArray as $story) {
     echo '<a href="http://www.weather.gov/crh/weatherstory?sid=ict#.WCX0gvkrJhE">';
-    echo "<img class=\"pure-img-responsive\" src=\"{$story}\" border=\"0\" id=\"wichitaWeatherStory\" />";
+    echo "<img class=\"pure-img-responsive\" src=\"http://www.weather.gov{$story}\" border=\"0\" id=\"wichitaWeatherStory\" />";
     echo '</a>';
 }
 ?>
