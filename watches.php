@@ -76,6 +76,12 @@
 					<td class="legend_cell" style="background-color: #98FB98;"></td>
 					<td>Short Term Forecast</td>
 				</tr>
+				<tr>
+					<td class="legend_cell" style="background-color: #FF69B4;"></td>
+					<td>Winter Storm Warning</td>
+					<td class="legend_cell" style="background-color: #7B68EE;"></td>
+					<td>Winter Weather Advisory</td>
+				</tr>
 			</table>
         </div>
 
