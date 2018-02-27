@@ -11,7 +11,7 @@ require_once 'includes/init.php';
 
 use Utilities\GetXML;
 
-$dataUrl  = 'http://www.weather.gov/source/ict/wxstory/wxstory.xml';
+$dataUrl  = 'https://www.weather.gov/source/ict/wxstory/wxstory.xml';
 $cacheAge = '900'; // in seconds. 3600 = 1 hour, 1800 = 30 minutes, etc
 $filename = 'wxstory.xml';
 
