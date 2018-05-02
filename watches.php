@@ -35,9 +35,14 @@
     <div class="pure-g" id="mainbody">
         <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
 			<!-- ****** Accuweather ************ -->
-			<img class="pure-img-responsive" src="http://sirocco.accuweather.com/adc_images2/english/current/svrwx/400x300/isvrwxNE_.gif"><br/>
-			<img class="pure-img-responsive" src="http://sirocco.accuweather.com/web_images/svrwx/key/swskeys.gif"><br/>
-			<img class="pure-img-responsive" src="http://www.weather.gov/wwamap/png/ict.png"><br/>
+			<a href="https://www.accuweather.com/en/us/severe-weather">
+				<img class="pure-img-responsive" src="http://sirocco.accuweather.com/adc_images2/english/current/svrwx/400x300/isvrwxNE_.gif" /><br/>
+				<img class="pure-img-responsive" src="http://sirocco.accuweather.com/web_images/svrwx/key/swskeys.gif" />
+			</a>
+			<br/>
+			<a href="https://www.weather.gov/ict/">
+				<img class="pure-img-responsive" src="http://www.weather.gov/wwamap/png/ict.png"><br/>
+			</a>
 			<table id="weathergov_legend">
 				<tr>
 					<td class="legend_cell" style="background-color: #FF0000;"></td>
@@ -87,9 +92,13 @@
 
         <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
         	<div id="noaa_watches">
-		        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/activity_loop.gif"><br/>
-		        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/watch/validww.png"><br/>
-		        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/watch/wwlegend.png">
+        		<a href="http://www.spc.noaa.gov/classic.html">
+			        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/activity_loop.gif"><br/>
+			    </a>
+			    <a href="http://www.spc.noaa.gov/products/watch/">
+			        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/watch/validww.png"><br/>
+			        <img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/watch/wwlegend.png">
+			    </a>
 		    </div>
         </div>
     </div>

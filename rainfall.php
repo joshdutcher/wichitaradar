@@ -12,8 +12,10 @@
         	</div>
 
         	<div class="accuweather">
-	        	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480c/24hr/inm24hrks_.gif" /><br/>
-	        	<img class="pure-img-responsive" src="http://vortex.accuweather.com/adc2010/images/keys/radar24hrf.png" />
+                <a href="https://www.accuweather.com/en/us/kansas/weather-radar-24hr">
+                    <img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480c/24hr/inm24hrks_.gif" /><br/>
+                    <img class="pure-img-responsive" src="http://vortex.accuweather.com/adc2010/images/keys/radar24hrf.png" />
+                </a>
 	        </div>
         	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/Precipitation/sln.gif" />
         	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/Precipitation/usa.gif" />

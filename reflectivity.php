@@ -14,10 +14,14 @@
 		</div>
 
 		<div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
-			<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/BaseReflectivityLoop/ict_None_anim.gif" />
+			<a href="http://www.intellicast.com/National/Nexrad/BaseReflectivity.aspx?location=USKS0620&animate=true">
+				<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/BaseReflectivityLoop/ict_None_anim.gif" />
+			</a>
 		</div>
 		<div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
-			<img class="pure-img-responsive" src="http://radar.weather.gov/ridge/Conus/Loop/uppermissvly_loop.gif" />
+			<a href="https://radar.weather.gov/Conus/uppermissvly_lite_loop.php">
+				<img class="pure-img-responsive" src="http://radar.weather.gov/ridge/Conus/Loop/uppermissvly_loop.gif" />
+			</a>
 		</div>
 	</div>
 

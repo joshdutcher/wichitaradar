@@ -61,9 +61,11 @@ foreach ($wxstoryImgArray as $story) {
         	<div class="pure-u textbox">
         		Convective outlook for the next 3 days
         	</div>
-        	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day1otlk_1300.gif" />
-        	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day2otlk_0600.gif" />
-        	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day3otlk_0730.gif" />
+            <a href="http://www.spc.noaa.gov/products/outlook/">
+            	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day1otlk_1300.gif" />
+            	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day2otlk_0600.gif" />
+            	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day3otlk_0730.gif" />
+            </a>
     	</div>
     </div>
 

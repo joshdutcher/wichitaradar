@@ -17,7 +17,6 @@ https://github.com/emartinez-usgs/earthquake-widget
  *************************************/
 
 ?>
-
 <?php require_once 'includes/header.php';?>
 <body>
 
@@ -27,21 +26,37 @@ https://github.com/emartinez-usgs/earthquake-widget
     <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<!-- ****** Intellicast radar ****** -->
-            <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" border="0" />
+            <a href="http://www.intellicast.com/National/Radar/Current.aspx?region=sln&animate=true">
+                <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/RadarLoop/sln_None_anim.gif" border="0" />
+            </a>
 
 			<!-- ****** Accuweather radar ****** -->
-        	<img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
+        	<a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
+                <img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
+            </a>
+
+            <!-- ****** Wunderground radar ****** -->
+            <a href="https://www.wunderground.com/weather-radar/united-states-regional/ks/salina/animated">
+                <img class="pure-img-responsive" src="https://icons.wxug.com/data/weather-maps/radar/united-states/salina-kansas-region-current-radar-animation.gif" />
+            </a>
+
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** KSN KS radar ***** -->
-            <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
+            <a href="http://www.ksn.com/weather/images/kansas-radar">
+                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
+            </a>
 
         	<!-- ****** KSN Southcentral radar **** -->
-        	<img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
+        	<a href="http://www.ksn.com/weather/images/southcentral-kansas-radar">
+                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
+            </a>
 
             <!-- ****** KSN Wichita radar **** -->
-            <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
+            <a href="http://www.ksn.com/weather/images/wichita-radar">
+                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
+            </a>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
