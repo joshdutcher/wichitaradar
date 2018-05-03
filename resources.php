@@ -21,8 +21,7 @@
 			<h2 class="content-subhead">Live Audio/Radio</h2>
 			<ul>
 				<li><a href="http://www.broadcastify.com/listen/ctid/970/" target="_blank">Broadcastify</a> Excellent collection of scanner feeds from Sedgwick County & Wichita area LEO agencies, emergency services, etc</li>
-				<li><a href="javascript:void(window.open('http://player.streamtheworld.com/liveplayer.php?callsign=KFDIFM',%20'KFDI',%20'width=737,height=625,status=no,resizable=no,scrollbars=yes'))">KFDI radio</a> during storms, hands down the absolute best local radio storm coverage, with mobile spotters. Country music the rest of the time. Opens in a popup window.</li>
-				<li><a href="http://scanwichita.com/listen.php" target="_blank">ScanWichita.com</a> Another great site with local area LEO and Emergency Services feeds, including Mid-Continent Approach Control</li>
+				<li><a href="http://www.kfdi.com/">KFDI radio</a> during storms, hands down the absolute best local radio storm coverage, with mobile spotters. Country music the rest of the time.</li>
 			</ul>
 
 			<h2 class="content-subhead">Other Stuff</h2>
