@@ -24,12 +24,18 @@
 				<li><a href="http://www.kfdi.com/">KFDI radio</a> during storms, hands down the absolute best local radio storm coverage, with mobile spotters. Country music the rest of the time.</li>
 			</ul>
 
-			<h2 class="content-subhead">Other Stuff</h2>
+			<h2 class="content-subhead">Other Local Stuff</h2>
 			<ul>
 				<li><a href="http://outagemap.westarenergy.com/external/default.html" target="_blank">Westar Power Outages</a> Westar's map of current power outages</li>
 				<li><a href="http://wichway.org/wichway/CameraTours" target="_blank">KanDrive Camera Tours</a> Multiple webcam views of traffic and road conditions along a Wichita area route of your choice, on a single web page. Choose from US-54, I-235, I-35, K-96, and I-135</li>
+            </ul>
+
+            <h2 class="content-subhead">Severe Weather Preparedness Links</h2>
+            <ul>
                 <li><a href="http://www.improvenet.com/a/become-a-storm-spotter-from-home" target="_blank">Become A Storm Spotter From Home</a> Comprehensive list of resources on storm spotting, Skywarn, storm chasing, weather and climate terminology, and lots more. (Thanks to Mia and the summer STEMjuniors meteorology group in Colorado Springs for this link!)</li>
                 <li><a href="http://expressfreightfinance.com/resources/avoiding-bad-weather-traveling/" target="_blank">Avoiding Bad Weather When Traveling</a> (Thanks to Mrs. Chapman and the kids at the Brenham Community Center in Texas for this link!)</li>
+                <li><a href="https://onlinemph.unr.edu/public-health-and-emergency-preparedness/" target="_blank">Public Health and Emergency Preparedness (via the University of Nevada, Reno)</a> (Thanks to Sarah Neale for this link and the next!)</li>
+                <li><a href="https://www.angieslist.com/articles/home-preparation-tips-weather-emergencies.htm" target="_blank">Home Preparation Tips for Weather Emergencies</a></li>
 			</ul>
 		</div>
 	</div>
