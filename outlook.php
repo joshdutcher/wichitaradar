@@ -28,8 +28,12 @@ foreach ($graphicasts as $graphicast) {
     $radar    = (boolean) $graphicast->radar->__toString();
     $imageUrl = $graphicast->SmallImage->__toString();
     if ($timeNow < $endTime && !$radar) {
-        $wxstoryImgArray[] = $imageUrl;
+        $wxstoryImgArray[] = 'http://www.weather.gov' . $imageUrl;
     }
+}
+
+if (empty($wxstoryImgArray)) {
+    $wxstoryImgArray[] = '/img/nostories.png';
 }
 
 require_once 'includes/header.php';
@@ -45,7 +49,7 @@ require_once 'includes/header.php';
 <?php
 foreach ($wxstoryImgArray as $story) {
     echo '<a href="http://www.weather.gov/crh/weatherstory?sid=ict#.WCX0gvkrJhE">';
-    echo "<img class=\"pure-img-responsive\" src=\"http://www.weather.gov{$story}\" border=\"0\" id=\"wichitaWeatherStory\" />";
+    echo "<img class=\"pure-img-responsive\" src=\"{$story}\" border=\"0\" id=\"wichitaWeatherStory\" />";
     echo '</a>';
 }
 ?>
