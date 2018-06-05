@@ -37,6 +37,11 @@
                 <li><a href="https://onlinemph.unr.edu/public-health-and-emergency-preparedness/" target="_blank">Public Health and Emergency Preparedness (via the University of Nevada, Reno)</a> (Thanks to Sarah Neale for this link and the next!)</li>
                 <li><a href="https://www.angieslist.com/articles/home-preparation-tips-weather-emergencies.htm" target="_blank">Home Preparation Tips for Weather Emergencies</a></li>
 			</ul>
+
+			<h2 class="content-subhead">Interesting Reading</h2>
+			<ul>
+				<li><a href="http://nowiknow.com/the-t-word-you-couldnt-talk-about/" target="_blank">The T-Word You Couldn’t Talk About</a> It used to be against NOAA's rules to mention the word tornado in a weather forecast.</li>
+			</ul>
 		</div>
 	</div>
 
