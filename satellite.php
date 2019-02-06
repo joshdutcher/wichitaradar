@@ -56,9 +56,6 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
             <a href="http://www.intellicast.com/National/Satellite/Infrared.aspx">
                 <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/SatelliteLoop/hiusa_None_anim.gif"  />
             </a>
-            <a href="http://weather.unisys.com/satellite/sat_vis.php?image=enh&inv=0&t=l12&region=cp">
-                <img class="pure-img-responsive" src="http://weather.unisys.com/satellite/sat_ir_enh_cp_loop-12.gif" />
-            </a>
         </div>
     </div>
 
