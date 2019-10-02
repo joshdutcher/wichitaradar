@@ -5,6 +5,7 @@ $menu = array(
     'Satellite'         => array('url' => 'satellite.php', 'tooltip' => ''),
     'Base Reflectivity' => array('url' => 'reflectivity.php', 'tooltip' => ''),
     'Watches/Warnings'  => array('url' => 'watches.php', 'tooltip' => ''),
+    'Current Temps'     => array('url' => 'temperatures.php', 'tooltip' => 'New: Current Temperatures', 'new' => true),
     'Outlook'           => array('url' => 'outlook.php', 'tooltip' => ''),
     'Rainfall Amounts'  => array('url' => 'rainfall.php', 'tooltip' => ''),
     // 'Earthquakes'       => array('url' => 'earthquakes.php', 'tooltip' => ''),

@@ -67,6 +67,10 @@ img {
 	color: #45A6F7;
 }
 
+img.whitebg {
+	background-color: #FFFFFF;
+}
+
 /*
 When setting the primary font stack, apply it to the Pure grid units along
 with `html`, `button`, `input`, `select`, and `textarea`. Pure Grids use
