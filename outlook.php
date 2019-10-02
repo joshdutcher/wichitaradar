@@ -11,11 +11,11 @@ require_once 'includes/init.php';
 
 use Utilities\GetXML;
 
-$dataUrl  = 'https://www.weather.gov/source/ict/wxstory/wxstory.xml';
+$dataURL  = 'https://www.weather.gov/source/ict/wxstory/wxstory.xml';
 $cacheAge = '900'; // in seconds. 3600 = 1 hour, 1800 = 30 minutes, etc
 $filename = 'wxstory.xml';
 
-$getXML     = new GetXML($dataUrl, $cacheAge);
+$getXML     = new GetXML($dataURL, $cacheAge);
 $xmlContent = $getXML->getXML($filename);
 
 $xml         = new SimpleXMLElement($xmlContent);

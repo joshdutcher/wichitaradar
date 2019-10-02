@@ -18,6 +18,7 @@
 	<meta name="description" content="Collection of animated radar and satellite maps of Wichita area weather, including radar, satellite, watches/warnings, and more info." />
     <title>Wichita Radar</title>
     <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
 <?php
 // 300 seconds = 5 minutes
 // 3600 seconds = 1 hour

@@ -4,20 +4,22 @@ namespace Utilities;
 
 use \Utilities\LocalCache;
 
-class GetXML
+class GetImage
 {
     protected $localPath;
     protected $dataURL;
     protected $localCache;
+    protected $referer;
 
-    public function __construct($dataURL, $cacheAge)
+    public function __construct($dataURL, $cacheAge, $referer)
     {
-        $this->localPath  = dirname(dirname(dirname(__FILE__))) . '/scraped/xml/';
+        $this->localPath  = dirname(dirname(dirname(__FILE__))) . '/scraped/images/';
         $this->dataURL    = $dataURL;
         $this->localCache = new LocalCache($cacheAge);
+        $this->referer    = $referer;
     }
 
-    public function getXML($filename)
+    public function getImage($filename)
     {
         $filepath = $this->localPath . $filename;
 
@@ -28,9 +30,14 @@ class GetXML
             // set url
             curl_setopt($ch, CURLOPT_URL, $this->dataURL);
 
-            //return the transfer as a string
+            // set headers and options
+            curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+
+            // set referer
+            curl_setopt($ch, CURLOPT_REFERER, $this->referer);       
 
             // $output contains the output string
             $content = curl_exec($ch);
@@ -39,15 +46,14 @@ class GetXML
             curl_close($ch);
 
             $this->writeFile($content, $filepath);
-        } else {
-            $content = file_get_contents($filepath);
         }
-
-        return $content;
     }
 
     protected function writeFile($content, $filepath)
     {
+        if(file_exists($filepath)){
+            unlink($filepath);
+        }
         $file = fopen($filepath, 'w');
         fwrite($file, $content);
         fclose($file);
