@@ -30,8 +30,20 @@ $swxcofiles = $swxco->getImagePaths();
             <!-- ****** weather central ****** -->
             <a href="https://www.weathercentral.com/weather/us/maps/current_temperatures.html">
                 <img class="pure-img-responsive" src="/scraped/images/<?php echo $wc_filename ?>" border="0" />
-            </a>        	
+            </a>
 
+            <!-- ****** USAirNet ***** -->
+            <a href="http://www.usairnet.com/weather/maps/current/current-temperature/">
+                <img class="pure-img-responsive whitebg" src="http://www.usairnet.com/weather/images/current-temperature.png" border="0" />
+            </a>
+
+        	<!-- ****** Weather.com **** -->
+        	<a href="https://weather.com/maps/ustemperaturemap">
+                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
+            </a>
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** wunderground ****** -->
             <?php if ($swxcofiles['usa'] != '') { ?>
             <a href="https://www.wunderground.com/maps/temperature/us-current/usa">
@@ -61,18 +73,6 @@ $swxcofiles = $swxco->getImagePaths();
 			<!-- ****** Weather.gov ***** -->
             <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
                 <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
-            </a>
-        </div>
-
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <!-- ****** USAirNet ***** -->
-            <a href="http://www.usairnet.com/weather/maps/current/current-temperature/">
-                <img class="pure-img-responsive whitebg" src="http://www.usairnet.com/weather/images/current-temperature.png" border="0" />
-            </a>
-
-        	<!-- ****** Weather.com **** -->
-        	<a href="https://weather.com/maps/ustemperaturemap">
-                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
             </a>
         </div>
     </div>
