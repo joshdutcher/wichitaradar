@@ -36,8 +36,8 @@ https://github.com/emartinez-usgs/earthquake-widget
             </a>
 
             <!-- ****** Wunderground radar ****** -->
-            <a href="https://www.wunderground.com/weather-radar/united-states-regional/ks/salina/animated">
-                <img class="pure-img-responsive" src="https://icons.wxug.com/data/weather-maps/radar/united-states/salina-kansas-region-current-radar-animation.gif" />
+            <a href="https://www.wunderground.com/radar/us/ks/salina">
+                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/ussln/animate.png" />
             </a>
 
         </div>
