@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  php:
+    hostname: www
+    domainname: wichitaradar.local
+    image: auchri/docker-apache-php
+    container_name: wichitaradar
+    ports:
+      - "316:80"
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    volumes:
+      - .:/var/www/html/
