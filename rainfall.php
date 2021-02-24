@@ -17,15 +17,23 @@
                     <img class="pure-img-responsive" src="http://vortex.accuweather.com/adc2010/images/keys/radar24hrf.png" />
                 </a>
 	        </div>
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/Precipitation/sln.gif" />
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/Precipitation/usa.gif" />
+			<a href="https://www.wunderground.com/maps/precipitation/daily/sln">
+        		<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preday/sln/20210223/1200z.gif" />
+			</a>
+			<a href="https://www.wunderground.com/maps/precipitation/daily">
+        		<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preday/usa/20210223/1200z.gif" />
+			</a>
     	</div>
     	<div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
     	    <div class="pure-u textbox">
         		Past week
         	</div>
-        	<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/WeeklyPrecipitation/sln.gif" />
-			<img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/WeeklyPrecipitation/usa.gif" />
+			<a href="https://www.wunderground.com/maps/precipitation/weekly/sln">
+        		<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preweek/sln/20210223/1200z.gif" />
+			</a>
+			<a href="https://www.wunderground.com/maps/precipitation/weekly">
+				<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preweek/usa/20210223/1200z.gif" />
+			</a>
     	</div>
     </div>
 

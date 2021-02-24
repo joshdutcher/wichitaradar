@@ -8,7 +8,6 @@
 <div id="layout">
     <?php require_once 'includes/menu.php';?>
 
-
     <div id="main">
         <div class="header">
             <h1>About this site</h1>

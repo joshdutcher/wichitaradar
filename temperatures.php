@@ -27,6 +27,32 @@ $swxcofiles = $swxco->getImagePaths();
 
     <div class="pure-g">
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+			<!-- ****** KSNW ***** -->
+            <a href="https://www.ksn.com/weather/images/kansas-temps/">
+                <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/ksnow_full.jpg" border="0" />
+            </a>
+
+            <!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
+            </a>
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+			<?php if ($swxcofiles['ddc'] != '') { ?>
+            <!-- ****** wunderground dodge city ****** -->
+        	<a href="https://www.wunderground.com/maps/temperature/us-current/ddc">
+                <img class="pure-img-responsive" src="<?php echo $swxcofiles['ddc']; ?>" border="0" />
+            </a>
+            <?php } ?>
+
+			<!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/centplains.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png" border="0" />
+            </a>
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** weather central ****** -->
             <a href="https://www.weathercentral.com/weather/us/maps/current_temperatures.html">
                 <img class="pure-img-responsive" src="/scraped/images/<?php echo $wc_filename ?>" border="0" />
@@ -41,9 +67,7 @@ $swxcofiles = $swxco->getImagePaths();
         	<a href="https://weather.com/maps/ustemperaturemap">
                 <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
             </a>
-        </div>
 
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** wunderground ****** -->
             <?php if ($swxcofiles['usa'] != '') { ?>
             <a href="https://www.wunderground.com/maps/temperature/us-current/usa">
@@ -51,28 +75,9 @@ $swxcofiles = $swxco->getImagePaths();
             </a>
             <?php } ?>
 
-			<?php if ($swxcofiles['ddc'] != '') { ?>
-            <!-- ****** wunderground dodge city ****** -->
-        	<a href="https://www.wunderground.com/maps/temperature/us-current/ddc">
-                <img class="pure-img-responsive" src="<?php echo $swxcofiles['ddc']; ?>" border="0" />
-            </a>
-            <?php } ?>
-        </div>
-
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 			<!-- ****** Weather.gov ***** -->
             <a href="https://graphical.weather.gov/sectors/conus.php#tabs">
                 <img class="pure-img-responsive" src="https://graphical.weather.gov/images/conus/MaxT1_conus.png" border="0" />
-            </a>
-
-			<!-- ****** Weather.gov ***** -->
-            <a href="https://graphical.weather.gov/sectors/centplains.php#tabs">
-                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png" border="0" />
-            </a>
-
-			<!-- ****** Weather.gov ***** -->
-            <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
-                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
             </a>
         </div>
     </div>

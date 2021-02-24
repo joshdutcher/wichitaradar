@@ -7,9 +7,5 @@ services:
     container_name: wichitaradar
     ports:
       - "316:80"
-    environment:
-      - PGID=${PGID}
-      - PUID=${PUID}
-      - TZ=${TZ}
     volumes:
       - .:/var/www/html/

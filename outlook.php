@@ -45,7 +45,14 @@ require_once 'includes/header.php';
     <?php require_once 'includes/menu.php';?>
 
     <div class="pure-g" id="mainbody">
-         <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
+         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+         <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/wx_weekly_full.jpg" />
+            <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/QEHighsToday.jpg" />
+            <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/QELowsTonight.jpg" />
+            <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/QEHighsTomorrow.jpg" />
+         </div>
+
+         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 <?php
 foreach ($wxstoryImgArray as $story) {
     echo '<a href="http://www.weather.gov/crh/weatherstory?sid=ict#.WCX0gvkrJhE">';
@@ -54,14 +61,8 @@ foreach ($wxstoryImgArray as $story) {
 }
 ?>
 	</div>
-<?php
-// <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-// <img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/wx-forecast-7day-SC.jpeg" />
-// <img class="pure-img-responsive" src="http://wx.ksn.com/weather/images/wx_weekly_640.jpg" />
-// <img class="pure-img-responsive" src="http://image.weather.com/images/maps/forecast/map_wkpln_day1_3uscn_enus_720x486.jpg" />
-// </div>
-;?>
-         <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
+
+         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<div class="pure-u textbox">
         		Convective outlook for the next 3 days
         	</div>

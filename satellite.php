@@ -53,8 +53,8 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <a href="http://www.intellicast.com/National/Satellite/Infrared.aspx">
-                <img class="pure-img-responsive" src="http://images.intellicast.com/WxImages/SatelliteLoop/hiusa_None_anim.gif"  />
+            <a href="https://www.wunderground.com/maps/satellite/regional-infrared/usace">
+                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png"  />
             </a>
         </div>
     </div>
