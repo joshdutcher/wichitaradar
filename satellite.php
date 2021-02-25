@@ -67,7 +67,7 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
 		// mp1.met.psu.edu
 		var psu = {
 			numImages: 24,
-			urlPrefix: 'http://mp1.met.psu.edu/~fxg1/SAT_SC/satir_',
+			urlPrefix: 'https://mp1.met.psu.edu/~fxg1/SAT_SC/satir_',
 			urlSuffix: '.gif',
             leadingZero: false,
             startingFrame: 1
