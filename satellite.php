@@ -58,11 +58,9 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
             </a>
         </div>
     </div>
-
-    <?php require_once 'includes/footer.php';?>
 </div>
 
-<script src="js/ui.js"></script>
+<?php require_once 'includes/footer.php';?>
 
 <script>
 	$(function() {
@@ -93,45 +91,6 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
         ).then(
             animateFrames(wgov, 5, 400, '#wgovsat', true)
         );
-
-        <?php /*
-        // GOES East
-        var goesUrls = new Array();
-        goesUrls.push("<?php echo implode($goesUrlArray, '","'); ?>");
-        var goes16 = {
-            URLs: goesUrls
-        }
-        goes16.numImages = goes16.URLs.length;
-        $.when(
-            preloadImages(goes16)
-        ).then(
-            animateFrames(goes16, 10, 70, '#goes16')
-        );
-
-        // GOES East UMV
-        var goesUMVUrls = new Array();
-        goesUMVUrls.push("<?php echo implode($goesUrlUMVArray, '","'); ?>");
-        var goes16UMV = {
-            URLs: goesUMVUrls
-        }
-        goes16UMV.numImages = goes16UMV.URLs.length;
-        $.when(
-            preloadImages(goes16UMV)
-        ).then(
-            animateFrames(goes16UMV, 10, 70, '#goes16-umv')
-        );
-
-        // var wgov = {
-		// 	frames: 6,
-		// 	prefix: 'http://www.weather.gov/images/nws/satellite_images/',
-		// 	suffix: '.jpg'
-		// }
-		// $.when(
-		// 	preloadImages(wgov.frames, wgov.prefix, wgov.suffix, false)
-		// ).then(
-		// 	animateFramesReverse(wgov.frames, 5, 250, wgov.prefix, wgov.suffix, '#wgovsat', false)
-		// );
-        */ ?>
 	});
 </script>
 

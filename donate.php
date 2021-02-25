@@ -22,13 +22,9 @@
             <a href="https://www.paypal.me/joshdutcher"><img src="img/paypal-qrcode.jpg" class="pure-img-responsive" /></a>
         </div>
     </div>
-
-    <?php require_once 'includes/footer.php';?>
 </div>
 
-
-<script src="js/ui.js"></script>
-
+<?php require_once 'includes/footer.php';?>
 
 </body>
 </html>

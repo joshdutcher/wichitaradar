@@ -47,6 +47,7 @@ foreach ($menu as $item => $file) {
     </div>
     <div class="menu-footer">
         <?php echo $loadtime->format('H:i:s'); ?><br/>
-        <?php echo $loadtime->format('Y-m-d'); ?>
+        <?php echo $loadtime->format('Y-m-d'); ?><br/>
+        <img src="img/positivessl_trust_seal_sm_124x32.png" />
     </div>
 </div>

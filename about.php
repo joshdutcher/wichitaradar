@@ -34,13 +34,9 @@
 		    <p>I can be contacted at josh.dutcher at joshdutcher dot com.</p>
         </div>
     </div>
-
-    <?php require_once 'includes/footer.php';?>
 </div>
 
-
-<script src="js/ui.js"></script>
-
+<?php require_once 'includes/footer.php';?>
 
 </body>
 </html>

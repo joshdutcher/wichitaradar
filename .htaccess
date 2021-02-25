@@ -4,9 +4,7 @@ RewriteCond %{HTTP_HOST} wichitaradar.joshdutcher.com$
 RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
 RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
 RewriteRule ^(.*)$ "http://joshdutcher.com/404" [R=301,L]
-</IfModule>
 RewriteCond %{HTTP_HOST} ^wx\.joshdutcher\.com$ [OR]
 RewriteCond %{HTTP_HOST} ^www\.wx\.joshdutcher\.com$
-RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
-RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
 RewriteRule ^(.*)$ "http\:\/\/www\.wichitaradar\.com\/$1" [R=301,L]
+</IfModule>

@@ -73,54 +73,9 @@ foreach ($wxstoryImgArray as $story) {
             </a>
     	</div>
     </div>
-
-    <?php require_once 'includes/footer.php';?>
 </div>
 
-<script src="js/ui.js"></script>
-
-<script>
-    // $(function() {
-    //     // Wichita Weather Story
-    //     var wichitaWeatherStory = {
-    //         URLs: getWeatherStoryUrls()
-    //     }
-    //     wichitaWeatherStory.numImages = wichitaWeatherStory.URLs.length;
-    //     $.when(
-    //         preloadImages(wichitaWeatherStory)
-    //     ).then(
-    //         animateFrames(wichitaWeatherStory, 0, 5000, '#wichitaWeatherStory')
-    //     );
-    // });
-
-    // function getWeatherStoryUrls() {
-    //     var weatherStoryUrls = new Array();
-    //     weatherStoryUrls.push("<?php echo implode($wxstoryImgArray, '","'); ?>");
-
-    //     // $.ajax({
-    //     //     type: "GET",
-    //     //     url: '/scraped/xml/wxstory.xml',
-    //     //     cache: false,
-    //     //     async: false,
-    //     //     dataType: "xml",
-    //     //     success: function(data) {
-    //     //         $(data).find('graphicasts').each(function() {
-    //     //             $(this).children().each(function() {
-    //     //                 var exp = $(this).find("EndTime").text()
-    //     //                 var img = $(this).find("SmallImage").text()
-    //     //                 var rad = $(this).find("radar").text()
-    //     //                 milliseconds = (new Date).getTime();
-    //     //                 if ((milliseconds/1000) < exp && rad == 0) {
-    //     //                     weatherStoryUrls.push(img);
-    //     //                 }
-    //     //             })
-    //     //         });
-    //     //     }
-    //     // });
-    //     // console.log(weatherStoryUrls);
-    //     return weatherStoryUrls;
-    // }
-</script>
+<?php require_once 'includes/footer.php';?>
 
 </body>
 </html>

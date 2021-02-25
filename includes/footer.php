@@ -1,2 +1,1 @@
-    <div class="footer">
-    </div>
+<script src="js/ui.js"></script>

@@ -22,11 +22,9 @@ require_once('includes/init.php');
         	<img class="pure-img-responsive" src="http://gray.ftp.clickability.com/kakewebftp/earthquake-tight-7d.jpeg" />
         </div>
     </div>
-
-    <?php require_once('includes/footer.php'); ?>
 </div>
 
-<script src="js/ui.js"></script>
+<?php require_once('includes/footer.php'); ?>
 
 </body>
 </html>
