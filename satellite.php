@@ -47,7 +47,7 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
             <a href="https://www.accuweather.com/en/us/kansas/satellite">
                 <img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" />
             </a>
-            <a href="http://mp1.met.psu.edu/~fxg1/SAT_SC/anim8vis.html">
+            <a href="https://mp1.met.psu.edu/~fxg1/SAT_SC/anim8vis.html">
                 <img class="pure-img-responsive" src="http://mp1.met.psu.edu/~fxg1/SAT_SC/satir_1.gif" id="psu" />
             </a>
         </div>
