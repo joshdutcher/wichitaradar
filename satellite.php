@@ -1,29 +1,4 @@
-<?php
-
-require_once 'includes/init.php';
-/*
-use Utilities\GetGoesImages;
-
-// get GOES-16 images
-$getGoesImages = new GetGoesImages();
-
-// all U.S.
-// (image dimension options: 416x250, 625x375, 1250x750, 2500x1500, 5000x3000)
-$directoryURL   = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/GEOCOLOR/';
-$imageDimension = '625x375';
-$numImages      = 36;
-
-$goesUrlArray = $getGoesImages->getImages($directoryURL, $imageDimension, $numImages);
-
-// Upper Mississippi Valley
-// (image dimension options: 300x300, 600x600, 1200x1200)
-$directoryURL   = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/umv/GEOCOLOR/';
-$imageDimension = '600x600';
-$numImages      = 36;
-
-$goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $numImages);
-*/
-?>
+<?php require_once 'includes/init.php'; ?>
 <?php require_once 'includes/header.php';?>
 
 <body>
@@ -32,7 +7,7 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
     <?php require_once 'includes/menu.php';?>
 
     <div class="pure-g">
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+        <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
         	<a href="https://www.star.nesdis.noaa.gov/GOES/GOES16_CONUS_Band.php?band=GEOCOLOR&length=24">
                 <?php /*<img class="pure-img-responsive" src="<?php echo $goesUrlArray[0]; ?>" id="goes16" /> */ ?>
                 <img class="pure-img-responsive" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/GIFS/GOES16-CONUS-GEOCOLOR-625x375.gif" />
@@ -43,16 +18,7 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
             </a>
         </div>
 
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <a href="http://www.meteo.psu.edu/fxg1/SAT_SC/animir.html">
-                <img class="pure-img-responsive" src="http://www.meteo.psu.edu/fxg1/SAT_SC/satir_1.gif" id="psu_ir" />
-            </a>
-            <a href="http://www.meteo.psu.edu/fxg1/SAT_SC/anim8vis.html">
-                <img class="pure-img-responsive" src="http://www.meteo.psu.edu/fxg1/SAT_SC/sat_1.gif" id="psu_vis" />
-            </a>
-        </div>
-
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+        <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
             <a href="https://www.wunderground.com/maps/satellite/regional-infrared/usace">
                 <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png"  />
             </a>
@@ -67,33 +33,6 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
 
 <script>
 	$(function() {
-		// http://www.meteo.psu.edu/fxg1/ewall.html
-		var psu_ir = {
-			numImages: 24,
-			urlPrefix: 'http://www.meteo.psu.edu/fxg1/SAT_SC/satir_',
-			urlSuffix: '.gif',
-            leadingZero: false,
-            startingFrame: 1
-		}
-		$.when(
-			preloadImages(psu_ir)
-		).then(
-			animateFrames(psu_ir, 7, 200, '#psu_ir')
-		);
-
-        var psu_vis = {
-			numImages: 24,
-			urlPrefix: 'http://www.meteo.psu.edu/fxg1/SAT_SC/sat_',
-			urlSuffix: '.gif',
-            leadingZero: false,
-            startingFrame: 1
-		}
-		$.when(
-			preloadImages(psu_vis)
-		).then(
-			animateFrames(psu_vis, 7, 200, '#psu_vis')
-		);
-
 		// weather.gov
         var wgov = {
             numImages: 6,
