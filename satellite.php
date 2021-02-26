@@ -44,17 +44,20 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <a href="https://www.accuweather.com/en/us/kansas/satellite">
-                <img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" />
+            <a href="http://www.meteo.psu.edu/fxg1/SAT_SC/animir.html">
+                <img class="pure-img-responsive" src="http://www.meteo.psu.edu/fxg1/SAT_SC/satir_1.gif" id="psu_ir" />
             </a>
-            <a href="https://mp1.met.psu.edu/~fxg1/SAT_SC/anim8vis.html">
-                <img class="pure-img-responsive" src="http://mp1.met.psu.edu/~fxg1/SAT_SC/satir_1.gif" id="psu" />
+            <a href="http://www.meteo.psu.edu/fxg1/SAT_SC/anim8vis.html">
+                <img class="pure-img-responsive" src="http://www.meteo.psu.edu/fxg1/SAT_SC/sat_1.gif" id="psu_vis" />
             </a>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <a href="https://www.wunderground.com/maps/satellite/regional-infrared/usace">
                 <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png"  />
+            </a>
+            <a href="https://www.accuweather.com/en/us/kansas/satellite">
+                <img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" />
             </a>
         </div>
     </div>
@@ -64,18 +67,31 @@ $goesUrlUMVArray = $getGoesImages->getImages($directoryURL, $imageDimension, $nu
 
 <script>
 	$(function() {
-		// mp1.met.psu.edu
-		var psu = {
+		// http://www.meteo.psu.edu/fxg1/ewall.html
+		var psu_ir = {
 			numImages: 24,
-			urlPrefix: 'https://mp1.met.psu.edu/~fxg1/SAT_SC/satir_',
+			urlPrefix: 'http://www.meteo.psu.edu/fxg1/SAT_SC/satir_',
 			urlSuffix: '.gif',
             leadingZero: false,
             startingFrame: 1
 		}
 		$.when(
-			preloadImages(psu)
+			preloadImages(psu_ir)
 		).then(
-			animateFrames(psu, 7, 200, '#psu')
+			animateFrames(psu_ir, 7, 200, '#psu_ir')
+		);
+
+        var psu_vis = {
+			numImages: 24,
+			urlPrefix: 'http://www.meteo.psu.edu/fxg1/SAT_SC/sat_',
+			urlSuffix: '.gif',
+            leadingZero: false,
+            startingFrame: 1
+		}
+		$.when(
+			preloadImages(psu_vis)
+		).then(
+			animateFrames(psu_vis, 7, 200, '#psu_vis')
 		);
 
 		// weather.gov

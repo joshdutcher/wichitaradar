@@ -5,15 +5,6 @@ require_once 'includes/init.php';
 use Utilities\GetImage;
 use Utilities\SWXCOFiles;
 
-// grab the weathercentral image which requires a referer header
-$dataURL     = 'https://cdn.apwx.net/img/maps/us/weather/us-temps-f-x720x495.jpg';
-$cacheAge    = '900';                                                                       // in seconds. 3600 = 1 hour, 1800 = 30 minutes, etc
-$wc_filename = 'us-temps-f-x720x495.jpg';
-$referer     = 'https://www.weathercentral.com/weather/us/maps/current_temperatures.html';
-
-$getImage = new GetImage($dataURL, $cacheAge, $referer);
-$getImage->getImage($wc_filename);
-
 // figure out the date and timestamps for the wunderground files and make sure they exist
 $swxco = new SWXCOFiles();
 $swxcofiles = $swxco->getImagePaths();
@@ -53,16 +44,6 @@ $swxcofiles = $swxco->getImagePaths();
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <!-- ****** weather central ****** -->
-            <a href="https://www.weathercentral.com/weather/us/maps/current_temperatures.html">
-                <img class="pure-img-responsive" src="/scraped/images/<?php echo $wc_filename ?>" border="0" />
-            </a>
-
-            <!-- ****** USAirNet ***** -->
-            <a href="http://www.usairnet.com/weather/maps/current/current-temperature/">
-                <img class="pure-img-responsive whitebg" src="http://www.usairnet.com/weather/images/current-temperature.png" border="0" />
-            </a>
-
         	<!-- ****** Weather.com **** -->
         	<a href="https://weather.com/maps/ustemperaturemap">
                 <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
