@@ -11,7 +11,7 @@ $menu = array(
     'Resources'         => array('url' => 'resources.php', 'tooltip' => ''),
     'Twitter'           => array('url' => 'twitter.php', 'tooltip' => ''),
     'About'             => array('url' => 'about.php', 'tooltip' => ''),
-    'Donate'            => array('url' => 'donate.php', 'tooltip' => 'Buy me a beer!', 'new' => true)
+    'Donate'            => array('url' => 'donate.php', 'tooltip' => 'Buy me a beer!')
 );
 
 $loadtime = new DateTime('now');
