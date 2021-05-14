@@ -44,17 +44,17 @@ https://github.com/emartinez-usgs/earthquake-widget
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** KSN KS radar ***** -->
             <a href="http://www.ksn.com/weather/images/kansas-radar">
-                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
             </a>
 
         	<!-- ****** KSN Southcentral radar **** -->
         	<a href="http://www.ksn.com/weather/images/southcentral-kansas-radar">
-                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
             </a>
 
             <!-- ****** KSN Wichita radar **** -->
             <a href="http://www.ksn.com/weather/images/wichita-radar">
-                <img class="pure-img-responsive" src="http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
             </a>
         </div>
 
@@ -72,7 +72,7 @@ https://github.com/emartinez-usgs/earthquake-widget
         // KSN KS RADAR
         var newksnks = {
             numImages: 8,
-            urlPrefix: 'http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_ks_radar_',
+            urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_',
             urlSuffix: '.jpg',
             leadingZero: false,
             startingFrame: 1
@@ -87,7 +87,7 @@ https://github.com/emartinez-usgs/earthquake-widget
         // KSN SC KS RADAR
         var newksn = {
             numImages: 8,
-            urlPrefix: 'http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_sc_radar_',
+            urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_',
             urlSuffix: '.jpg',
             leadingZero: false,
             startingFrame: 1
@@ -101,7 +101,7 @@ https://github.com/emartinez-usgs/earthquake-widget
         // KSN WICHITA LOOP
         var ksnWichita = {
             numImages: 8,
-            urlPrefix: 'http://s3.amazonaws.com/nxs-ksnwtv-media-us-east-1/weather/images/ksn_wichita_radar_',
+            urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_',
             urlSuffix: '.jpg',
             leadingZero: false,
             startingFrame: 1

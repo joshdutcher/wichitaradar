@@ -20,7 +20,7 @@ $swxcofiles = $swxco->getImagePaths();
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 			<!-- ****** KSNW ***** -->
             <a href="https://www.ksn.com/weather/images/kansas-temps/">
-                <img class="pure-img-responsive" src="https://media.ksn.com/nxs-ksnwtv-media-us-east-1/weather/images/ksnow_full.jpg" border="0" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksnow_full.jpg" border="0" />
             </a>
 
             <!-- ****** Weather.gov ***** -->
