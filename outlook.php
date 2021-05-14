@@ -46,10 +46,12 @@ require_once 'includes/header.php';
 
     <div class="pure-g" id="mainbody">
          <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-         <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/wx_weekly_full.jpg" />
-            <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsToday.jpg" />
-            <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QELowsTonight.jpg" />
-            <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsTomorrow.jpg" />
+            <a href="https://www.ksn.com/weather/">
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/wx_weekly_full.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsToday.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QELowsTonight.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsTomorrow.jpg" />
+            </a>
          </div>
 
          <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
