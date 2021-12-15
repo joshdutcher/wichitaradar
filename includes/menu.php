@@ -1,17 +1,17 @@
 <?php
 
 $menu = array(
-    'Radar'             => array('url' => 'index.php', 'tooltip' => 'What you really came here for'),
-    'Satellite'         => array('url' => 'satellite.php', 'tooltip' => ''),
-    'Watches/Warnings'  => array('url' => 'watches.php', 'tooltip' => ''),
-    'Current Temps'     => array('url' => 'temperatures.php', 'tooltip' => ''),
-    'Outlook'           => array('url' => 'outlook.php', 'tooltip' => ''),
-    'Rainfall Amounts'  => array('url' => 'rainfall.php', 'tooltip' => ''),
+    'Radar'            => array('url' => 'index.php', 'tooltip' => 'What you really came here for'),
+    'Satellite'        => array('url' => 'satellite.php', 'tooltip' => ''),
+    'Watches/Warnings' => array('url' => 'watches.php', 'tooltip' => ''),
+    'Current Temps'    => array('url' => 'temperatures.php', 'tooltip' => ''),
+    'Outlook'          => array('url' => 'outlook.php', 'tooltip' => ''),
+    'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => ''),
     // 'Earthquakes'       => array('url' => 'earthquakes.php', 'tooltip' => ''),
-    'Resources'         => array('url' => 'resources.php', 'tooltip' => ''),
-    'Twitter'           => array('url' => 'twitter.php', 'tooltip' => ''),
-    'About'             => array('url' => 'about.php', 'tooltip' => ''),
-    'Donate'            => array('url' => 'donate.php', 'tooltip' => 'Buy me a beer!')
+    'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
+    'Twitter'   => array('url' => 'twitter.php', 'tooltip' => ''),
+    'About'     => array('url' => 'about.php', 'tooltip' => ''),
+    'Donate'    => array('url' => 'donate.php', 'tooltip' => 'Buy me a coffee!')
 );
 
 $loadtime = new DateTime('now');

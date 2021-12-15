@@ -22,19 +22,32 @@ $xml         = new SimpleXMLElement($xmlContent);
 $graphicasts = $xml->xpath('//*/graphicasts/graphicast');
 
 $wxstoryImgArray = [];
+$wxstoryCount = 0;
 foreach ($graphicasts as $graphicast) {
-    $timeNow  = time();
-    $endTime  = $graphicast->EndTime->__toString();
-    $radar    = (boolean) $graphicast->radar->__toString();
-    $imageUrl = $graphicast->SmallImage->__toString();
-    if ($timeNow < $endTime && !$radar) {
-        $wxstoryImgArray[] = 'http://www.weather.gov' . $imageUrl;
+    $timeNow   = time();
+    $startTime = $graphicast->StartTime->__toString();
+    $endTime   = $graphicast->EndTime->__toString();
+    $radar     = (boolean) $graphicast->radar->__toString();
+    $imageUrl  = $graphicast->SmallImage->__toString();
+    if ($timeNow < $endTime && $timeNow >= $startTime && !$radar) {
+        $wxstoryImgArray[$wxstoryCount]['url'] = 'http://www.weather.gov' . $imageUrl . '?' . rand(100000,999999);
+        $wxstoryImgArray[$wxstoryCount]['alt'] = $graphicast->description->__toString();
+        $wxstoryImgArray[$wxstoryCount]['order'] = (int) $graphicast->order->__toString();
     }
+    $wxstoryCount++;
 }
 
 if (empty($wxstoryImgArray)) {
-    $wxstoryImgArray[] = '/img/nostories.png';
+    $wxstoryImgArray[0]['url']   = '/img/nostories.png';
+    $wxstoryImgArray[0]['alt']   = 'No Weather Stories!';
+    $wxstoryImgArray[0]['order'] = 0;
 }
+
+// make sure the images display in the intended order
+function cmp($a, $b) {
+    return $a['order'] - $b['order'];
+}
+usort($wxstoryImgArray,"cmp");
 
 require_once 'includes/header.php';
 ?>
@@ -42,7 +55,7 @@ require_once 'includes/header.php';
 <body>
 
 <div id="layout">
-    <?php require_once 'includes/menu.php';?>
+    <?php require_once 'includes/menu.php'; ?>
 
     <div class="pure-g" id="mainbody">
          <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -58,7 +71,7 @@ require_once 'includes/header.php';
 <?php
 foreach ($wxstoryImgArray as $story) {
     echo '<a href="http://www.weather.gov/crh/weatherstory?sid=ict#.WCX0gvkrJhE">';
-    echo "<img class=\"pure-img-responsive\" src=\"{$story}\" border=\"0\" id=\"wichitaWeatherStory\" />";
+    echo "<img class=\"pure-img-responsive\" src=\"{$story['url']}\" border=\"0\" id=\"wichitaWeatherStory\" alt=\"{$story['alt']}\" />";
     echo '</a>';
 }
 ?>
