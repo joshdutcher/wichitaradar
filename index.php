@@ -24,6 +24,10 @@ https://github.com/emartinez-usgs/earthquake-widget
     <?php require_once 'includes/menu.php';?>
 
     <div class="pure-g">
+    <div class="pure-u textbox">
+        I'm working on getting the SSL reissued. Should be resolved soon.
+    </div>
+
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<!-- ****** Wunderground (old Intellicast) radar ****** -->
             <a href="https://www.wunderground.com/maps/radar/current/sln">
