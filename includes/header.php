@@ -3,13 +3,13 @@
 
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-6815318-2"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ5D697LRY"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-      gtag('config', 'UA-6815318-2');
+    gtag('config', 'G-BJ5D697LRY');
     </script>
 
     <meta charset="utf-8">
