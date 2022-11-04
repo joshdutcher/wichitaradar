@@ -60,7 +60,7 @@ https://github.com/emartinez-usgs/earthquake-widget
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
             <!-- ****** weather.gov radar loop ***** -->
-            <img class="pure-img-responsive" src="https://radar.weather.gov/ridge/lite/KICT_loop.gif" />
+            <img class="pure-img-responsive" src="https://radar.weather.gov/ridge/standard/KICT_loop.gif" />
 
 			<!-- ****** Wunderground radar ***** -->
             <!--
