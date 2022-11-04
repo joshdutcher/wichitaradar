@@ -23,24 +23,12 @@ $swxcofiles = $swxco->getImagePaths();
                 <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksnow_full.jpg" border="0" />
             </a>
 
-            <!-- ****** Weather.gov ***** -->
-            <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
-                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
-            </a>
-        </div>
-
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 			<?php if ($swxcofiles['ddc'] != '') { ?>
             <!-- ****** wunderground dodge city ****** -->
         	<a href="https://www.wunderground.com/maps/temperature/us-current/ddc">
                 <img class="pure-img-responsive" src="<?php echo $swxcofiles['ddc']; ?>" border="0" />
             </a>
             <?php } ?>
-
-			<!-- ****** Weather.gov ***** -->
-            <a href="https://graphical.weather.gov/sectors/centplains.php#tabs">
-                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png" border="0" />
-            </a>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
@@ -55,10 +43,22 @@ $swxcofiles = $swxco->getImagePaths();
                 <img class="pure-img-responsive" src="<?php echo $swxcofiles['usa']; ?>" border="0" />
             </a>
             <?php } ?>
+        </div>
 
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
 			<!-- ****** Weather.gov ***** -->
             <a href="https://graphical.weather.gov/sectors/conus.php#tabs">
                 <img class="pure-img-responsive" src="https://graphical.weather.gov/images/conus/MaxT1_conus.png" border="0" />
+            </a>
+
+			<!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/centplains.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png" border="0" />
+            </a>
+
+            <!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
             </a>
         </div>
     </div>
