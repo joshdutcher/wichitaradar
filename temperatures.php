@@ -2,7 +2,6 @@
 
 require_once 'includes/init.php';
 
-use Utilities\GetImage;
 use Utilities\SWXCOFiles;
 
 // figure out the date and timestamps for the wunderground files and make sure they exist
