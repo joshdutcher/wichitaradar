@@ -4,7 +4,7 @@ namespace Utilities;
 
 use \Utilities\LocalCache;
 
-class GetXML
+class GetFileContents
 {
     protected $localPath;
     protected $dataURL;
@@ -17,7 +17,7 @@ class GetXML
         $this->localCache = new LocalCache($cacheAge);
     }
 
-    public function getXML($filename)
+    public function curlFile($filename)
     {
         $filepath = $this->localPath . $filename;
 
