@@ -102,7 +102,7 @@ function getConvectiveOutlooks() {
 }
 
 $wxstoryImgArray = getGraphicasts();
-$convectiveOutlooks = getConvectiveOutlooks();
+// $convectiveOutlooks = getConvectiveOutlooks();
 require_once 'includes/header.php';
 ?>
 
