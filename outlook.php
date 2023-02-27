@@ -136,6 +136,7 @@ foreach ($wxstoryImgArray as $story) {
         		Convective outlook
         	</div>
 <?php
+/*
 foreach ($convectiveOutlooks as $outlook) {
     echo "<a href=\"{$outlook['link']}\">";
     echo "<img class=\"pure-img-responsive\" src=\"{$outlook['img']}\" border=\"0\" alt=\"{$outlook['title']}\" />";
@@ -146,7 +147,8 @@ foreach ($convectiveOutlooks as $outlook) {
             // 	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day2otlk_0600.gif" />
             // 	<img class="pure-img-responsive" src="http://www.spc.noaa.gov/products/outlook/day3otlk_0730.gif" />
             // </a>
-?>
+*/
+            ?>
             </div>
     </div>
 </div>
