@@ -131,7 +131,7 @@ foreach ($wxstoryImgArray as $story) {
 ?>
 	</div>
 
-         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+         <!--div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
         	<div class="pure-u textbox">
         		Convective outlook
         	</div>
@@ -149,7 +149,7 @@ foreach ($convectiveOutlooks as $outlook) {
             // </a>
 */
             ?>
-            </div>
+            </div-->
     </div>
 </div>
 
