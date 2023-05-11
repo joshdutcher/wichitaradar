@@ -12,35 +12,33 @@ require_once 'includes/init.php';
 // similarly the convective outlook doesn't always have the same number of images available so we need to
 // parse the same xml document they are using and display images based on that.
 
-use Utilities\GetFileContents;
+use Utilities\Scraper;
 
 function getGraphicasts() {
-    $dataURL  = 'https://www.weather.gov/source/ict/wxstory/wxstory.xml';
-    $cacheAge = '900'; // in seconds. 3600 = 1 hour, 1800 = 30 minutes, etc
-    $filename = 'wxstory.xml';
+    $remoteFilePath = 'https://www.weather.gov/source/ict/wxstory/wxstory.xml';
+    $localFilePath  = dirname(__FILE__) . '/scraped/xml/wxstory.xml';
+    $cacheAge       = '0';                                                       // in seconds. 3600 = 1 hour, 1800 = 30 minutes, etc
 
-    $getXML     = new GetFileContents($dataURL, $cacheAge);
-    $xmlContent = $getXML->curlFile($filename);
-
-    $xml         = new SimpleXMLElement($xmlContent);
-    $graphicasts = $xml->xpath('//*/graphicasts/graphicast');
+    $scrapedFile = new Scraper($remoteFilePath, $localFilePath, $cacheAge);
+    $xml         = $scrapedFile->getXMLFromFile();
 
     $wxstoryImgArray = [];
-    $wxstoryCount = 0;
-    foreach ($graphicasts as $graphicast) {
-        $timeNow   = time();
-        $startTime = $graphicast->StartTime->__toString();
-        $endTime   = $graphicast->EndTime->__toString();
-        $radar     = (boolean) $graphicast->radar->__toString();
-        $imageUrl  = $graphicast->SmallImage->__toString();
-        if ($timeNow < $endTime && $timeNow >= $startTime && !$radar) {
-            $wxstoryImgArray[$wxstoryCount]['url'] = 'http://www.weather.gov' . $imageUrl . '?' . rand(100000,999999);
-            $wxstoryImgArray[$wxstoryCount]['alt'] = $graphicast->description->__toString();
-            $wxstoryImgArray[$wxstoryCount]['order'] = (int) $graphicast->order->__toString();
-        }
-        $wxstoryCount++;
-    }
 
+    $timeNow = time();
+    foreach ($xml->graphicasts->graphicast as $graphicast) {
+        $startTime = (string) $graphicast->StartTime;
+        $endTime   = (string) $graphicast->EndTime;
+        $radar     = (boolean) $graphicast->radar->__toString();
+        if ($timeNow < $endTime && $timeNow >= $startTime && !$radar) {
+            $imageUrl = (string) $graphicast->SmallImage;
+            $wxstoryImgArray[] = array(
+                'url'   => 'http://weather.gov' . $imageUrl . '?' . rand(100000,999999),
+                'alt'   => preg_replace('/\s+/', ' ', trim((string) $graphicast->description)),
+                'order' => (int) $graphicast->order
+            );
+        }
+    }
+    
     if (empty($wxstoryImgArray)) {
         $wxstoryImgArray[0]['url']   = '/img/nostories.png';
         $wxstoryImgArray[0]['alt']   = 'No Weather Stories!';
@@ -62,18 +60,17 @@ function parseDescForImg($description) {
     $doc = new DOMDocument();
     $doc->loadHTML($description);
     $xpath = new DOMXPath($doc);
-    $img = $xpath->evaluate("string(//img/@src)");
+    $img   = $xpath->evaluate("string(//img/@src)");
     return $img;
 }
 
 function getConvectiveOutlooks() {
-    $dataURL = 'https://www.spc.noaa.gov/products/spcacrss.xml';
-    $cacheAge = '900';
-    $filename = 'spcacrss.xml';
+    $remoteFilePath = 'https://www.spc.noaa.gov/products/spcacrss.xml';
+    $localFilePath  = 'spcacrss.xml';
+    $cacheAge       = '900';
 
-    $getXML = new getFileContents($dataURL, $cacheAge);
-    $xmlContent = $getXML->curlFile($filename);
-    $xml = new SimpleXMLElement($xmlContent);
+    $getXML = new Scraper($remoteFilePath, $localFilePath, $cacheAge);
+    $xml    = $getXML->getXMLFromFile();
 
     // $fakexml = dirname(__FILE__) . "/fakeoutlookrss.xml";
     // $xml = simplexml_load_file($fakexml);
@@ -91,10 +88,10 @@ function getConvectiveOutlooks() {
     // resulting in one convective outlook per day
     $outlooks = [];
     foreach ($convectiveOutlooks as $node) {
-        $key = substr($node->title, strpos($node->title, "UTC"));
-        $outlooks[$key]['link'] = $node->link->__toString();
-        $outlooks[$key]['title'] = $node->title->__toString();
-        $outlooks[$key]['img'] = parseDescForImg($node->description->__toString());
+        $key                       = substr($node->title, strpos($node->title, "UTC"));
+        $outlooks[$key]['link']    = $node->link->__toString();
+        $outlooks[$key]['title']   = $node->title->__toString();
+        $outlooks[$key]['img']     = parseDescForImg($node->description->__toString());
         $outlooks[$key]['pubDate'] = $node->pubDate->__toString();
     }
 
