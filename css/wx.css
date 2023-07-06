@@ -24,7 +24,7 @@ img {
 }
 
 #menu .pure-menu-item.selected {
-	background-color: #45A6F7;
+	background-color: #0A8EFC;
 }
 
 #menu .pure-menu-item.selected a {
@@ -33,7 +33,7 @@ img {
 
 #menu .pure-menu li a:hover,
 #menu .pure-menu li a:focus {
-    background-color: #0A8FFC;
+    background-color: #006AC2;
     color: #FFF;
 }
 
