@@ -1,5 +1,8 @@
 /****
 	Overrides for the default styling of purecss's layout(s)
+
+	color palette:
+	http://paletton.com/#uid=73y0u0k+bFooMYfHB+5YtpFVIew
 ****/
 
 html, body {
@@ -17,7 +20,7 @@ img {
 }
 
 #menu {
-	background-color: #014884;
+	background-color: #05028F;
 }
 
 #menu .pure-menu-item.selected {
@@ -35,7 +38,8 @@ img {
 }
 
 #menu .pure-menu-link {
-	color: #45A6F7;
+	/* text color of menu items that are not selected or hovered */
+	color: #7DC2FB;
 }
 
 #menu .new-menu-link {
