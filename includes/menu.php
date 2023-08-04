@@ -9,7 +9,7 @@ $menu = array(
     'Rainfall Amounts' => array('url' => 'rainfall.php', 'tooltip' => ''),
     // 'Earthquakes'       => array('url' => 'earthquakes.php', 'tooltip' => ''),
     'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
-    'Twitter'   => array('url' => 'twitter.php', 'tooltip' => ''),
+    // 'Twitter'   => array('url' => 'twitter.php', 'tooltip' => ''),
     'About'     => array('url' => 'about.php', 'tooltip' => ''),
     'Donate'    => array('url' => 'donate.php', 'tooltip' => 'Buy me a coffee!')
 );
