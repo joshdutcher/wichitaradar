@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
 
 <head>
     <meta charset="utf-8">
@@ -49,6 +49,7 @@ if (array_key_exists($pagename, $auto_refresh_pages)) {
 	<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
 	<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
 	<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+    <meta property="og:image" content="https://www.wichitaradar.com/mstile-310x310.png" />
 
     <link rel="stylesheet" href="css/pure/0.6.0/pure-min.css">
 
