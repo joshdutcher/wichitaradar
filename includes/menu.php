@@ -11,6 +11,7 @@ $menu = array(
     'Resources' => array('url' => 'resources.php', 'tooltip' => ''),
     // 'Twitter'   => array('url' => 'twitter.php', 'tooltip' => ''),
     'About'     => array('url' => 'about.php', 'tooltip' => ''),
+    'Disclaimer'   => array('url' => 'disclaimer.php', 'tooltip' => ''),
     'Donate'    => array('url' => 'donate.php', 'tooltip' => 'Buy me a coffee!')
 );
 
