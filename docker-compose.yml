@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   php:
     hostname: www
@@ -10,5 +9,4 @@ services:
       - "443:443"
     volumes:
       - .:/var/www/html/
-
 # to visit site: https://localhost:316
