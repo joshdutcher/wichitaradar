@@ -10,20 +10,13 @@
         	<div class="pure-u textbox">
         		Past 24 hours
         	</div>
-
-        	<div class="accuweather">
-                <a href="https://www.accuweather.com/en/us/kansas/weather-radar-24hr">
-                    <img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480c/24hr/inm24hrks_.gif" /><br/>
-                    <img class="pure-img-responsive" src="http://vortex.accuweather.com/adc2010/images/keys/radar24hrf.png" />
-                </a>
-	        </div>
 			<a href="https://www.wunderground.com/maps/precipitation/daily/sln">
         		<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preday/sln/<?php echo date('Ymd'); ?>/1200z.gif" />
 			</a>
 			<a href="https://www.wunderground.com/maps/precipitation/daily">
         		<img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/pbs/preday/usa/<?php echo date('Ymd'); ?>/1200z.gif" />
 			</a>
-    	</div>
+        </div>
     	<div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
     	    <div class="pure-u textbox">
         		Past week
