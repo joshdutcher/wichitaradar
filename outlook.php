@@ -32,13 +32,13 @@ function getGraphicasts() {
         if ($timeNow < $endTime && $timeNow >= $startTime && !$radar) {
             $imageUrl = (string) $graphicast->SmallImage;
             $wxstoryImgArray[] = array(
-                'url'   => 'http://weather.gov' . $imageUrl . '?' . rand(100000,999999),
+                'url'   => $imageUrl . '?' . rand(100000,999999),
                 'alt'   => preg_replace('/\s+/', ' ', trim((string) $graphicast->description)),
                 'order' => (int) $graphicast->order
             );
         }
     }
-    
+
     if (empty($wxstoryImgArray)) {
         $wxstoryImgArray[0]['url']   = '/img/nostories.png';
         $wxstoryImgArray[0]['alt']   = 'No Weather Stories!';
