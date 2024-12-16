@@ -34,11 +34,6 @@ https://github.com/emartinez-usgs/earthquake-widget
         	<a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
                 <img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
             </a>
-
-            <!-- ****** Wunderground radar ****** -->
-            <a href="https://www.wunderground.com/radar/us/ks/salina">
-                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/ussln/animate.png" />
-            </a>
         </div>
 
         <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">

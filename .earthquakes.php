@@ -1,8 +1,4 @@
-<?php
-
-require_once('includes/init.php');
-
-?>
+<?php require_once('includes/init.php'); ?>
 
 <?php require_once('includes/header.php'); ?>
 <body>

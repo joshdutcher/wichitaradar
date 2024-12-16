@@ -1,7 +1,5 @@
 <?php require_once 'includes/init.php';?>
 
-<!doctype html>
-<html lang="en">
 <?php require_once 'includes/header.php';?>
 <body>
 
