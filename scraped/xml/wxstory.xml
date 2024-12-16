@@ -1,0 +1,118 @@
+<xml version="1.0">
+  <head>
+    <product concise-name="graphicast">
+      <creation-date>2024-12-16T10:51:31.171Z</creation-date>
+    </product>
+    <source>
+      <credit>http://www.weather.gov/ict</credit>
+      <production-center>Wichita, KS</production-center>
+    </source>
+  </head>
+  <graphicasts>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1734344100</StartTime>
+      <EndTime>1734350700</EndTime>
+      <graphicNumber>1</graphicNumber>
+      <order>1</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Dense Fog Southeast Kansas This Morning]]>
+      </title>
+      <description>
+        <![CDATA[A brief period of dense fog is expected to continue through the remainder of the early morning hours across southeast Kansas. Please exercise caution if traveling in the area this morning.]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab1FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab1FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1734344400</StartTime>
+      <EndTime>1734393600</EndTime>
+      <graphicNumber>4</graphicNumber>
+      <order>4</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Another Mild Day Today]]>
+      </title>
+      <description>
+        <![CDATA[Despite a weak cold front passing through the region this morning, afternoon temperatures are still expected to rise into the 50s and low 60s. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab4FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab4FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1734343620</StartTime>
+      <EndTime>1734397200</EndTime>
+      <graphicNumber>5</graphicNumber>
+      <order>5</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Forecast Through Friday]]>
+      </title>
+      <description>
+        <![CDATA[Rollercoaster temperatures will be the main feature this week as a couple of cold fronts pass through the area. A few showers are possible across southeast Kansas Tuesday night, but much of the area will remain dry through the end of the week.]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab5FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab5FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1732311240</StartTime>
+      <EndTime>1734087600</EndTime>
+      <graphicNumber>3</graphicNumber>
+      <order>3</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Weekend forecast]]>
+      </title>
+      <description>
+        <![CDATA[Plenty of sunshine and above normal temperatures are expected for both Saturday and Sunday. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab3FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab3FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1733248860</StartTime>
+      <EndTime>1733484960</EndTime>
+      <graphicNumber>2</graphicNumber>
+      <order>2</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[November Precipitation ]]>
+      </title>
+      <description>
+        <![CDATA[Here is a map of precipitation totals across Kansas in November. A handful of locations in southeast Kansas measured over 10 inches!]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab2FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab2FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+  </graphicasts>
+</xml>

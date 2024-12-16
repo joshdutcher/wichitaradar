@@ -31,14 +31,24 @@ function getGraphicasts() {
         $radar     = (boolean) $graphicast->radar->__toString();
         if ($timeNow < $endTime && $timeNow >= $startTime && !$radar) {
             $imageUrl = (string) $graphicast->SmallImage;
+            // Clean up the image URL
+            $imageUrl = ltrim($imageUrl, '/'); // Remove leading slashes
+            if (stripos($imageUrl, 'http://') === 0 || stripos($imageUrl, 'https://') === 0) {
+                // URL already has domain, use as is
+                $fullUrl = $imageUrl;
+            } else {
+                // URL is relative, prepend domain
+                $fullUrl = 'http://weather.gov/' . $imageUrl;
+            }
+
             $wxstoryImgArray[] = array(
-                'url'   => 'http://weather.gov' . $imageUrl . '?' . rand(100000,999999),
+                'url'   => $fullUrl . '?' . rand(100000,999999),
                 'alt'   => preg_replace('/\s+/', ' ', trim((string) $graphicast->description)),
                 'order' => (int) $graphicast->order
             );
         }
     }
-    
+
     if (empty($wxstoryImgArray)) {
         $wxstoryImgArray[0]['url']   = '/img/nostories.png';
         $wxstoryImgArray[0]['alt']   = 'No Weather Stories!';
