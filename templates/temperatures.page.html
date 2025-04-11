@@ -1,0 +1,53 @@
+{{define "temperatures"}}
+{{template "base" .}}
+{{end}}
+
+{{define "content"}}
+    <div class="pure-g">
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            <!-- ****** KSNW ***** -->
+            <a href="https://www.ksn.com/weather/images/kansas-temps/">
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksnow_full.jpg" border="0" />
+            </a>
+
+            {{if .SWXCOFiles.ddc}}
+            <!-- ****** wunderground dodge city ****** -->
+        	<a href="https://www.wunderground.com/maps/temperature/us-current/ddc">
+                <img class="pure-img-responsive" src="{{.SWXCOFiles.ddc}}" border="0" />
+            </a>
+            {{end}}
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            <!-- ****** Weather.com **** -->
+            <a href="https://weather.com/maps/ustemperaturemap">
+                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
+            </a>
+
+            {{if .SWXCOFiles.usa}}
+            <!-- ****** wunderground ****** -->
+            <a href="https://www.wunderground.com/maps/temperature/us-current/usa">
+                <img class="pure-img-responsive" src="{{.SWXCOFiles.usa}}" border="0" />
+            </a>
+            {{end}}
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            <!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/conus.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/conus/MaxT1_conus.png" border="0" />
+            </a>
+
+            <!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/centplains.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png" border="0" />
+            </a>
+
+            <!-- ****** Weather.gov ***** -->
+            <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
+                <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
+            </a>
+        </div>
+
+    </div>
+{{end}}

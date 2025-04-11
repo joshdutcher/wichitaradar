@@ -1,0 +1,29 @@
+{{define "satellite"}}
+{{template "base" .}}
+{{end}}
+
+{{define "content"}}
+    <div class="pure-g">
+        <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
+            <!-- GOES-16 CONUS GeoColor -->
+            <a href="https://www.star.nesdis.noaa.gov/GOES/GOES16_CONUS_Band.php?band=GEOCOLOR&length=24">
+                <img class="pure-img-responsive" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/GIFS/GOES16-CONUS-GEOCOLOR-625x375.gif" />
+            </a>
+            <!-- GOES-16 UMV GeoColor -->
+            <a href="https://www.star.nesdis.noaa.gov/GOES/GOES16_sector_band.php?sector=umv&band=GEOCOLOR&length=24">
+                <img class="pure-img-responsive" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/GIFS/GOES16-UMV-GEOCOLOR-600x600.gif" />
+            </a>
+        </div>
+
+        <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
+            <!-- Wunderground Regional Infrared -->
+            <a href="https://www.wunderground.com/maps/satellite/regional-infrared/usace">
+                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png" />
+            </a>
+            <!-- AccuWeather Satellite -->
+            <a href="https://www.accuweather.com/en/us/kansas/satellite">
+                <img class="pure-img-responsive" src="http://sirocco.accuweather.com/sat_mosaic_640x480_public/ei/isaeks_.gif" />
+            </a>
+        </div>
+    </div>
+{{end}}

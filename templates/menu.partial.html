@@ -1,0 +1,27 @@
+{{define "menu"}}
+<!-- Menu toggle -->
+<a href="#menu" id="menuLink" class="menu-link">
+    <!-- Hamburger icon -->
+    <span></span>
+</a>
+
+<div id="menu">
+    <div class="pure-menu">
+        <ul class="pure-menu-list">
+            {{range .Menu.Items}}
+            <li class="pure-menu-item{{if $.Menu.IsSelected . $.CurrentPath}} selected{{end}}">
+                {{if .IsNew}}
+                <div class="new-menu-link"><img id="new" src="/static/img/new.png"></div>
+                {{end}}
+                <a href="{{.URL}}" class="pure-menu-link" title="{{.Tooltip}}">{{.Label}}</a>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+    <div class="menu-footer">
+        {{.Menu.LoadTime.Format "3:04:05 PM"}}<br/>
+        {{.Menu.LoadTime.Format "2006-01-02"}}<br/>
+        <img src="/static/img/positivessl_trust_seal_sm_124x32.png" />
+    </div>
+</div>
+{{end}}
