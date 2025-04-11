@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"wichitaradar/cmd/server/handlers"
+	"wichitaradar/internal/handlers"
 	"wichitaradar/pkg/templates"
 )
 

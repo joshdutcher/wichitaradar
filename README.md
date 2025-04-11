@@ -1,35 +1,38 @@
-# Wichita Radar
+# WichitaRadar
 
-A simple, responsive weather radar website for Wichita, Kansas and surrounding areas. This site aggregates multiple radar sources into a single, easy-to-use interface.
+A weather information website serving the Wichita, Kansas area. This project provides real-time weather data, including radar, satellite, temperature maps, and weather stories.
+
+## Project Structure
+
+The project follows standard Go project layout conventions:
+
+- `/cmd/server` - Main web server application
+- `/internal/handlers` - HTTP handlers specific to this weather site
+- `/pkg/templates` - Reusable template system
+- `/static` - Static assets (CSS, JavaScript, images)
+- `/templates` - HTML templates for the website
 
 ## Features
 
-- Multiple radar sources including Wunderground, Accuweather, KSN, and NOAA
-- Responsive design using PureCSS framework
-- Auto-refreshing radar animations
-- Additional weather resources including:
-  - Satellite imagery
-  - Temperature data
-  - Rainfall information
-  - Weather outlooks
-  - Earthquake data
+- Real-time weather radar
+- Satellite imagery
+- Temperature maps
+- Weather stories and outlooks
+- Severe weather watches
+- Rainfall data
+- Weather resources and links
 
 ## Technical Details
 
-- Built with PHP
-- Uses Docker for containerization
-- Responsive design using PureCSS
-- JavaScript-powered radar animations
-- Mobile-friendly with appropriate favicons and touch icons
+- Built with Go
+- Uses standard library `net/http` for web serving
+- HTML templates with layout inheritance
+- Responsive design using Pure CSS
+- Docker containerization
 
-## Setup
+## License
 
-1. Clone the repository
-2. Copy `.env.example` to `.env` and configure as needed
-3. Run using Docker Compose:
-   ```bash
-   docker-compose up -d
-   ```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Disclaimer
 
