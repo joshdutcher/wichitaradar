@@ -138,7 +138,8 @@ func getWeatherStories() ([]WeatherStory, error) {
 	if shouldDownload {
 		// Download fresh XML file
 		fmt.Println("Downloading fresh XML file")
-		resp, err := http.Get("https://www.weather.gov/ict/wxstory/wxstory.xml")
+		// DO NOT CHANGE THIS URL - it is the correct source for Wichita weather stories XML
+		resp, err := http.Get("https://www.weather.gov/source/ict/wxstory/wxstory.xml")
 		if err != nil {
 			fmt.Printf("Failed to download XML: %v\n", err)
 			return nil, fmt.Errorf("failed to download XML: %v", err)
