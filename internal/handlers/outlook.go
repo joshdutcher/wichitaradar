@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -101,8 +102,15 @@ func HandleOutlook(w http.ResponseWriter, r *http.Request) {
 }
 
 func getWeatherStories() ([]WeatherStory, error) {
-	// Ensure the directory exists
-	xmlDir := "scraped/xml"
+	// Get the current working directory
+	workDir, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Failed to get working directory: %v\n", err)
+		return nil, fmt.Errorf("failed to get working directory: %v", err)
+	}
+
+	// Ensure the directory exists and is writable
+	xmlDir := filepath.Join(workDir, "scraped/xml")
 	if err := os.MkdirAll(xmlDir, 0755); err != nil {
 		fmt.Printf("Failed to create xml directory: %v\n", err)
 		return nil, fmt.Errorf("failed to create xml directory: %v", err)
@@ -110,17 +118,25 @@ func getWeatherStories() ([]WeatherStory, error) {
 
 	xmlPath := filepath.Join(xmlDir, "wxstory.xml")
 
-	// Check if file exists and is less than 5 minutes old
+	// Check if we need to download a new file
 	shouldDownload := true
 	if info, err := os.Stat(xmlPath); err == nil {
-		if time.Since(info.ModTime()) < 5*time.Minute {
+		// File exists, check its age
+		age := time.Since(info.ModTime())
+		fmt.Printf("Cached XML file is %v old\n", age)
+		if age < 5*time.Minute {
 			shouldDownload = false
-			fmt.Println("Using cached XML file")
+			fmt.Printf("Using cached XML file (downloaded %v ago)\n", age)
+		} else {
+			fmt.Println("Cached XML file is too old, downloading fresh")
 		}
+	} else {
+		fmt.Println("No cached XML file found, downloading fresh")
 	}
 
-	// Download the file if needed
+	var body []byte
 	if shouldDownload {
+		// Download fresh XML file
 		fmt.Println("Downloading fresh XML file")
 		resp, err := http.Get("https://www.weather.gov/ict/wxstory/wxstory.xml")
 		if err != nil {
@@ -134,33 +150,37 @@ func getWeatherStories() ([]WeatherStory, error) {
 			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 		}
 
-		// Create the file
-		file, err := os.Create(xmlPath)
+		// Read the response body
+		body, err = io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("Failed to create file: %v\n", err)
-			return nil, fmt.Errorf("failed to create file: %v", err)
+			fmt.Printf("Failed to read response body: %v\n", err)
+			return nil, fmt.Errorf("failed to read response body: %v", err)
 		}
-		defer file.Close()
 
-		// Copy the response body to the file
-		if _, err := io.Copy(file, resp.Body); err != nil {
-			fmt.Printf("Failed to write file: %v\n", err)
-			return nil, fmt.Errorf("failed to write file: %v", err)
+		// Save to cache
+		if err := os.WriteFile(xmlPath, body, 0644); err != nil {
+			fmt.Printf("Failed to write cache file: %v\n", err)
+			// Continue anyway, we have the data in memory
+		} else {
+			fmt.Println("Successfully cached XML file")
 		}
-		fmt.Println("Successfully downloaded and saved XML file")
+	} else {
+		// Read from cache
+		var err error
+		body, err = os.ReadFile(xmlPath)
+		if err != nil {
+			fmt.Printf("Failed to read cache file: %v\n", err)
+			return nil, fmt.Errorf("failed to read cache file: %v", err)
+		}
+		fmt.Println("Successfully read from cache")
 	}
 
-	// Read and parse the local file
-	file, err := os.Open(xmlPath)
-	if err != nil {
-		fmt.Printf("Failed to open file: %v\n", err)
-		return nil, fmt.Errorf("failed to open file: %v", err)
-	}
-	defer file.Close()
+	// Print first 500 characters of XML for debugging
+	fmt.Printf("XML content (first 500 chars): %s\n", string(body[:min(500, len(body))]))
 
 	// Parse XML
 	var feed WeatherFeed
-	decoder := xml.NewDecoder(file)
+	decoder := xml.NewDecoder(bytes.NewReader(body))
 	decoder.Strict = false
 	decoder.AutoClose = xml.HTMLAutoClose
 	decoder.Entity = xml.HTMLEntity
@@ -234,4 +254,11 @@ func getWeatherStories() ([]WeatherStory, error) {
 
 	fmt.Printf("Returning %d stories\n", len(stories))
 	return stories, nil
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
