@@ -44,6 +44,10 @@ func main() {
 
 	// Register handlers
 	http.HandleFunc("/", handlers.HandleHome)
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
 	http.HandleFunc("/outlook", handlers.HandleOutlook)
 	http.HandleFunc("/satellite", handlers.HandleSatellite)
 	http.HandleFunc("/watches", handlers.HandleWatches)
@@ -57,7 +61,7 @@ func main() {
 	// Get port from environment or use default
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "316"
+		port = "80"
 	}
 
 	// Start server

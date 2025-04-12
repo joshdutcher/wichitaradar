@@ -4,12 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "316:316"
+      - '316:80'
     volumes:
       - .:/app
       - go-modules:/go/pkg/mod
     environment:
-      - PORT=316
+      - PORT=80
     restart: unless-stopped
     tty: true
     stdin_open: true

@@ -29,7 +29,7 @@ COPY templates/ ./templates/
 COPY static/ ./static/
 
 # Expose port
-EXPOSE 8080
+EXPOSE 80
 
 # Run the application
 CMD ["./wichitaradar"]
