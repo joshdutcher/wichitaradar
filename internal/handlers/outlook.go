@@ -159,7 +159,7 @@ func getWeatherStories() ([]WeatherStory, error) {
 	if err := decoder.Decode(&feed); err != nil {
 		// Don't return error, just use default story
 		return []WeatherStory{{
-			URL:   "/img/nostories.png",
+			URL:   "/static/img/nostories.png",
 			Alt:   "No Weather Stories!",
 			Order: 0,
 		}}, nil
@@ -205,7 +205,7 @@ func getWeatherStories() ([]WeatherStory, error) {
 	// If no stories, add default
 	if len(stories) == 0 {
 		stories = []WeatherStory{{
-			URL:   "/img/nostories.png",
+			URL:   "/static/img/nostories.png",
 			Alt:   "No Weather Stories!",
 			Order: 0,
 		}}
