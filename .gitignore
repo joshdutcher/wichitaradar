@@ -1,3 +1,4 @@
 .xml_error
 error_log
 wichitaradar
+scraped/xml/*
