@@ -1,0 +1,35 @@
+{{define "outlook"}}
+{{template "base" .}}
+{{end}}
+
+{{define "content"}}
+    <div class="pure-g">
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            <a href="https://www.ksn.com/weather/">
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/wx_weekly_full.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsToday.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QELowsTonight.jpg" />
+                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsTomorrow.jpg" />
+            </a>
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            {{range .Stories}}
+            <a href="http://www.weather.gov/crh/weatherstory?sid=ict#.WCX0gvkrJhE">
+                <img class="pure-img-responsive" src="{{.Image}}" border="0" id="wichitaWeatherStory" alt="{{.Description}}" />
+            </a>
+            {{end}}
+        </div>
+
+        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+            <div class="pure-u textbox">
+                Convective outlook
+            </div>
+            <a href="http://www.spc.noaa.gov/products/outlook/">
+                <img class="pure-img-responsive" src="/spc/image?type=day1" />
+                <img class="pure-img-responsive" src="/spc/image?type=day2" />
+                <img class="pure-img-responsive" src="/spc/image?type=day3" />
+            </a>
+        </div>
+    </div>
+{{end}}

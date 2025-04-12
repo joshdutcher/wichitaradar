@@ -1,0 +1,46 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Wichita Weather, Wichita, Weather, Radar, Satellite, Animation, Map, Watches, Warnings, Thunderstorms, Tornado, Storm warning, tornado warning, tornado watch" />
+    <meta name="description" content="Collection of animated radar and satellite maps of Wichita area weather, including radar, satellite, watches/warnings, and more info." />
+    <title>Wichita Radar</title>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="application-name" content="Wichita Radar"/>
+
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" href="/static/img/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="WichitaRadar" />
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest" />
+    <meta name="msapplication-TileImage" content="/static/img/favicon/mstile-144x144.png">
+
+    <link rel="stylesheet" href="/static/css/pure/0.6.0/pure-min.css">
+
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="/static/css/layouts/side-menu-old-ie.css">
+        <link rel="stylesheet" href="/static/css/pure/0.6.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="/static/css/layouts/side-menu.css">
+        <link rel="stylesheet" href="/static/css/pure/0.6.0/grids-responsive-min.css">
+    <!--<![endif]-->
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/static/css/wx.css">
+</head>
+<body>
+    <div id="layout">
+        {{template "menu" .}}
+
+        {{template "content" .}}
+    </div>
+
+    {{template "footer.partial.html" .}}
+</body>
+</html>
+{{end}}

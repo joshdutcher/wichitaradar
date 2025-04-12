@@ -1,18 +1,19 @@
 services:
-  php:
-    hostname: www
-    domainname: wichitaradar.local
-    image: auchri/docker-apache-php
-    container_name: wichitaradar
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "316:80"
-      - "443:443"
+      - "316:316"
     volumes:
-      - .:/var/www/html/
-    command: >
-      bash -c "mkdir -p /var/www/html/scraped/xml &&
-               chown -R www-data:www-data /var/www/html/scraped &&
-               chmod -R 777 /var/www/html/scraped &&
-               apache2ctl -D FOREGROUND"
+      - .:/app
+      - go-modules:/go/pkg/mod
+    environment:
+      - PORT=316
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    command: modd
 
-# to visit site: https://localhost:316
+volumes:
+  go-modules:
