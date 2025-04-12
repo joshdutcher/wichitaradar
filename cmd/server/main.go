@@ -45,18 +45,6 @@ func main() {
 	// Root route handler
 	http.HandleFunc("/", handlers.HandleHome)
 
-	// Radar image handler
-	http.HandleFunc("/radar.png", handlers.HandleRadarImage)
-
-	// Weather.gov image handler
-	http.HandleFunc("/weather/image", handlers.HandleWeatherImage)
-
-	// SPC outlook image handler
-	http.HandleFunc("/spc/image", handlers.HandleSPCImage)
-
-	// XML handler
-	http.HandleFunc("/xml", handlers.HandleXML)
-
 	// Page handlers
 	http.HandleFunc("/outlook", handlers.HandleOutlook)
 	http.HandleFunc("/satellite", handlers.HandleSatellite)

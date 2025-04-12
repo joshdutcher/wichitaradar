@@ -3,8 +3,11 @@ package handlers
 import (
 	"encoding/xml"
 	"fmt"
+	"io"
 	"math/rand"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -98,21 +101,57 @@ func HandleOutlook(w http.ResponseWriter, r *http.Request) {
 }
 
 func getWeatherStories() ([]WeatherStory, error) {
-	// Fetch XML from our endpoint
-	url := "http://localhost:316/xml?path=ict/wxstory/wxstory.xml"
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch XML: %v", err)
+	// Ensure the directory exists
+	xmlDir := "scraped/xml"
+	if err := os.MkdirAll(xmlDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create xml directory: %v", err)
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	xmlPath := filepath.Join(xmlDir, "wxstory.xml")
+
+	// Check if file exists and is less than 5 minutes old
+	shouldDownload := true
+	if info, err := os.Stat(xmlPath); err == nil {
+		if time.Since(info.ModTime()) < 5*time.Minute {
+			shouldDownload = false
+		}
 	}
+
+	// Download the file if needed
+	if shouldDownload {
+		resp, err := http.Get("https://www.weather.gov/ict/wxstory/wxstory.xml")
+		if err != nil {
+			return nil, fmt.Errorf("failed to download XML: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		}
+
+		// Create the file
+		file, err := os.Create(xmlPath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create file: %v", err)
+		}
+		defer file.Close()
+
+		// Copy the response body to the file
+		if _, err := io.Copy(file, resp.Body); err != nil {
+			return nil, fmt.Errorf("failed to write file: %v", err)
+		}
+	}
+
+	// Read and parse the local file
+	file, err := os.Open(xmlPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open file: %v", err)
+	}
+	defer file.Close()
 
 	// Parse XML
 	var feed WeatherFeed
-	decoder := xml.NewDecoder(resp.Body)
+	decoder := xml.NewDecoder(file)
 	decoder.Strict = false
 	decoder.AutoClose = xml.HTMLAutoClose
 	decoder.Entity = xml.HTMLEntity
