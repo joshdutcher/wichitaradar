@@ -104,6 +104,7 @@ func getWeatherStories() ([]WeatherStory, error) {
 	// Ensure the directory exists
 	xmlDir := "scraped/xml"
 	if err := os.MkdirAll(xmlDir, 0755); err != nil {
+		fmt.Printf("Failed to create xml directory: %v\n", err)
 		return nil, fmt.Errorf("failed to create xml directory: %v", err)
 	}
 
@@ -114,37 +115,45 @@ func getWeatherStories() ([]WeatherStory, error) {
 	if info, err := os.Stat(xmlPath); err == nil {
 		if time.Since(info.ModTime()) < 5*time.Minute {
 			shouldDownload = false
+			fmt.Println("Using cached XML file")
 		}
 	}
 
 	// Download the file if needed
 	if shouldDownload {
+		fmt.Println("Downloading fresh XML file")
 		resp, err := http.Get("https://www.weather.gov/ict/wxstory/wxstory.xml")
 		if err != nil {
+			fmt.Printf("Failed to download XML: %v\n", err)
 			return nil, fmt.Errorf("failed to download XML: %v", err)
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("Unexpected status code: %d\n", resp.StatusCode)
 			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 		}
 
 		// Create the file
 		file, err := os.Create(xmlPath)
 		if err != nil {
+			fmt.Printf("Failed to create file: %v\n", err)
 			return nil, fmt.Errorf("failed to create file: %v", err)
 		}
 		defer file.Close()
 
 		// Copy the response body to the file
 		if _, err := io.Copy(file, resp.Body); err != nil {
+			fmt.Printf("Failed to write file: %v\n", err)
 			return nil, fmt.Errorf("failed to write file: %v", err)
 		}
+		fmt.Println("Successfully downloaded and saved XML file")
 	}
 
 	// Read and parse the local file
 	file, err := os.Open(xmlPath)
 	if err != nil {
+		fmt.Printf("Failed to open file: %v\n", err)
 		return nil, fmt.Errorf("failed to open file: %v", err)
 	}
 	defer file.Close()
@@ -157,6 +166,7 @@ func getWeatherStories() ([]WeatherStory, error) {
 	decoder.Entity = xml.HTMLEntity
 
 	if err := decoder.Decode(&feed); err != nil {
+		fmt.Printf("Failed to parse XML: %v\n", err)
 		// Don't return error, just use default story
 		return []WeatherStory{{
 			URL:   "/static/img/nostories.png",
@@ -164,6 +174,8 @@ func getWeatherStories() ([]WeatherStory, error) {
 			Order: 0,
 		}}, nil
 	}
+
+	fmt.Printf("Found %d graphicasts in XML\n", len(feed.Graphicasts.Graphicasts))
 
 	// Process stories
 	var stories []WeatherStory
@@ -173,10 +185,12 @@ func getWeatherStories() ([]WeatherStory, error) {
 		// Parse Unix timestamps
 		startTime, err := strconv.ParseInt(graphicast.StartTime, 10, 64)
 		if err != nil {
+			fmt.Printf("Failed to parse start time: %v\n", err)
 			continue
 		}
 		endTime, err := strconv.ParseInt(graphicast.EndTime, 10, 64)
 		if err != nil {
+			fmt.Printf("Failed to parse end time: %v\n", err)
 			continue
 		}
 
@@ -199,11 +213,13 @@ func getWeatherStories() ([]WeatherStory, error) {
 				Alt:   description,
 				Order: graphicast.Order,
 			})
+			fmt.Printf("Added story: %s\n", description)
 		}
 	}
 
 	// If no stories, add default
 	if len(stories) == 0 {
+		fmt.Println("No valid stories found, using default")
 		stories = []WeatherStory{{
 			URL:   "/static/img/nostories.png",
 			Alt:   "No Weather Stories!",
@@ -216,5 +232,6 @@ func getWeatherStories() ([]WeatherStory, error) {
 		return stories[i].Order < stories[j].Order
 	})
 
+	fmt.Printf("Returning %d stories\n", len(stories))
 	return stories, nil
 }
