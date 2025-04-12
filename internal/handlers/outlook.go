@@ -165,6 +165,8 @@ func getWeatherStories() ([]WeatherStory, error) {
 		} else {
 			fmt.Println("Successfully cached XML file")
 		}
+
+		fmt.Printf("Final URL after redirects: %s\n", resp.Request.URL.String())
 	} else {
 		// Read from cache
 		var err error
@@ -175,9 +177,6 @@ func getWeatherStories() ([]WeatherStory, error) {
 		}
 		fmt.Println("Successfully read from cache")
 	}
-
-	// Print first 500 characters of XML for debugging
-	fmt.Printf("XML content (first 500 chars): %s\n", string(body[:min(500, len(body))]))
 
 	// Parse XML
 	var feed WeatherFeed
