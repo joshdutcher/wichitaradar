@@ -42,10 +42,8 @@ func main() {
 	staticDir := filepath.Join(workDir, "static")
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
-	// Root route handler
+	// Register handlers
 	http.HandleFunc("/", handlers.HandleHome)
-
-	// Page handlers
 	http.HandleFunc("/outlook", handlers.HandleOutlook)
 	http.HandleFunc("/satellite", handlers.HandleSatellite)
 	http.HandleFunc("/watches", handlers.HandleWatches)
