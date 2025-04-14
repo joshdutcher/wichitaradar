@@ -75,4 +75,3 @@ This site aggregates weather data from various sources. The creator does not cla
 ## Contact
 
 For questions or concerns, contact Josh Dutcher at josh.dutcher@joshdutcher.com
-
