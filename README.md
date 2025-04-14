@@ -4,7 +4,7 @@ A Go web application providing real-time weather radar and satellite imagery for
 
 ## Features
 
-- Real-time radar imagery from the Wichita NWS office
+- Real-time radar imagery from various local sources
 - Satellite imagery with infrared and visible light options
 - Weather stories and forecasts from the NWS
 - Precipitation maps for 24-hour and 7-day periods
