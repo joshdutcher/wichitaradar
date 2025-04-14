@@ -1,0 +1,38 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Force Go files to use LF line endings
+*.go text eol=lf
+
+# Force HTML templates to use LF line endings
+*.html text eol=lf
+
+# Force JavaScript files to use LF line endings
+*.js text eol=lf
+
+# Force CSS files to use LF line endings
+*.css text eol=lf
+
+# Force YAML files to use LF line endings
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Force Markdown files to use LF line endings
+*.md text eol=lf
+
+# Force configuration files to use LF line endings
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.prettierrc text eol=lf
+modd.conf text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
