@@ -1,4 +1,4 @@
-.PHONY: test test-race test-clean test-coverage test-package
+.PHONY: test test-race coverage
 
 # Run all tests
 test:
@@ -9,9 +9,9 @@ test-race:
 	go test ./... -race -v
 
 # Run tests with coverage
-test-coverage:
+coverage:
 	go test ./... -coverprofile=coverage.out
-	go tool cover -html=coverage.out
+	go tool cover -func=coverage.out
 
 # Run tests for a specific package
 test-package:

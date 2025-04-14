@@ -45,7 +45,7 @@
     <!-- Load Sentry SDK -->
     <script src="https://js.sentry-cdn.com/8646d6db70e193b7fb53c73ae2973eb2.min.js" crossorigin="anonymous"></script>
     <!-- Load our custom error tracking -->
-    <script src="/static/js/image-error.js" type="module"></script>
+    <script src="/static/js/image-error.js"></script>
     <!-- Test button for Sentry (hidden by default) -->
     <style>
       #sentry-test {
@@ -55,6 +55,12 @@
         z-index: 9999;
         opacity: 0.1;
         transition: opacity 0.3s;
+        padding: 8px 16px;
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
       }
       #sentry-test:hover {
         opacity: 1;
@@ -67,7 +73,13 @@
     {{template "footer.partial.html" .}}
 
     <!-- Hidden test button for Sentry -->
-    <button id="sentry-test" onclick="myUndefinedFunction()">Test Sentry</button>
+    <button id="sentry-test">Test Sentry</button>
+    <script>
+      document.getElementById('sentry-test').addEventListener('click', function () {
+        // This will trigger a Sentry error
+        throw new Error('This is a test error from the Sentry test button');
+      });
+    </script>
   </body>
 </html>
 {{end}}

@@ -1,6 +1,4 @@
 // Initialize Sentry
-import * as Sentry from '@sentry/browser';
-
 Sentry.init({
   environment: 'production',
   tracesSampleRate: 1.0,
@@ -28,15 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         extra: errorData,
       });
-
-      // Also send to our server for backup logging
-      fetch('/api/image-error', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(errorData),
-      }).catch(err => console.error('Failed to report image error:', err));
     });
   }
 });
