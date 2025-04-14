@@ -10,14 +10,12 @@ import (
 
 // HandleHome handles the home page
 func HandleHome(w http.ResponseWriter, r *http.Request) {
-	// fmt.Fprintln(w, "Home handler reached!") // Simple response for testing
-	// Temporarily commented out template logic
 	// Create template data
 	data := struct {
 		Menu        *menu.Menu
 		CurrentPath string
 	}{
-		Menu:        menu.New(), // This might cause issues if menu package isn't imported
+		Menu:        menu.New(),
 		CurrentPath: r.URL.Path,
 	}
 
@@ -39,7 +37,6 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Got nil template set from templates.Get", http.StatusInternalServerError)
 		return
 	}
-	// fmt.Fprintf(w, "Successfully got template set for page: %s!", data.Title) // REMOVED test print
 
 	// Execute the main template definition within this set (which should be "index")
 	if err := ts.ExecuteTemplate(w, "index", data); err != nil {

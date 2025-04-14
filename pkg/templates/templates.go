@@ -11,6 +11,22 @@ import (
 // Store templates in a map, keyed by the page template filename (e.g., "index.page.html")
 var templatesMap map[string]*template.Template
 
+// DefaultTemplateProvider is the default implementation of TemplateProvider
+type DefaultTemplateProvider struct{}
+
+// Get returns the template set for a specific page
+func (p *DefaultTemplateProvider) Get(pageName string) (*template.Template, error) {
+	// Ensure .page.html suffix if not present
+	if !strings.HasSuffix(pageName, ".page.html") {
+		pageName += ".page.html"
+	}
+	ts, ok := templatesMap[pageName]
+	if !ok {
+		return nil, fmt.Errorf("template %q not found", pageName)
+	}
+	return ts, nil
+}
+
 func Init(templateFS fs.FS) error {
 	templatesMap = make(map[string]*template.Template)
 
@@ -44,15 +60,7 @@ func Init(templateFS fs.FS) error {
 	return nil
 }
 
-// Get returns the template set for a specific page
+// Get returns the template set for a specific page using the default provider
 func Get(pageName string) (*template.Template, error) {
-	// Ensure .page.html suffix if not present
-	if !strings.HasSuffix(pageName, ".page.html") {
-		pageName += ".page.html"
-	}
-	ts, ok := templatesMap[pageName]
-	if !ok {
-		return nil, fmt.Errorf("template %q not found", pageName)
-	}
-	return ts, nil
+	return (&DefaultTemplateProvider{}).Get(pageName)
 }

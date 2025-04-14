@@ -19,8 +19,21 @@ type Menu struct {
 	LoadTime time.Time
 }
 
-// New creates a new Menu instance with the default items
+// MenuProvider defines the interface for creating menus
+type MenuProvider interface {
+	New() *Menu
+}
+
+// DefaultMenuProvider is the default implementation of MenuProvider
+type DefaultMenuProvider struct{}
+
+// New creates a new menu using the default provider
 func New() *Menu {
+	return DefaultMenuProvider{}.New()
+}
+
+// New creates a new menu
+func (p DefaultMenuProvider) New() *Menu {
 	// Get Central Time location (automatically handles daylight saving)
 	loc, err := time.LoadLocation("America/Chicago")
 	if err != nil {

@@ -21,7 +21,7 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to get working directory: %v", err)
 	}
-	xmlCache = cache.New(filepath.Join(workDir, "scraped/xml"), 15*time.Minute)
+	xmlCache = cache.New(cache.GetXMLCacheDir(workDir), 15*time.Minute)
 }
 
 // HandleXML handles requests for XML files

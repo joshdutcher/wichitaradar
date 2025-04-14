@@ -1,0 +1,118 @@
+<xml version="1.0">
+  <head>
+    <product concise-name="graphicast">
+      <creation-date>2025-04-14T10:39:37.508Z</creation-date>
+    </product>
+    <source>
+      <credit>http://www.weather.gov/ict</credit>
+      <production-center>Wichita, KS</production-center>
+    </source>
+  </head>
+  <graphicasts>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1743757560</StartTime>
+      <EndTime>1743798600</EndTime>
+      <graphicNumber>5</graphicNumber>
+      <order>5</order>
+      <radar>1</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Rain Showers Continue]]>
+      </title>
+      <description>
+        <![CDATA[Rain showers will continue through the afternoon. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://radar.weather.gov/ridge/standard/KICT_loop.gif</FullImage>
+      <SmallImage>https://radar.weather.gov/ridge/standard/KICT_loop.gif</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1744576620</StartTime>
+      <EndTime>1744668000</EndTime>
+      <graphicNumber>1</graphicNumber>
+      <order>1</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Highs today & overnight lows]]>
+      </title>
+      <description>
+        <![CDATA[Cooler temperatures are expected for today and tonight compared to the last few days. Look for highs in the 60s this afternoon with overnight lows falling into the 30s. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab1FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab1FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1744576800</StartTime>
+      <EndTime>1744670400</EndTime>
+      <graphicNumber>3</graphicNumber>
+      <order>3</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Three day forecast]]>
+      </title>
+      <description>
+        <![CDATA[A warm-up is expected through mid week with many locations seeing highs in the 90s by Thursday.  A few storms will be possible over southeast Kansas late Wednesday night.  Gusty winds and low relative humidity will elevate the fire danger for Thursday. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab3FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab3FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1743932280</StartTime>
+      <EndTime>1744110000</EndTime>
+      <graphicNumber>2</graphicNumber>
+      <order>2</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[A Look Ahead through Mid-April]]>
+      </title>
+      <description>
+        <![CDATA[Through mid-April, chances strongly favor warmer than average temperatures across Kansas, and slightly favor drier than average conditions. ]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab2FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab2FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+    <graphicast>
+      <Office>Wichita, KS</Office>
+      <cwa_center_lat>37.6833</cwa_center_lat>
+      <cwa_center_lon>-97.3333</cwa_center_lon>
+      <StartTime>1742549160</StartTime>
+      <EndTime>1742549160</EndTime>
+      <graphicNumber>4</graphicNumber>
+      <order>4</order>
+      <radar>0</radar>
+      <FrontPage>true</FrontPage>
+      <title>
+        <![CDATA[Weekend Forecast]]>
+      </title>
+      <description>
+        <![CDATA[Seasonably warm temperatures return for the weekend. There is a chance of a few showers and storms Saturday night into early Sunday morning with the best chances being across southeast Kansas.]]>
+      </description>
+      <WebURL>/ict/</WebURL>
+      <FullImage>https://www.weather.gov//images/ict/wxstory/Tab4FileL.png</FullImage>
+      <SmallImage>https://www.weather.gov//images/ict/wxstory/Tab4FileL.png</SmallImage>
+      <ImageLoop></ImageLoop>
+    </graphicast>
+  </graphicasts>
+</xml>
