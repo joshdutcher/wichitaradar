@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"wichitaradar/internal/cache"
 	"wichitaradar/menu"
 	"wichitaradar/pkg/templates"
 )
@@ -101,86 +102,10 @@ func HandleOutlook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getWeatherStories() ([]WeatherStory, error) {
-	// Get the current working directory
-	workDir, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Failed to get working directory: %v\n", err)
-		return nil, fmt.Errorf("failed to get working directory: %v", err)
-	}
-
-	// Ensure the directory exists and is writable
-	xmlDir := filepath.Join(workDir, "scraped/xml")
-	if err := os.MkdirAll(xmlDir, 0755); err != nil {
-		fmt.Printf("Failed to create xml directory: %v\n", err)
-		return nil, fmt.Errorf("failed to create xml directory: %v", err)
-	}
-
-	xmlPath := filepath.Join(xmlDir, "wxstory.xml")
-
-	// Check if we need to download a new file
-	shouldDownload := true
-	if info, err := os.Stat(xmlPath); err == nil {
-		// File exists, check its age
-		age := time.Since(info.ModTime())
-		fmt.Printf("Cached XML file is %v old\n", age)
-		if age < 5*time.Minute {
-			shouldDownload = false
-			fmt.Printf("Using cached XML file (downloaded %v ago)\n", age)
-		} else {
-			fmt.Println("Cached XML file is too old, downloading fresh")
-		}
-	} else {
-		fmt.Println("No cached XML file found, downloading fresh")
-	}
-
-	var body []byte
-	if shouldDownload {
-		// Download fresh XML file
-		fmt.Println("Downloading fresh XML file")
-		// DO NOT CHANGE THIS URL - it is the correct source for Wichita weather stories XML
-		resp, err := http.Get("https://www.weather.gov/source/ict/wxstory/wxstory.xml")
-		if err != nil {
-			fmt.Printf("Failed to download XML: %v\n", err)
-			return nil, fmt.Errorf("failed to download XML: %v", err)
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode != http.StatusOK {
-			fmt.Printf("Unexpected status code: %d\n", resp.StatusCode)
-			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-		}
-
-		// Read the response body
-		body, err = io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Printf("Failed to read response body: %v\n", err)
-			return nil, fmt.Errorf("failed to read response body: %v", err)
-		}
-
-		// Save to cache
-		if err := os.WriteFile(xmlPath, body, 0644); err != nil {
-			fmt.Printf("Failed to write cache file: %v\n", err)
-			// Continue anyway, we have the data in memory
-		} else {
-			fmt.Println("Successfully cached XML file")
-		}
-
-		fmt.Printf("Final URL after redirects: %s\n", resp.Request.URL.String())
-	} else {
-		// Read from cache
-		var err error
-		body, err = os.ReadFile(xmlPath)
-		if err != nil {
-			fmt.Printf("Failed to read cache file: %v\n", err)
-			return nil, fmt.Errorf("failed to read cache file: %v", err)
-		}
-		fmt.Println("Successfully read from cache")
-	}
-
-	// Parse XML
+// getWeatherStoriesFromReader parses weather stories from an XML reader
+func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherStory, error) {
 	var feed WeatherFeed
-	decoder := xml.NewDecoder(bytes.NewReader(body))
+	decoder := xml.NewDecoder(xmlReader)
 	decoder.Strict = false
 	decoder.AutoClose = xml.HTMLAutoClose
 	decoder.Entity = xml.HTMLEntity
@@ -199,7 +124,7 @@ func getWeatherStories() ([]WeatherStory, error) {
 
 	// Process stories
 	var stories []WeatherStory
-	timeNow := time.Now().Unix()
+	timeNow := now.Unix()
 
 	for _, graphicast := range feed.Graphicasts.Graphicasts {
 		// Parse Unix timestamps
@@ -256,9 +181,92 @@ func getWeatherStories() ([]WeatherStory, error) {
 	return stories, nil
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
+// getWeatherStories fetches and parses weather stories from the XML feed
+func getWeatherStories() ([]WeatherStory, error) {
+	// Get the current working directory
+	workDir, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get working directory: %v", err)
 	}
-	return b
+
+	// Create XML directory if it doesn't exist
+	xmlDir := cache.GetXMLCacheDir(workDir)
+	if err := os.MkdirAll(xmlDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create XML directory: %v", err)
+	}
+
+	xmlPath := filepath.Join(xmlDir, "wxstory.xml")
+
+	// Check if we need to download a new file
+	shouldDownload := true
+	if info, err := os.Stat(xmlPath); err == nil {
+		// File exists, check its age
+		age := time.Since(info.ModTime())
+		fmt.Printf("Cached XML file is %v old\n", age)
+		if age < 5*time.Minute {
+			shouldDownload = false
+			fmt.Printf("Using cached XML file (downloaded %v ago)\n", age)
+		} else {
+			fmt.Println("Cached XML file is too old, downloading fresh")
+		}
+	} else {
+		fmt.Println("No cached XML file found, downloading fresh")
+	}
+
+	var xmlReader io.Reader
+	if shouldDownload {
+		// Download fresh XML file
+		fmt.Println("Downloading fresh XML file")
+		// DO NOT CHANGE THIS URL - it is the correct source for Wichita weather stories XML
+		resp, err := http.Get("https://www.weather.gov/source/ict/wxstory/wxstory.xml")
+		if err != nil {
+			fmt.Printf("Failed to download XML: %v\n", err)
+			return nil, fmt.Errorf("failed to download XML: %v", err)
+		}
+		defer resp.Body.Close()
+
+		// Log the final URL in case of redirects
+		fmt.Printf("Final URL after redirects: %s\n", resp.Request.URL.String())
+
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("Unexpected status code: %d\n", resp.StatusCode)
+			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		}
+
+		// Check content type
+		contentType := resp.Header.Get("Content-Type")
+		fmt.Printf("Response Content-Type: %s\n", contentType)
+		if !strings.Contains(contentType, "xml") && !strings.Contains(contentType, "text/xml") {
+			fmt.Printf("Warning: Unexpected Content-Type: %s\n", contentType)
+		}
+
+		// Read the response body
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("Failed to read response body: %v\n", err)
+			return nil, fmt.Errorf("failed to read response body: %v", err)
+		}
+
+		// Save to cache
+		if err := os.WriteFile(xmlPath, body, 0644); err != nil {
+			fmt.Printf("Failed to write cache file: %v\n", err)
+			// Continue anyway, we have the data in memory
+		} else {
+			fmt.Println("Successfully cached XML file")
+		}
+
+		xmlReader = bytes.NewReader(body)
+	} else {
+		// Read from cache
+		file, err := os.Open(xmlPath)
+		if err != nil {
+			fmt.Printf("Failed to read cache file: %v\n", err)
+			return nil, fmt.Errorf("failed to read cache file: %v", err)
+		}
+		defer file.Close()
+		xmlReader = file
+		fmt.Println("Successfully read from cache")
+	}
+
+	return getWeatherStoriesFromReader(xmlReader, time.Now())
 }
