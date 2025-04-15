@@ -144,7 +144,7 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 			// Clean up image URL
 			imageUrl := strings.TrimLeft(graphicast.SmallImage, "/")
 			if !strings.HasPrefix(imageUrl, "http://") && !strings.HasPrefix(imageUrl, "https://") {
-				imageUrl = "http://weather.gov/" + imageUrl
+				imageUrl = "https://weather.gov/" + imageUrl
 			}
 
 			// Add random query param to prevent caching

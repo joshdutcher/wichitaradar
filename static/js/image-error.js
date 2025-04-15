@@ -1,7 +1,7 @@
 // Initialize Sentry
 Sentry.init({
-  environment: 'production',
-  tracesSampleRate: 1.0,
+  environment:
+    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'development' : 'production',
 });
 
 // Track image loading errors
