@@ -16,12 +16,12 @@ import (
 var xmlCache *cache.Cache
 
 func init() {
-	// Get the current working directory
-	workDir, err := os.Getwd()
+	// Get the project root directory
+	projectRoot, err := filepath.Abs(".")
 	if err != nil {
-		log.Fatalf("Failed to get working directory: %v", err)
+		log.Fatalf("Failed to get project root directory: %v", err)
 	}
-	xmlCache = cache.New(cache.GetXMLCacheDir(workDir), 15*time.Minute)
+	xmlCache = cache.New(cache.GetXMLCacheDir(projectRoot), 15*time.Minute)
 }
 
 // HandleXML handles requests for XML files

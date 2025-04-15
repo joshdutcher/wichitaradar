@@ -144,7 +144,7 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 			// Clean up image URL
 			imageUrl := strings.TrimLeft(graphicast.SmallImage, "/")
 			if !strings.HasPrefix(imageUrl, "http://") && !strings.HasPrefix(imageUrl, "https://") {
-				imageUrl = "http://weather.gov/" + imageUrl
+				imageUrl = "https://weather.gov/" + imageUrl
 			}
 
 			// Add random query param to prevent caching
@@ -183,14 +183,14 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 
 // getWeatherStories fetches and parses weather stories from the XML feed
 func getWeatherStories() ([]WeatherStory, error) {
-	// Get the current working directory
-	workDir, err := os.Getwd()
+	// Get the project root directory
+	projectRoot, err := filepath.Abs(".")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get working directory: %v", err)
+		return nil, fmt.Errorf("failed to get project root directory: %v", err)
 	}
 
 	// Create XML directory if it doesn't exist
-	xmlDir := cache.GetXMLCacheDir(workDir)
+	xmlDir := cache.GetXMLCacheDir(projectRoot)
 	if err := os.MkdirAll(xmlDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create XML directory: %v", err)
 	}

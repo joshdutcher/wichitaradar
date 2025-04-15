@@ -1,76 +1,91 @@
-{{define "index"}}
-{{template "base" .}}
-{{end}}
+{{define "index"}} {{template "base" .}} {{end}} {{define "content"}}
+<div class="pure-g">
+  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+    <!-- Wunderground radar -->
+    <a href="https://www.wunderground.com/maps/radar/current/sln">
+      <img
+        class="pure-img-responsive"
+        src="https://s.w-x.co/staticmaps/wu/wxtype/county_loc/sln/animate.png"
+        border="0"
+      />
+    </a>
 
-{{define "content"}}
-    <div class="pure-g">
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <!-- Wunderground radar -->
-            <a href="https://www.wunderground.com/maps/radar/current/sln">
-                <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wxtype/county_loc/sln/animate.png" border="0" />
-            </a>
+    <!-- Accuweather radar -->
+    <a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
+      <img
+        class="pure-img-responsive"
+        src="https://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif"
+      />
+    </a>
+  </div>
 
-            <!-- Accuweather radar -->
-            <a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
-                <img class="pure-img-responsive" src="http://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif" />
-            </a>
-        </div>
+  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+    <!-- KSN KS radar -->
+    <a href="https://www.ksn.com/weather/images/kansas-radar">
+      <img
+        class="pure-img-responsive"
+        src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_8.jpg"
+        id="ksnKSLoop"
+      />
+    </a>
 
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <!-- KSN KS radar -->
-            <a href="http://www.ksn.com/weather/images/kansas-radar">
-                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_8.jpg" id="ksnKSLoop" />
-            </a>
+    <!-- KSN Southcentral radar -->
+    <a href="https://www.ksn.com/weather/images/southcentral-kansas-radar">
+      <img
+        class="pure-img-responsive"
+        src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_8.jpg"
+        id="ksnSCKSLoop"
+      />
+    </a>
 
-            <!-- KSN Southcentral radar -->
-            <a href="http://www.ksn.com/weather/images/southcentral-kansas-radar">
-                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_8.jpg" id="ksnSCKSLoop" />
-            </a>
+    <!-- KSN Wichita radar -->
+    <a href="https://www.ksn.com/weather/images/wichita-radar">
+      <img
+        class="pure-img-responsive"
+        src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_8.jpg"
+        id="ksnWichitaLoop"
+      />
+    </a>
+  </div>
 
-            <!-- KSN Wichita radar -->
-            <a href="http://www.ksn.com/weather/images/wichita-radar">
-                <img class="pure-img-responsive" src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_8.jpg" id="ksnWichitaLoop" />
-            </a>
-        </div>
+  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+    <!-- weather.gov radar loop -->
+    <img class="pure-img-responsive" src="https://radar.weather.gov/ridge/standard/KICT_loop.gif" />
+  </div>
+</div>
 
-        <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-            <!-- weather.gov radar loop -->
-            <img class="pure-img-responsive" src="https://radar.weather.gov/ridge/standard/KICT_loop.gif" />
-        </div>
-    </div>
+<script src="/static/js/animate.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // KSN KS RADAR
+    var newksnks = {
+      numImages: 8,
+      urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_',
+      urlSuffix: '.jpg',
+      leadingZero: false,
+      startingFrame: 1,
+    };
+    animateFrames(newksnks, 5, 300, '#ksnKSLoop', true);
 
-    <script src="/static/js/animate.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // KSN KS RADAR
-            var newksnks = {
-                numImages: 8,
-                urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_ks_radar_',
-                urlSuffix: '.jpg',
-                leadingZero: false,
-                startingFrame: 1
-            }
-            animateFrames(newksnks, 5, 300, '#ksnKSLoop', true);
+    // KSN SC KS RADAR
+    var newksn = {
+      numImages: 8,
+      urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_',
+      urlSuffix: '.jpg',
+      leadingZero: false,
+      startingFrame: 1,
+    };
+    animateFrames(newksn, 5, 300, '#ksnSCKSLoop', true);
 
-            // KSN SC KS RADAR
-            var newksn = {
-                numImages: 8,
-                urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_sc_radar_',
-                urlSuffix: '.jpg',
-                leadingZero: false,
-                startingFrame: 1
-            }
-            animateFrames(newksn, 5, 300, '#ksnSCKSLoop', true);
-
-            // KSN WICHITA LOOP
-            var ksnWichita = {
-                numImages: 8,
-                urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_',
-                urlSuffix: '.jpg',
-                leadingZero: false,
-                startingFrame: 1
-            }
-            animateFrames(ksnWichita, 5, 300, '#ksnWichitaLoop', true);
-        });
-    </script>
+    // KSN WICHITA LOOP
+    var ksnWichita = {
+      numImages: 8,
+      urlPrefix: 'https://media.psg.nexstardigital.net/ksnw/weather/images/ksn_wichita_radar_',
+      urlSuffix: '.jpg',
+      leadingZero: false,
+      startingFrame: 1,
+    };
+    animateFrames(ksnWichita, 5, 300, '#ksnWichitaLoop', true);
+  });
+</script>
 {{end}}

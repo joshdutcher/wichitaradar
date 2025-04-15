@@ -54,15 +54,15 @@ func setupServer(workDir string, skipTemplates bool) error {
 }
 
 func main() {
-	// Get the current working directory
-	workDir, err := os.Getwd()
+	// Get the project root directory
+	projectRoot, err := filepath.Abs(".")
 	if err != nil {
-		fmt.Printf("Failed to get working directory: %v\n", err)
+		fmt.Printf("Failed to get project root directory: %v\n", err)
 		os.Exit(1)
 	}
 
 	// Setup server
-	if err := setupServer(workDir, false); err != nil {
+	if err := setupServer(projectRoot, false); err != nil {
 		fmt.Printf("Failed to setup server: %v\n", err)
 		os.Exit(1)
 	}

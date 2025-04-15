@@ -12,11 +12,12 @@ import (
 
 // InitTemplates initializes the templates for testing
 func InitTemplates(t *testing.T) {
-	workDir, err := os.Getwd()
+	// Get the project root directory by going up from the current test file
+	projectRoot, err := filepath.Abs("../../")
 	if err != nil {
 		t.Fatal(err)
 	}
-	templateFS := os.DirFS(filepath.Join(workDir, "../../templates"))
+	templateFS := os.DirFS(filepath.Join(projectRoot, "templates"))
 	if err := templates.Init(templateFS); err != nil {
 		t.Fatal(err)
 	}
