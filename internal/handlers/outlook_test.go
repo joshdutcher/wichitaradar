@@ -23,7 +23,7 @@ func TestParseWeatherFeed(t *testing.T) {
 <feed><graphicasts><graphicast><StartTime>1743757560</StartTime><EndTime>1743798600</EndTime><description>Rain Showers Continue</description><SmallImage>/images/ict/wxstory/Tab1FileL.png</SmallImage><order>1</order><radar>false</radar></graphicast></graphicasts></feed>`,
 			want: []WeatherStory{
 				{
-					URL:   "http://weather.gov/images/ict/wxstory/Tab1FileL.png",
+					URL:   "https://weather.gov/images/ict/wxstory/Tab1FileL.png",
 					Alt:   "Rain Showers Continue",
 					Order: 1,
 				},
