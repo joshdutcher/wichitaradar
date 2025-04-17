@@ -5,7 +5,9 @@
     <a href="https://www.wunderground.com/maps/radar/current/sln">
       <img
         class="pure-img-responsive"
-        src="https://s.w-x.co/staticmaps/wu/wxtype/county_loc/sln/animate.png"
+        src="/api/wunderground/animated-radar"
+        id="weatherAnimation"
+        alt="Current Weather Animation"
         border="0"
       />
     </a>
@@ -86,6 +88,9 @@
       startingFrame: 1,
     };
     animateFrames(ksnWichita, 5, 300, '#ksnWichitaLoop', true);
+
+    // Reload the animation every 5 seconds (5000ms)
+    reloadAnimatedImage('weatherAnimation', 5000);
   });
 </script>
 {{end}}

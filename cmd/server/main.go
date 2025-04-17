@@ -49,6 +49,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	http.HandleFunc("/disclaimer", handlers.HandleSimplePage("disclaimer"))
 	http.HandleFunc("/donate", handlers.HandleSimplePage("donate"))
 	http.HandleFunc("/api/image-error", handlers.HandleImageError)
+	http.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
 
 	return nil
 }
