@@ -9,6 +9,7 @@ import (
 
 	"wichitaradar/internal/cache"
 	"wichitaradar/internal/handlers"
+	"wichitaradar/internal/middleware"
 	"wichitaradar/pkg/templates"
 )
 
@@ -40,26 +41,32 @@ func setupServer(workDir string, skipTemplates bool) error {
 	staticDir := filepath.Join(workDir, "static")
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
+	// Create a new mux to wrap with middleware
+	mux := http.NewServeMux()
+
 	// Register routes
-	http.HandleFunc("/", handlers.HandleHome)
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", handlers.HandleHome)
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-	http.HandleFunc("/outlook", handlers.HandleOutlook(xmlCache))
-	http.HandleFunc("/satellite", handlers.HandleSatellite)
-	http.HandleFunc("/watches", handlers.HandleSimplePage("watches"))
-	http.HandleFunc("/temperatures", handlers.HandleTemperatures)
-	http.HandleFunc("/rainfall", handlers.HandleRainfall)
-	http.HandleFunc("/resources", handlers.HandleSimplePage("resources"))
-	http.HandleFunc("/about", handlers.HandleSimplePage("about"))
-	http.HandleFunc("/disclaimer", handlers.HandleSimplePage("disclaimer"))
-	http.HandleFunc("/donate", handlers.HandleSimplePage("donate"))
-	http.HandleFunc("/api/image-error", handlers.HandleImageError)
-	http.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
+	mux.HandleFunc("/outlook", handlers.HandleOutlook(xmlCache))
+	mux.HandleFunc("/satellite", handlers.HandleSatellite)
+	mux.HandleFunc("/watches", handlers.HandleSimplePage("watches"))
+	mux.HandleFunc("/temperatures", handlers.HandleTemperatures)
+	mux.HandleFunc("/rainfall", handlers.HandleRainfall)
+	mux.HandleFunc("/resources", handlers.HandleSimplePage("resources"))
+	mux.HandleFunc("/about", handlers.HandleSimplePage("about"))
+	mux.HandleFunc("/disclaimer", handlers.HandleSimplePage("disclaimer"))
+	mux.HandleFunc("/donate", handlers.HandleSimplePage("donate"))
+	mux.HandleFunc("/api/image-error", handlers.HandleImageError)
+	mux.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
 
 	// Register XML handler using the new factory function
-	http.HandleFunc("/xml", handlers.HandleXML(xmlCache))
+	mux.HandleFunc("/xml", handlers.HandleXML(xmlCache))
+
+	// Wrap the mux with error handling middleware
+	http.Handle("/", middleware.ErrorHandler(mux))
 
 	return nil
 }
