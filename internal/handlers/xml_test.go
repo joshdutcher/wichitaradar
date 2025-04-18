@@ -33,8 +33,11 @@ func TestHandleXML(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Create a new cache instance for testing
-	xmlCache = cache.New(tempDir, 15*time.Minute)
+	// Create a new cache instance for testing, pointing to tempDir
+	testCache := cache.New(tempDir, 15*time.Minute)
+
+	// Create the handler instance using the factory and the test cache
+	handler := NewXMLHandler(testCache)
 
 	tests := []struct {
 		name       string
@@ -61,7 +64,8 @@ func TestHandleXML(t *testing.T) {
 			req := httptest.NewRequest("GET", tt.path, nil)
 			rr := httptest.NewRecorder()
 
-			HandleXML(rr, req)
+			// Execute the handler instance
+			handler(rr, req)
 
 			if status := rr.Code; status != tt.wantStatus {
 				t.Errorf("handler returned wrong status code: got %v want %v",

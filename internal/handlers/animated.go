@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"log"
 	"wichitaradar/internal/cache"
 )
 
@@ -13,11 +14,11 @@ var animatedCache *cache.Cache
 
 func init() {
 	// Get the project root directory
-	projectRoot, err := filepath.Abs(".")
+	projectRoot, err := filepath.Abs("../..")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to get project root directory: %v", err)
 	}
-	animatedCache = cache.New(cache.GetImagesCacheDir(projectRoot), 5*time.Minute)
+	animatedCache = cache.New(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
 }
 
 // HandleWundergroundAnimatedRadar handles requests for the Wunderground animated radar image
