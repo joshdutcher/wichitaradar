@@ -19,10 +19,10 @@ func TestSetupServer(t *testing.T) {
 
 	// --- Mocking Prerequisite Start ---
 	// Define paths for cache directories that setupServer will create
-	xmlCacheDir := filepath.Join(projectRoot, "scraped/xml")
-	imagesCacheDir := filepath.Join(projectRoot, "scraped/images")
-	tempCacheDir := filepath.Join(projectRoot, "scraped/temp")
-	cacheDirsToClean := []string{xmlCacheDir, imagesCacheDir, tempCacheDir}
+	xmlCacheDir := filepath.Join(projectRoot, "cache/xml")
+	imagesCacheDir := filepath.Join(projectRoot, "cache/images")
+	animatedCacheDir := filepath.Join(projectRoot, "cache/animated")
+	cacheDirsToClean := []string{xmlCacheDir, imagesCacheDir, animatedCacheDir}
 
 	// Ensure the directories exist *before* setupServer is called
 	// This is needed because setupServer expects to create them,

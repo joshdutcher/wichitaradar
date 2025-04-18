@@ -129,7 +129,7 @@ func TestHandleOutlook(t *testing.T) {
 	testCache := cache.New(tempDir, 5*time.Minute) // Use a short cache time for testing
 
 	// Create the handler instance using the factory and test cache
-	handler := NewOutlookHandler(testCache)
+	handler := HandleOutlook(testCache)
 	// --- Test Setup End ---
 
 	// Create request and recorder
