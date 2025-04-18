@@ -47,13 +47,6 @@ make coverage
 - Automatic instance wake-up on Render to prevent cold starts
 - Daily health checks to ensure service availability
 
-## TODO
-
-- [ ] Add integration tests to CI/CD pipeline
-- [ ] Implement code linting in CI process
-- [ ] Add performance benchmarking
-- [ ] Enhance error tracking with more detailed metrics
-
 ## Project Structure
 
 The project follows standard Go project layout conventions:
@@ -63,6 +56,14 @@ The project follows standard Go project layout conventions:
 - `/pkg/templates` - Reusable template system
 - `/static` - Static assets (CSS, JavaScript, images)
 - `/templates` - HTML templates for the website
+
+## TODO
+
+- [ ] Add integration tests to CI/CD pipeline
+- [ ] Implement code linting in CI process
+- [ ] Add performance benchmarking
+- [ ] Enhance error tracking with more detailed metrics
+- [ ] Integrate SonarCloud for code quality and coverage analysis
 
 ## License
 
