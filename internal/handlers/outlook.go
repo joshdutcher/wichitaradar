@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -43,62 +42,100 @@ type WeatherFeed struct {
 	Graphicasts Graphicasts `xml:"graphicasts"`
 }
 
-// HandleOutlook handles the outlook page
-func HandleOutlook(w http.ResponseWriter, r *http.Request) {
-	// Fetch weather stories
-	stories, err := getWeatherStories()
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to get weather stories: %v", err), http.StatusInternalServerError)
-		return
-	}
+// NewOutlookHandler creates an HTTP handler func for the outlook page,
+// using the provided cache for weather stories.
+func NewOutlookHandler(xmlCache *cache.Cache) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// --- Fetch weather stories using the cache ---
+		var stories []WeatherStory
+		var xmlReader io.Reader
 
-	// Convert stories to the correct type
-	processedStories := make([]struct {
-		Image       string
-		Description string
-	}, len(stories))
+		filename := "wxstory.xml"
+		cacheFile := filepath.Join(xmlCache.GetCacheDir(), filename)
+		url := "https://www.weather.gov/source/ict/wxstory/wxstory.xml"
 
-	for i, story := range stories {
-		processedStories[i] = struct {
+		if xmlCache.Expired(filename) {
+			fmt.Println("Outlook Handler: Downloading fresh XML file")
+			if err := xmlCache.DownloadFile(url, filename, "https://www.weather.gov/ict/"); err != nil {
+				fmt.Printf("Outlook Handler: Failed to download XML: %v\n", err)
+				// Fallback to default story on download error
+				stories = getDefaultWeatherStory()
+			}
+		}
+
+		// If stories haven't been set by fallback, read from cache
+		if stories == nil {
+			file, err := os.Open(cacheFile)
+			if err != nil {
+				fmt.Printf("Outlook Handler: Failed to open cached XML: %v\n", err)
+				stories = getDefaultWeatherStory()
+			} else {
+				xmlReader = file
+				defer file.Close()
+			}
+		}
+
+		// If we have an XML reader (from cache), parse it
+		if xmlReader != nil {
+			parsedStories, err := getWeatherStoriesFromReader(xmlReader, time.Now())
+			if err != nil {
+				// This shouldn't happen based on getWeatherStoriesFromReader logic, but handle defensively
+				fmt.Printf("Outlook Handler: Error parsing XML from reader: %v\n", err)
+				stories = getDefaultWeatherStory()
+			} else {
+				stories = parsedStories
+			}
+		}
+		// --- End Fetch weather stories ---
+
+		// Convert stories to the correct type for the template
+		processedStories := make([]struct {
 			Image       string
 			Description string
+		}, len(stories))
+
+		for i, story := range stories {
+			processedStories[i] = struct {
+				Image       string
+				Description string
+			}{
+				Image:       story.URL,
+				Description: story.Alt,
+			}
+		}
+
+		// Create template data
+		data := struct {
+			Menu        *menu.Menu
+			CurrentPath string
+			Stories     []struct {
+				Image       string
+				Description string
+			}
 		}{
-			Image:       story.URL,
-			Description: story.Alt,
+			Menu:        menu.New(),
+			CurrentPath: r.URL.Path,
+			Stories:     processedStories,
 		}
-	}
 
-	// Create template data
-	data := struct {
-		Menu        *menu.Menu
-		CurrentPath string
-		Stories     []struct {
-			Image       string
-			Description string
+		// Check if menu creation failed silently
+		if data.Menu == nil {
+			http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
+			return
 		}
-	}{
-		Menu:        menu.New(),
-		CurrentPath: r.URL.Path,
-		Stories:     processedStories,
-	}
 
-	// Check if menu creation failed silently
-	if data.Menu == nil {
-		http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
-		return
-	}
+		// Get the specific template set for this page
+		ts, err := templates.Get("outlook")
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to get template set 'outlook': %v", err), http.StatusInternalServerError)
+			return
+		}
 
-	// Get the specific template set for this page
-	ts, err := templates.Get("outlook")
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to get template set 'outlook': %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	// Execute the main template definition within this set
-	if err := ts.ExecuteTemplate(w, "outlook", data); err != nil {
-		http.Error(w, fmt.Sprintf("Failed to render template 'outlook': %v", err), http.StatusInternalServerError)
-		return
+		// Execute the main template definition within this set
+		if err := ts.ExecuteTemplate(w, "outlook", data); err != nil {
+			http.Error(w, fmt.Sprintf("Failed to render template 'outlook': %v", err), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
@@ -113,11 +150,7 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 	if err := decoder.Decode(&feed); err != nil {
 		fmt.Printf("Failed to parse XML: %v\n", err)
 		// Don't return error, just use default story
-		return []WeatherStory{{
-			URL:   "/static/img/nostories.png",
-			Alt:   "No Weather Stories!",
-			Order: 0,
-		}}, nil
+		return getDefaultWeatherStory(), nil
 	}
 
 	fmt.Printf("Found %d graphicasts in XML\n", len(feed.Graphicasts.Graphicasts))
@@ -165,11 +198,7 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 	// If no stories, add default
 	if len(stories) == 0 {
 		fmt.Println("No valid stories found, using default")
-		stories = []WeatherStory{{
-			URL:   "/static/img/nostories.png",
-			Alt:   "No Weather Stories!",
-			Order: 0,
-		}}
+		stories = getDefaultWeatherStory()
 	}
 
 	// Sort stories by order
@@ -181,92 +210,11 @@ func getWeatherStoriesFromReader(xmlReader io.Reader, now time.Time) ([]WeatherS
 	return stories, nil
 }
 
-// getWeatherStories fetches and parses weather stories from the XML feed
-func getWeatherStories() ([]WeatherStory, error) {
-	// Get the project root directory
-	projectRoot, err := filepath.Abs(".")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get project root directory: %v", err)
-	}
-
-	// Create XML directory if it doesn't exist
-	xmlDir := cache.GetXMLCacheDir(projectRoot)
-	if err := os.MkdirAll(xmlDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create XML directory: %v", err)
-	}
-
-	xmlPath := filepath.Join(xmlDir, "wxstory.xml")
-
-	// Check if we need to download a new file
-	shouldDownload := true
-	if info, err := os.Stat(xmlPath); err == nil {
-		// File exists, check its age
-		age := time.Since(info.ModTime())
-		fmt.Printf("Cached XML file is %v old\n", age)
-		if age < 5*time.Minute {
-			shouldDownload = false
-			fmt.Printf("Using cached XML file (downloaded %v ago)\n", age)
-		} else {
-			fmt.Println("Cached XML file is too old, downloading fresh")
-		}
-	} else {
-		fmt.Println("No cached XML file found, downloading fresh")
-	}
-
-	var xmlReader io.Reader
-	if shouldDownload {
-		// Download fresh XML file
-		fmt.Println("Downloading fresh XML file")
-		// DO NOT CHANGE THIS URL - it is the correct source for Wichita weather stories XML
-		resp, err := http.Get("https://www.weather.gov/source/ict/wxstory/wxstory.xml")
-		if err != nil {
-			fmt.Printf("Failed to download XML: %v\n", err)
-			return nil, fmt.Errorf("failed to download XML: %v", err)
-		}
-		defer resp.Body.Close()
-
-		// Log the final URL in case of redirects
-		fmt.Printf("Final URL after redirects: %s\n", resp.Request.URL.String())
-
-		if resp.StatusCode != http.StatusOK {
-			fmt.Printf("Unexpected status code: %d\n", resp.StatusCode)
-			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-		}
-
-		// Check content type
-		contentType := resp.Header.Get("Content-Type")
-		fmt.Printf("Response Content-Type: %s\n", contentType)
-		if !strings.Contains(contentType, "xml") && !strings.Contains(contentType, "text/xml") {
-			fmt.Printf("Warning: Unexpected Content-Type: %s\n", contentType)
-		}
-
-		// Read the response body
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Printf("Failed to read response body: %v\n", err)
-			return nil, fmt.Errorf("failed to read response body: %v", err)
-		}
-
-		// Save to cache
-		if err := os.WriteFile(xmlPath, body, 0644); err != nil {
-			fmt.Printf("Failed to write cache file: %v\n", err)
-			// Continue anyway, we have the data in memory
-		} else {
-			fmt.Println("Successfully cached XML file")
-		}
-
-		xmlReader = bytes.NewReader(body)
-	} else {
-		// Read from cache
-		file, err := os.Open(xmlPath)
-		if err != nil {
-			fmt.Printf("Failed to read cache file: %v\n", err)
-			return nil, fmt.Errorf("failed to read cache file: %v", err)
-		}
-		defer file.Close()
-		xmlReader = file
-		fmt.Println("Successfully read from cache")
-	}
-
-	return getWeatherStoriesFromReader(xmlReader, time.Now())
+// getDefaultWeatherStory returns the default story when fetching fails
+func getDefaultWeatherStory() []WeatherStory {
+	return []WeatherStory{{
+		URL:   "/static/img/nostories.png",
+		Alt:   "No Weather Stories!",
+		Order: 0,
+	}}
 }
