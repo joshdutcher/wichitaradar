@@ -1,10 +1,15 @@
 package handlers
 
 import (
+	"fmt"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"wichitaradar/internal/cache"
 	"wichitaradar/internal/testutils"
 )
 
@@ -93,6 +98,55 @@ func TestParseWeatherFeed(t *testing.T) {
 }
 
 func TestHandleOutlook(t *testing.T) {
+	// --- Test Setup Start ---
+	// Init templates (required by the handler)
 	testutils.InitTemplates(t)
-	testutils.TestHandler(t, HandleOutlook, "/outlook")
+
+	// Create a temporary directory for the test cache
+	tempDir, err := os.MkdirTemp("", "outlook_test_cache")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Create a mock wxstory.xml file with timestamps relative to the current time
+	currentTime := time.Now()
+	startTime := fmt.Sprintf("%d", currentTime.Add(-1*time.Hour).Unix())
+	endTime := fmt.Sprintf("%d", currentTime.Add(1*time.Hour).Unix())
+	testXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
+<feed><graphicasts><graphicast>
+	<StartTime>%s</StartTime><EndTime>%s</EndTime>
+	<description>Mock Outlook Story</description>
+	<SmallImage>/images/ict/wxstory/mock.png</SmallImage>
+	<order>1</order><radar>false</radar>
+</graphicast></graphicasts></feed>`, startTime, endTime)
+	mockXMLPath := filepath.Join(tempDir, "wxstory.xml")
+	if err := os.WriteFile(mockXMLPath, []byte(testXML), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a test cache instance pointing to the temp dir
+	testCache := cache.New(tempDir, 5*time.Minute) // Use a short cache time for testing
+
+	// Create the handler instance using the factory and test cache
+	handler := NewOutlookHandler(testCache)
+	// --- Test Setup End ---
+
+	// Create request and recorder
+	req := httptest.NewRequest("GET", "/outlook", nil)
+	rr := httptest.NewRecorder()
+
+	// Execute the handler
+	handler(rr, req)
+
+	// Check status code
+	if status := rr.Code; status != 200 {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, 200)
+	}
+
+	// Check if the body contains expected content (e.g., the mock story description)
+	expectedContent := "Mock Outlook Story"
+	if !strings.Contains(rr.Body.String(), expectedContent) {
+		t.Errorf("handler body does not contain expected string %q", expectedContent)
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"wichitaradar/internal/cache"
 	"wichitaradar/internal/handlers"
@@ -20,6 +21,12 @@ func setupServer(workDir string, skipTemplates bool) error {
 			return fmt.Errorf("failed to create cache directory %s: %v", dir, err)
 		}
 	}
+
+	// Create Cache instances
+	// Adjust cache durations as needed
+	xmlCache := cache.New(cache.GetXMLCacheDir(workDir), 15*time.Minute)
+	// animatedCache := cache.New(cache.GetAnimatedCacheDir(workDir), 5*time.Minute) // Add if needed by other handlers
+	// imagesCache := cache.New(cache.GetImagesCacheDir(workDir), 60*time.Minute) // Add if needed by other handlers
 
 	// Initialize templates from the "templates" directory
 	if !skipTemplates {
@@ -39,7 +46,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-	http.HandleFunc("/outlook", handlers.HandleOutlook)
+	http.HandleFunc("/outlook", handlers.NewOutlookHandler(xmlCache))
 	http.HandleFunc("/satellite", handlers.HandleSatellite)
 	http.HandleFunc("/watches", handlers.HandleSimplePage("watches"))
 	http.HandleFunc("/temperatures", handlers.HandleTemperatures)
@@ -49,6 +56,10 @@ func setupServer(workDir string, skipTemplates bool) error {
 	http.HandleFunc("/disclaimer", handlers.HandleSimplePage("disclaimer"))
 	http.HandleFunc("/donate", handlers.HandleSimplePage("donate"))
 	http.HandleFunc("/api/image-error", handlers.HandleImageError)
+	http.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
+
+	// Register XML handler using the new factory function
+	http.HandleFunc("/xml", handlers.NewXMLHandler(xmlCache))
 
 	return nil
 }

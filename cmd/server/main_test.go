@@ -7,41 +7,52 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+	// No longer need direct cache/handlers import here for mocking
 )
 
 func TestSetupServer(t *testing.T) {
 	// Get the project root directory (two levels up from cmd/server)
-	projectRoot := filepath.Join("..", "..")
-
-	// Create a temporary directory for cache files
-	tempDir, err := os.MkdirTemp("", "server-test")
+	projectRoot, err := filepath.Abs("../..")
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
-
-	// Test server setup with templates
-	if err := setupServer(projectRoot, false); err != nil {
-		t.Fatalf("setupServer failed: %v", err)
+		t.Fatalf("Failed to get project root directory: %v", err)
 	}
 
-	// Test that cache directories were created
-	cacheDirs := []string{
-		filepath.Join(projectRoot, "scraped/xml"),
-		filepath.Join(projectRoot, "scraped/images"),
-		filepath.Join(projectRoot, "scraped/temp"),
-	}
-	for _, dir := range cacheDirs {
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
-			t.Errorf("Cache directory %s was not created", dir)
+	// --- Mocking Prerequisite Start ---
+	// Define paths for cache directories that setupServer will create
+	xmlCacheDir := filepath.Join(projectRoot, "scraped/xml")
+	imagesCacheDir := filepath.Join(projectRoot, "scraped/images")
+	tempCacheDir := filepath.Join(projectRoot, "scraped/temp")
+	cacheDirsToClean := []string{xmlCacheDir, imagesCacheDir, tempCacheDir}
+
+	// Ensure the directories exist *before* setupServer is called
+	// This is needed because setupServer expects to create them,
+	// and we need the xml dir to exist to place the mock file.
+	for _, dir := range cacheDirsToClean {
+		if err := os.MkdirAll(dir, 0777); err != nil {
+			t.Fatalf("Failed to pre-create test cache directory %s: %v", dir, err)
 		}
 	}
+	// Cleanup these directories after the test
 	defer func() {
-		// Clean up cache directories after test
-		for _, dir := range cacheDirs {
+		for _, dir := range cacheDirsToClean {
 			os.RemoveAll(dir)
 		}
 	}()
+
+	// Create a mock wxstory.xml file in the *real* cache path *before* setupServer runs
+	testXMLContent := `<?xml version="1.0" encoding="UTF-8"?><graphicasts><graphicast><title>Mock Story From Main Test</title><text>...</text></graphicast></graphicasts>`
+	mockXMLPath := filepath.Join(xmlCacheDir, "wxstory.xml")
+	if err := os.WriteFile(mockXMLPath, []byte(testXMLContent), 0644); err != nil {
+		t.Fatalf("Failed to create mock XML file: %v", err)
+	}
+	// --- Mocking Prerequisite End ---
+
+	// Test server setup with templates.
+	// setupServer will now create its own cache instance pointing to the directory
+	// containing our mock file.
+	if err := setupServer(projectRoot, false); err != nil {
+		t.Fatalf("setupServer failed: %v", err)
+	}
 
 	// Test all registered routes
 	routes := []struct {
@@ -50,7 +61,7 @@ func TestSetupServer(t *testing.T) {
 	}{
 		{"/", http.StatusOK},
 		{"/health", http.StatusOK},
-		{"/outlook", http.StatusOK},
+		{"/outlook", http.StatusOK}, // Should hit the handler using the mock file
 		{"/satellite", http.StatusOK},
 		{"/watches", http.StatusOK},
 		{"/temperatures", http.StatusOK},
@@ -103,9 +114,13 @@ func TestSetupServer(t *testing.T) {
 	})
 }
 
+// TestMain remains the same as it doesn't directly test the XML handler logic
 func TestMain(t *testing.T) {
 	// Get the project root directory (two levels up from cmd/server)
-	projectRoot := filepath.Join("..", "..")
+	projectRoot, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Save original environment variables
 	originalPort := os.Getenv("PORT")

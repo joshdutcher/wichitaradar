@@ -2,11 +2,11 @@
 
 # Run all tests
 test:
-	go test ./... -v -failfast
+	go clean -testcache && go test ./... -v -failfast
 
 # Run tests with race detection
 test-race:
-	go test ./... -race -v -failfast
+	go clean -testcache && go test ./... -race -v -failfast
 
 # Run tests with coverage
 coverage:
@@ -15,7 +15,7 @@ coverage:
 
 # Run tests for a specific package
 test-package:
-	go test $(PACKAGE) -v -failfast
+	go clean -testcache && go test $(PACKAGE) -v -failfast
 
 # Clean test cache
 test-clean:
