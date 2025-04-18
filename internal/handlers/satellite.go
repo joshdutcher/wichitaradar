@@ -8,13 +8,16 @@ import (
 	"wichitaradar/pkg/templates"
 )
 
+// HandleSatellite handles the satellite page
 func HandleSatellite(w http.ResponseWriter, r *http.Request) {
 	data := struct {
-		Menu        *menu.Menu
-		CurrentPath string
+		Menu            *menu.Menu
+		CurrentPath     string
+		RefreshInterval int // Added for auto-refresh
 	}{
-		Menu:        menu.New(),
-		CurrentPath: r.URL.Path,
+		Menu:            menu.New(),
+		CurrentPath:     r.URL.Path,
+		RefreshInterval: 300, // 5 minutes
 	}
 
 	// Check if menu creation failed silently

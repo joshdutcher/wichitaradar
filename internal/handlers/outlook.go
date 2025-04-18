@@ -42,9 +42,9 @@ type WeatherFeed struct {
 	Graphicasts Graphicasts `xml:"graphicasts"`
 }
 
-// NewOutlookHandler creates an HTTP handler func for the outlook page,
+// HandleOutlook creates an HTTP handler func for the outlook page,
 // using the provided cache for weather stories.
-func NewOutlookHandler(xmlCache *cache.Cache) http.HandlerFunc {
+func HandleOutlook(xmlCache *cache.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// --- Fetch weather stories using the cache ---
 		var stories []WeatherStory
@@ -106,16 +106,18 @@ func NewOutlookHandler(xmlCache *cache.Cache) http.HandlerFunc {
 
 		// Create template data
 		data := struct {
-			Menu        *menu.Menu
-			CurrentPath string
-			Stories     []struct {
+			Menu            *menu.Menu
+			CurrentPath     string
+			Stories         []struct {
 				Image       string
 				Description string
 			}
+			RefreshInterval int
 		}{
-			Menu:        menu.New(),
-			CurrentPath: r.URL.Path,
-			Stories:     processedStories,
+			Menu:            menu.New(),
+			CurrentPath:     r.URL.Path,
+			Stories:         processedStories,
+			RefreshInterval: 1800,
 		}
 
 		// Check if menu creation failed silently

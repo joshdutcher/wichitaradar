@@ -11,8 +11,8 @@ import (
 	"wichitaradar/internal/cache"
 )
 
-// NewXMLHandler creates an HTTP handler func for XML requests, using the provided cache.
-func NewXMLHandler(xmlCache *cache.Cache) http.HandlerFunc {
+// HandleXML creates an HTTP handler func for XML requests, using the provided cache.
+func HandleXML(xmlCache *cache.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Extract the XML path from the URL
 		xmlPath := r.URL.Query().Get("path")

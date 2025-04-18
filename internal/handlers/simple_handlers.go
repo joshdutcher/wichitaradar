@@ -12,11 +12,19 @@ import (
 func HandleSimplePage(templateName string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := struct {
-			Menu        *menu.Menu
-			CurrentPath string
+			Menu            *menu.Menu
+			CurrentPath     string
+			RefreshInterval int // Added for auto-refresh
 		}{
 			Menu:        menu.New(),
 			CurrentPath: r.URL.Path,
+			// Default to no refresh
+			RefreshInterval: 0,
+		}
+
+		// Set refresh interval specifically for the watches page
+		if templateName == "watches" {
+			data.RefreshInterval = 600 // 10 minutes
 		}
 
 		if data.Menu == nil {

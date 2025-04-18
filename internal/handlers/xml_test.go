@@ -37,7 +37,7 @@ func TestHandleXML(t *testing.T) {
 	testCache := cache.New(tempDir, 15*time.Minute)
 
 	// Create the handler instance using the factory and the test cache
-	handler := NewXMLHandler(testCache)
+	handler := HandleXML(testCache)
 
 	tests := []struct {
 		name       string

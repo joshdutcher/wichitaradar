@@ -46,7 +46,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-	http.HandleFunc("/outlook", handlers.NewOutlookHandler(xmlCache))
+	http.HandleFunc("/outlook", handlers.HandleOutlook(xmlCache))
 	http.HandleFunc("/satellite", handlers.HandleSatellite)
 	http.HandleFunc("/watches", handlers.HandleSimplePage("watches"))
 	http.HandleFunc("/temperatures", handlers.HandleTemperatures)
@@ -59,7 +59,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	http.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
 
 	// Register XML handler using the new factory function
-	http.HandleFunc("/xml", handlers.NewXMLHandler(xmlCache))
+	http.HandleFunc("/xml", handlers.HandleXML(xmlCache))
 
 	return nil
 }

@@ -12,14 +12,16 @@ import (
 func HandleHome(w http.ResponseWriter, r *http.Request) {
 	// Create template data
 	data := struct {
-		Menu        *menu.Menu
-		CurrentPath string
+		Menu            *menu.Menu
+		CurrentPath     string
+		RefreshInterval int // Added for auto-refresh
 	}{
-		Menu:        menu.New(),
-		CurrentPath: r.URL.Path,
+		Menu:            menu.New(),
+		CurrentPath:     r.URL.Path,
+		RefreshInterval: 300,
 	}
 
-	// Check if menu creation failed silently (though unlikely)
+	// Check if menu creation failed silently
 	if data.Menu == nil {
 		http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
 		return
@@ -29,12 +31,6 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 	ts, err := templates.Get("index") // Requesting "index" will get "index.page.html"
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to get template set 'index': %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	// Add a check to ensure ts is not nil, although Get should handle this
-	if ts == nil {
-		http.Error(w, "Got nil template set from templates.Get", http.StatusInternalServerError)
 		return
 	}
 
