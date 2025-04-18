@@ -19,6 +19,7 @@ func ErrorHandler(next http.Handler) http.Handler {
 
 		// Determine if we're in production based on hostname
 		isProduction := r.Host != "localhost" && r.Host != "127.0.0.1"
+		log.Printf("ErrorHandler: Host=%s, isProduction=%v", r.Host, isProduction)
 
 		// Recover from any panics
 		defer func() {
@@ -34,6 +35,12 @@ func ErrorHandler(next http.Handler) http.Handler {
 
 		// Call the next handler
 		next.ServeHTTP(rw, r)
+
+		// Log the response state
+		log.Printf("ErrorHandler: Response status=%d, body=%q, containsError=%v",
+			rw.status,
+			string(rw.body),
+			containsError(rw.body))
 
 		// Check for error status codes or error messages in the body
 		if rw.status >= http.StatusBadRequest || (rw.status == http.StatusOK && containsError(rw.body)) {
