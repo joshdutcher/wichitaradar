@@ -7,88 +7,183 @@ import (
 	"strings"
 )
 
-// ErrorHandler wraps an http.Handler and provides consistent error handling
-func ErrorHandler(next http.Handler) http.Handler {
+// AppError is our main error type that includes HTTP context
+type AppError struct {
+	// Original error that caused this
+	Err error
+	// HTTP status code to return
+	StatusCode int
+	// Message to show in development
+	DevMessage string
+	// Message to show in production
+	ProdMessage string
+}
+
+func (e *AppError) Error() string {
+	return e.DevMessage
+}
+
+func (e *AppError) Unwrap() error {
+	return e.Err
+}
+
+// InternalError creates an internal server error
+func InternalError(err error) *AppError {
+	return &AppError{
+		Err:        err,
+		StatusCode: http.StatusInternalServerError,
+		DevMessage: fmt.Sprintf("Internal error: %v", err),
+		ProdMessage: "Internal Server Error",
+	}
+}
+
+// NotFoundError creates a not found error
+func NotFoundError(err error, resource string) *AppError {
+	return &AppError{
+		Err:        err,
+		StatusCode: http.StatusNotFound,
+		DevMessage: fmt.Sprintf("%s not found: %v", resource, err),
+		ProdMessage: "Not found",
+	}
+}
+
+// BadRequestError creates a bad request error
+func BadRequestError(err error, message string) *AppError {
+	return &AppError{
+		Err:        err,
+		StatusCode: http.StatusBadRequest,
+		DevMessage: fmt.Sprintf("Bad request: %s: %v", message, err),
+		ProdMessage: message,
+	}
+}
+
+// HandlerFunc is a function that handles an HTTP request and may return an error
+type HandlerFunc func(http.ResponseWriter, *http.Request) error
+
+// ErrorHandler wraps an http.Handler or HandlerFunc to provide error handling
+func ErrorHandler(next interface{}) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Create a custom response writer that captures the status code and body
-		rw := &responseWriter{
-			ResponseWriter: w,
-			status:        http.StatusOK,
-			body:          make([]byte, 0),
-			headerWritten: false,
-		}
+		// Create a custom response writer to capture the response
+		cw := &customResponseWriter{ResponseWriter: w}
 
-		// Determine if we're in production based on hostname
-		host := r.Host
-		if colon := strings.Index(host, ":"); colon != -1 {
-			host = host[:colon]
-		}
-		isProduction := host != "localhost" && host != "127.0.0.1"
-		log.Printf("ErrorHandler: Host=%s (original=%s), isProduction=%v", host, r.Host, isProduction)
-
-		// Recover from any panics
+		// Handle panics
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("Panic recovered: %v", err)
-				if !rw.headerWritten {
-					if isProduction {
-						http.Error(w, "Internal server error", http.StatusInternalServerError)
-					} else {
-						http.Error(w, fmt.Sprintf("Panic: %v", err), http.StatusInternalServerError)
-					}
-				}
+				handleError(w, r, fmt.Errorf("panic: %v", err), "Internal server error", http.StatusInternalServerError)
 			}
 		}()
 
-		// Call the next handler
-		next.ServeHTTP(rw, r)
-
-		// Only log body content if it's text and not too long
-		bodyStr := string(rw.body)
-		if len(bodyStr) > 1000 {
-			bodyStr = bodyStr[:1000] + "..."
+		// Call the next handler based on its type
+		var handlerErr error
+		switch h := next.(type) {
+		case http.Handler:
+			h.ServeHTTP(cw, r)
+		case HandlerFunc:
+			handlerErr = h(cw, r)
+		case func(http.ResponseWriter, *http.Request) error:
+			handlerErr = h(cw, r)
+		case func(http.ResponseWriter, *http.Request):
+			h(cw, r)
+		default:
+			handlerErr = fmt.Errorf("unsupported handler type: %T", next)
 		}
 
-		// Check if the content is binary (contains non-printable characters)
-		isBinary := false
-		for _, b := range rw.body {
-			if b < 32 && b != '\n' && b != '\r' && b != '\t' {
-				isBinary = true
-				break
+		// Check for errors from the handler
+		if handlerErr != nil {
+			status := http.StatusInternalServerError
+			message := "Internal server error"
+			if appErr, ok := handlerErr.(*AppError); ok {
+				status = appErr.StatusCode
+				message = appErr.ProdMessage
 			}
+			handleError(w, r, handlerErr, message, status)
+			return
 		}
 
-		if !isBinary {
-			log.Printf("ErrorHandler: Response status=%d, body=%q, containsError=%v",
-				rw.status,
-				bodyStr,
-				containsError(rw.body))
-		} else {
-			log.Printf("ErrorHandler: Response status=%d, content-type=%s, body length=%d",
-				rw.status,
-				w.Header().Get("Content-Type"),
-				len(rw.body))
-		}
-
-		// Check for error status codes or error messages in the body
-		if rw.status >= http.StatusBadRequest || (rw.status == http.StatusOK && containsError(rw.body)) {
-			log.Printf("Error %d for %s %s", rw.status, r.Method, r.URL.Path)
-			if !rw.headerWritten {
-				if isProduction {
-					http.Error(w, "Internal server error", rw.status)
-				} else {
-					http.Error(w, fmt.Sprintf("Error %d: %s %s", rw.status, r.Method, r.URL.Path), rw.status)
-				}
-			}
+		// Check if the response contains an error
+		if containsError(cw.body) {
+			handleError(w, r, fmt.Errorf("error detected in response body"), "Internal server error", http.StatusInternalServerError)
+			return
 		}
 	})
 }
 
-// responseWriter is a custom response writer that captures the status code and body
+// customResponseWriter is a wrapper around http.ResponseWriter that captures the response
+type customResponseWriter struct {
+	http.ResponseWriter
+	body []byte
+}
+
+// Write captures the response body
+func (w *customResponseWriter) Write(b []byte) (int, error) {
+	w.body = append(w.body, b...)
+	return w.ResponseWriter.Write(b)
+}
+
+// containsError checks if the response body contains an error message
+func containsError(body []byte) bool {
+	// Skip binary content
+	if len(body) > 0 && body[0] == 0 {
+		return false
+	}
+
+	// Convert to string for easier checking
+	content := string(body)
+
+	// Skip HTML content
+	if strings.Contains(content, "<!DOCTYPE html>") || strings.Contains(content, "<html") {
+		return false
+	}
+
+	// Check for error patterns
+	errorPatterns := []string{
+		"error",
+		"failed",
+		"not found",
+		"internal server",
+		"bad request",
+		"unauthorized",
+		"forbidden",
+	}
+
+	for _, pattern := range errorPatterns {
+		if strings.Contains(strings.ToLower(content), pattern) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// handleError writes an error response to the client
+func handleError(w http.ResponseWriter, r *http.Request, err error, message string, status int) {
+	// Determine if we're in production based on hostname
+	host := r.Host
+	if colon := strings.Index(host, ":"); colon != -1 {
+		host = host[:colon]
+	}
+	isProduction := host != "localhost" && host != "127.0.0.1"
+
+	// Only log errors in non-test environments
+	if !strings.HasPrefix(host, "127.0.0.1:") {
+		log.Printf("Error: %v (status=%d, production=%v)", err, status, isProduction)
+	}
+
+	// Set the status code
+	w.WriteHeader(status)
+
+	// Write the error response
+	if isProduction {
+		http.Error(w, message, status)
+	} else {
+		http.Error(w, fmt.Sprintf("%s\n\nError: %v", message, err), status)
+	}
+}
+
+// responseWriter is a custom response writer that captures the status code
 type responseWriter struct {
 	http.ResponseWriter
 	status        int
-	body          []byte
 	headerWritten bool
 }
 
@@ -101,38 +196,7 @@ func (rw *responseWriter) WriteHeader(code int) {
 	}
 }
 
-// Write captures the body
+// Write passes through to the underlying writer
 func (rw *responseWriter) Write(b []byte) (int, error) {
-	rw.body = append(rw.body, b...)
 	return rw.ResponseWriter.Write(b)
-}
-
-// containsError checks if the response body contains an error message
-func containsError(body []byte) bool {
-	// Convert to string for easier processing
-	content := string(body)
-
-	// Skip checking if it's HTML content
-	if strings.Contains(content, "<!DOCTYPE html>") ||
-	   strings.Contains(content, "<html") ||
-	   strings.Contains(content, "<head>") {
-		return false
-	}
-
-	// Look for actual error messages
-	errorPatterns := []string{
-		"error:",
-		"failed to",
-		"panic:",
-		"template:",
-		"nil pointer",
-		"invalid",
-	}
-
-	for _, pattern := range errorPatterns {
-		if strings.Contains(strings.ToLower(content), pattern) {
-			return true
-		}
-	}
-	return false
 }

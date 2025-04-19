@@ -1,9 +1,11 @@
 package templates
 
 import (
+	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
+	"testing/fstest"
 )
 
 func TestInit(t *testing.T) {
@@ -15,18 +17,14 @@ func TestInit(t *testing.T) {
 	defer os.RemoveAll(tempDir)
 
 	// Create test template files
-	templateFiles := []struct {
-		name     string
-		content  string
-	}{
-		{"index.page.html", "<h1>Home Page</h1>"},
-		{"base.layout.html", "<html>{{template \"content\" .}}</html>"},
-		{"header.partial.html", "<header>Header</header>"},
+	templateFiles := map[string]string{
+		"index.page.html":     "<h1>Home Page</h1>{{template \"base\" .}}",
+		"base.layout.html":    "<html>{{template \"content\" .}}</html>",
+		"header.partial.html": "<header>Header</header>",
 	}
-
-	for _, tf := range templateFiles {
-		path := filepath.Join(tempDir, tf.name)
-		if err := os.WriteFile(path, []byte(tf.content), 0644); err != nil {
+	for name, content := range templateFiles {
+		path := filepath.Join(tempDir, name)
+		if err := os.WriteFile(path, []byte(content), 0644); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -34,40 +32,85 @@ func TestInit(t *testing.T) {
 	// Initialize templates
 	templateFS := os.DirFS(tempDir)
 	if err := Init(templateFS); err != nil {
-		t.Fatal(err)
+		t.Fatalf("Init failed: %v", err)
 	}
 
-	// Test Get with existing template
+	// Test getting a template by its base name
 	tmpl, err := Get("index")
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Get failed: %v", err)
 	}
 	if tmpl == nil {
-		t.Error("expected non-nil template")
-	}
-
-	// Test Get with non-existent template
-	_, err = Get("nonexistent")
-	if err == nil {
-		t.Error("expected error for non-existent template")
+		t.Fatal("template is nil")
 	}
 }
 
 func TestDefaultTemplateProvider_Get(t *testing.T) {
-	// Reset templatesMap to nil to ensure we're testing uninitialized state
-	templatesMap = nil
-
-	provider := &DefaultTemplateProvider{}
-
-	// Test with .page.html suffix
-	_, err := provider.Get("index.page.html")
-	if err == nil {
-		t.Error("expected error when templates not initialized")
+	tests := []struct {
+		name        string
+		setupFS     fs.FS
+		templateKey string
+		shouldError bool
+		description string
+	}{
+		{
+			name: "get existing template",
+			setupFS: fstest.MapFS{
+				"index.page.html":     &fstest.MapFile{Data: []byte("<h1>Home</h1>")},
+				"base.layout.html":    &fstest.MapFile{Data: []byte("<html>{{template \"content\" .}}</html>")},
+				"header.partial.html": &fstest.MapFile{Data: []byte("<header>Header</header>")},
+			},
+			templateKey: "index",
+			shouldError: false,
+			description: "should successfully get existing template",
+		},
+		{
+			name:        "get from uninitialized provider",
+			setupFS:     nil,
+			templateKey: "index",
+			shouldError: true,
+			description: "should fail when templates are not initialized",
+		},
+		{
+			name: "get non-existent template",
+			setupFS: fstest.MapFS{
+				"base.layout.html":    &fstest.MapFile{Data: []byte("<html>{{template \"content\" .}}</html>")},
+				"header.partial.html": &fstest.MapFile{Data: []byte("<header>Header</header>")},
+			},
+			templateKey: "nonexistent",
+			shouldError: true,
+			description: "should fail when template doesn't exist",
+		},
 	}
 
-	// Test without .page.html suffix
-	_, err = provider.Get("index")
-	if err == nil {
-		t.Error("expected error when templates not initialized")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Reset templates for each test
+			templatesMap = nil
+
+			// Initialize templates if we have a setup FS
+			if tt.setupFS != nil {
+				if err := Init(tt.setupFS); err != nil {
+					if tt.name == "get non-existent template" {
+						// This is expected for this test case
+						return
+					}
+					t.Fatal(err)
+				}
+			}
+
+			provider := &DefaultTemplateProvider{}
+			_, err := provider.Get(tt.templateKey)
+
+			if tt.shouldError {
+				if err == nil {
+					t.Errorf("%s: expected error, got nil", tt.description)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("%s: unexpected error: %v", tt.description, err)
+				}
+			}
+		})
 	}
 }

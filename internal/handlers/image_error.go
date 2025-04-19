@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"wichitaradar/internal/middleware"
 )
 
 type ImageError struct {
@@ -16,23 +18,20 @@ type ImageError struct {
 	Timestamp string `json:"timestamp"`
 }
 
-func HandleImageError(w http.ResponseWriter, r *http.Request) {
+func HandleImageError(w http.ResponseWriter, r *http.Request) error {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
+		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
 	}
 
 	var errorData ImageError
 	if err := json.NewDecoder(r.Body).Decode(&errorData); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
+		return middleware.BadRequestError(err, "Invalid request body")
 	}
 
 	// Create logs directory if it doesn't exist
 	logDir := "logs"
 	if err := os.MkdirAll(logDir, 0755); err != nil {
-		http.Error(w, "Failed to create logs directory", http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to create logs directory: %w", err))
 	}
 
 	// Log to a daily file
@@ -48,9 +47,9 @@ func HandleImageError(w http.ResponseWriter, r *http.Request) {
 
 	// Append to log file
 	if err := os.WriteFile(logFile, []byte(errorMsg), 0644); err != nil {
-		http.Error(w, "Failed to write to log file", http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to write to log file: %w", err))
 	}
 
 	w.WriteHeader(http.StatusOK)
+	return nil
 }

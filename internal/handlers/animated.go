@@ -1,12 +1,15 @@
 package handlers
 
 import (
+	"fmt"
+	"io"
 	"net/http"
 	"path/filepath"
 	"time"
 
 	"log"
 	"wichitaradar/internal/cache"
+	"wichitaradar/internal/middleware"
 )
 
 // Cache for animated images (5 minutes)
@@ -18,22 +21,26 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to get project root directory: %v", err)
 	}
-	animatedCache = cache.New(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
+	animatedCache = cache.NewFileCache(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
 }
 
 // HandleWundergroundAnimatedRadar handles requests for the Wunderground animated radar image
-func HandleWundergroundAnimatedRadar(w http.ResponseWriter, r *http.Request) {
-	// Get the cached image file
-	cacheFile := filepath.Join(animatedCache.GetCacheDir(), "wunderground-animated-radar.png")
-	if animatedCache.Expired("wunderground-animated-radar.png") {
-		// Download fresh image
+func HandleWundergroundAnimatedRadar(cacheProvider cache.CacheProvider) func(http.ResponseWriter, *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		// Get the image content from cache
 		url := "https://s.w-x.co/staticmaps/wu/wxtype/county_loc/sln/animate.png"
-		if err := animatedCache.DownloadFile(url, "wunderground-animated-radar.png", "https://www.wunderground.com/"); err != nil {
-			http.Error(w, "Failed to fetch animated image", http.StatusInternalServerError)
-			return
+		content, err := cacheProvider.GetContent(url, "https://www.wunderground.com/", "wunderground-animated-radar.png")
+		if err != nil {
+			return middleware.InternalError(fmt.Errorf("failed to fetch animated image: %w", err))
 		}
-	}
+		defer content.Close()
 
-	// Read and serve the cached file
-	http.ServeFile(w, r, cacheFile)
+		// Set content type and serve the image
+		w.Header().Set("Content-Type", "image/png")
+		_, err = io.Copy(w, content)
+		if err != nil {
+			return middleware.InternalError(fmt.Errorf("failed to serve animated image: %w", err))
+		}
+		return nil
+	}
 }

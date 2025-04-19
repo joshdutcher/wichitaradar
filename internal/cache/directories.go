@@ -18,7 +18,7 @@ func GetImagesCacheDir(projectRoot string) string {
 
 // GetAnimatedCacheDir returns the path to the animated images cache directory
 func GetAnimatedCacheDir(projectRoot string) string {
-	return filepath.Join(projectRoot, "scraped", "images")
+	return filepath.Join(projectRoot, "scraped", "animated")
 }
 
 // GetXMLCacheDir returns the path to the XML cache directory

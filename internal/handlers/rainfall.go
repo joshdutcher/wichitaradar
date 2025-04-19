@@ -5,39 +5,40 @@ import (
 	"net/http"
 	"time"
 
+	"wichitaradar/internal/middleware"
 	"wichitaradar/menu"
 	"wichitaradar/pkg/templates"
 )
 
-func HandleRainfall(w http.ResponseWriter, r *http.Request) {
+func HandleRainfall(w http.ResponseWriter, r *http.Request) error {
 	data := struct {
-		Menu        *menu.Menu
-		CurrentPath string
-		CurrentDate string
+		Menu            *menu.Menu
+		CurrentPath     string
+		CurrentDate     string
+		RefreshInterval int
 	}{
-		Menu:        menu.New(),
-		CurrentPath: r.URL.Path,
-		CurrentDate: time.Now().Format("20060102"),
+		Menu:            menu.New(),
+		CurrentPath:     r.URL.Path,
+		CurrentDate:     time.Now().Format("20060102"),
+		RefreshInterval: 0, // No auto-refresh for rainfall page
 	}
 
 	if data.Menu == nil {
-		http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("menu.New() returned nil"))
 	}
 
 	ts, err := templates.Get("rainfall")
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to get template set 'rainfall': %v", err), http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to get template set 'rainfall': %w", err))
 	}
 
 	if ts == nil {
-		http.Error(w, "Got nil template set from templates.Get", http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("got nil template set from templates.Get"))
 	}
 
 	if err := ts.ExecuteTemplate(w, "rainfall", data); err != nil {
-		http.Error(w, fmt.Sprintf("Failed to render template 'rainfall': %v", err), http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to render template 'rainfall': %w", err))
 	}
+
+	return nil
 }
