@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"wichitaradar/internal/middleware"
 	"wichitaradar/menu"
 	"wichitaradar/pkg/templates"
 )
 
 // HandleHome handles the home page
-func HandleHome(w http.ResponseWriter, r *http.Request) {
+func HandleHome(w http.ResponseWriter, r *http.Request) error {
 	// Create template data
 	data := struct {
 		Menu            *menu.Menu
@@ -23,22 +24,19 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 
 	// Check if menu creation failed silently
 	if data.Menu == nil {
-		http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("menu.New() returned nil"))
 	}
 
 	// Get the specific template set for this page
 	ts, err := templates.Get("index") // Requesting "index" will get "index.page.html"
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to get template set 'index': %v", err), http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to get template set 'index': %w", err))
 	}
 
 	// Execute the main template definition within this set (which should be "index")
 	if err := ts.ExecuteTemplate(w, "index", data); err != nil {
-		fmt.Fprintf(w, "Failed to render template 'index': %v", err) // Write error directly
-		// Log the error server-side as well
-		fmt.Printf("ERROR rendering template 'index': %v\n", err)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to render template 'index': %w", err))
 	}
+
+	return nil
 }

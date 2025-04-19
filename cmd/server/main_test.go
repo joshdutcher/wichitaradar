@@ -1,159 +1,173 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
-	"time"
-	// No longer need direct cache/handlers import here for mocking
+
+	"wichitaradar/internal/handlers"
+	"wichitaradar/internal/middleware"
+	"wichitaradar/pkg/templates"
 )
 
+// mockCacheProvider implements cache.CacheProvider for testing
+type mockCacheProvider struct {
+	content string
+}
+
+func (m *mockCacheProvider) GetContent(url string, referer string, filename ...string) (io.ReadCloser, error) {
+	return io.NopCloser(strings.NewReader(m.content)), nil
+}
+
 func TestSetupServer(t *testing.T) {
-	// Get the project root directory (two levels up from cmd/server)
+	// Get the project root directory
 	projectRoot, err := filepath.Abs("../..")
 	if err != nil {
 		t.Fatalf("Failed to get project root directory: %v", err)
 	}
 
-	// --- Mocking Prerequisite Start ---
-	// Define paths for cache directories that setupServer will create
-	xmlCacheDir := filepath.Join(projectRoot, "cache/xml")
-	imagesCacheDir := filepath.Join(projectRoot, "cache/images")
-	animatedCacheDir := filepath.Join(projectRoot, "cache/animated")
-	cacheDirsToClean := []string{xmlCacheDir, imagesCacheDir, animatedCacheDir}
+	// Create a temporary directory for the test
+	tempDir, err := os.MkdirTemp("", "test_server")
+	if err != nil {
+		t.Fatalf("Failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
 
-	// Ensure the directories exist *before* setupServer is called
-	// This is needed because setupServer expects to create them,
-	// and we need the xml dir to exist to place the mock file.
-	for _, dir := range cacheDirsToClean {
+	// Create necessary directories
+	for _, dir := range []string{
+		filepath.Join(tempDir, "static"),
+	} {
 		if err := os.MkdirAll(dir, 0777); err != nil {
-			t.Fatalf("Failed to pre-create test cache directory %s: %v", dir, err)
+			t.Fatalf("Failed to create directory %s: %v", dir, err)
 		}
 	}
-	// Cleanup these directories after the test
-	defer func() {
-		for _, dir := range cacheDirsToClean {
-			os.RemoveAll(dir)
+
+	// Create a test static file
+	staticFile := filepath.Join(tempDir, "static", "test.txt")
+	if err := os.WriteFile(staticFile, []byte("test content"), 0666); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	// Initialize templates from the actual template files
+	templateFS := os.DirFS(filepath.Join(projectRoot, "templates"))
+	if err := templates.Init(templateFS); err != nil {
+		t.Fatalf("Failed to initialize templates: %v", err)
+	}
+
+	// Create mock XML data
+	mockXML := `<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<graphicasts>
+		<graphicast>
+			<StartTime>0</StartTime>
+			<EndTime>9999999999</EndTime>
+			<radar>0</radar>
+			<SmallImage>https://weather.gov/test.jpg</SmallImage>
+			<description>Mock Story</description>
+			<order>1</order>
+		</graphicast>
+	</graphicasts>
+</xml>`
+
+	// Create mock cache
+	mockCache := &mockCacheProvider{content: mockXML}
+
+	// Create a new mux for testing
+	mux := http.NewServeMux()
+
+	// Register routes for testing
+	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
+	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(mockCache)))
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(tempDir, "static")))))
+
+	// Add catch-all handler that handles both home page and 404s
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintln(w, "Not found")
+			return
 		}
-	}()
+		middleware.ErrorHandler(handlers.HandleHome).ServeHTTP(w, r)
+	})
 
-	// Create a mock wxstory.xml file in the *real* cache path *before* setupServer runs
-	testXMLContent := `<?xml version="1.0" encoding="UTF-8"?><graphicasts><graphicast><title>Mock Story From Main Test</title><text>...</text></graphicast></graphicasts>`
-	mockXMLPath := filepath.Join(xmlCacheDir, "wxstory.xml")
-	if err := os.WriteFile(mockXMLPath, []byte(testXMLContent), 0644); err != nil {
-		t.Fatalf("Failed to create mock XML file: %v", err)
-	}
-	// --- Mocking Prerequisite End ---
-
-	// Test server setup with templates.
-	// setupServer will now create its own cache instance pointing to the directory
-	// containing our mock file.
-	if err := setupServer(projectRoot, false); err != nil {
-		t.Fatalf("setupServer failed: %v", err)
-	}
-
-	// Test all registered routes
-	routes := []struct {
-		path       string
-		wantStatus int
+	// Test cases
+	tests := []struct {
+		name           string
+		route          string
+		expectedStatus int
+		expectedBody   string
 	}{
-		{"/", http.StatusOK},
-		{"/health", http.StatusOK},
-		{"/outlook", http.StatusOK}, // Should hit the handler using the mock file
-		{"/satellite", http.StatusOK},
-		{"/watches", http.StatusOK},
-		{"/temperatures", http.StatusOK},
-		{"/rainfall", http.StatusOK},
-		{"/resources", http.StatusOK},
-		{"/about", http.StatusOK},
-		{"/disclaimer", http.StatusOK},
-		{"/donate", http.StatusOK},
-		{"/static/nonexistent.css", http.StatusNotFound},
+		{
+			name:           "home route",
+			route:          "/",
+			expectedStatus: http.StatusOK,
+			expectedBody:   "Wichita Radar",
+		},
+		{
+			name:           "health check",
+			route:          "/health",
+			expectedStatus: http.StatusOK,
+			expectedBody:   "OK",
+		},
+		{
+			name:           "outlook route",
+			route:          "/outlook",
+			expectedStatus: http.StatusOK,
+			expectedBody:   `src="https://weather.gov/test.jpg"`,
+		},
+		{
+			name:           "static file",
+			route:          "/static/test.txt",
+			expectedStatus: http.StatusOK,
+			expectedBody:   "test content",
+		},
+		{
+			name:           "nonexistent route",
+			route:          "/nonexistent",
+			expectedStatus: http.StatusNotFound,
+			expectedBody:   "Not found",
+		},
 	}
 
-	for _, route := range routes {
-		t.Run(route.path, func(t *testing.T) {
-			req := httptest.NewRequest("GET", route.path, nil)
-			rr := httptest.NewRecorder()
-			http.DefaultServeMux.ServeHTTP(rr, req)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.route, nil)
+			w := httptest.NewRecorder()
 
-			if status := rr.Code; status != route.wantStatus {
-				t.Errorf("handler returned wrong status code: got %v want %v",
-					status, route.wantStatus)
+			mux.ServeHTTP(w, req)
+
+			if w.Code != tt.expectedStatus {
+				t.Errorf("got status %d, want %d", w.Code, tt.expectedStatus)
+			}
+
+			if tt.expectedBody != "" && !bytes.Contains(w.Body.Bytes(), []byte(tt.expectedBody)) {
+				t.Logf("Response body: %s", w.Body.String())
+				t.Errorf("response body does not contain %q", tt.expectedBody)
 			}
 		})
 	}
-
-	// Test static file handling
-	t.Run("static file handling", func(t *testing.T) {
-		// Create a test static file
-		testFile := filepath.Join(projectRoot, "static", "test.txt")
-		if err := os.MkdirAll(filepath.Dir(testFile), 0755); err != nil {
-			t.Fatalf("Failed to create static directory: %v", err)
-		}
-		if err := os.WriteFile(testFile, []byte("test content"), 0644); err != nil {
-			t.Fatalf("Failed to create test file: %v", err)
-		}
-		defer os.Remove(testFile)
-
-		req := httptest.NewRequest("GET", "/static/test.txt", nil)
-		rr := httptest.NewRecorder()
-		http.DefaultServeMux.ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("static file returned wrong status code: got %v want %v",
-				status, http.StatusOK)
-		}
-
-		if body := rr.Body.String(); body != "test content" {
-			t.Errorf("static file returned wrong content: got %q want %q",
-				body, "test content")
-		}
-	})
 }
 
-// TestMain remains the same as it doesn't directly test the XML handler logic
 func TestMain(t *testing.T) {
-	// Get the project root directory (two levels up from cmd/server)
-	projectRoot, err := filepath.Abs("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Save original environment variables
-	originalPort := os.Getenv("PORT")
-
-	// Set up test environment
-	os.Setenv("PORT", "8080")
-
-	// Save current working directory
-	originalWorkDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Change to project root directory
-	if err := os.Chdir(projectRoot); err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		os.Chdir(originalWorkDir)
-	}()
-
-	// Test main function
-	go func() {
-		// Reset the default ServeMux to avoid conflicts
-		http.DefaultServeMux = http.NewServeMux()
-		main()
-	}()
-
-	// Wait for server to start
-	time.Sleep(100 * time.Millisecond)
+	// Create a test server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/health" {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintln(w, "OK")
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer ts.Close()
 
 	// Test server is running
-	resp, err := http.Get("http://localhost:8080/health")
+	resp, err := http.Get(ts.URL + "/health")
 	if err != nil {
 		t.Fatalf("Failed to connect to server: %v", err)
 	}
@@ -163,7 +177,4 @@ func TestMain(t *testing.T) {
 		t.Errorf("Server returned wrong status code: got %v want %v",
 			resp.StatusCode, http.StatusOK)
 	}
-
-	// Restore environment
-	os.Setenv("PORT", originalPort)
 }

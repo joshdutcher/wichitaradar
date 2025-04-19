@@ -9,27 +9,27 @@ import (
 	"time"
 )
 
+// CacheProvider defines the interface for cache operations
+type CacheProvider interface {
+	// GetContent returns the content for a given URL, using the cache if available
+	GetContent(url string, referer string, filename ...string) (io.ReadCloser, error)
+}
+
 // Cache represents a local file cache with expiration
 type Cache struct {
 	cacheDir string
 	cacheAge time.Duration
 }
 
-// New creates a new Cache instance
-func New(cacheDir string, cacheAge time.Duration) *Cache {
+// NewFileCache creates a new Cache instance
+func NewFileCache(cacheDir string, cacheAge time.Duration) *Cache {
 	return &Cache{
 		cacheDir: cacheDir,
 		cacheAge: cacheAge,
 	}
 }
 
-// GetCacheDir returns the cache directory path
-func (c *Cache) GetCacheDir() string {
-	return c.cacheDir
-}
-
-// Expired checks if a cached file has expired
-func (c *Cache) Expired(filename string) bool {
+func (c *Cache) isExpired(filename string) bool {
 	filepath := filepath.Join(c.cacheDir, filename)
 
 	info, err := os.Stat(filepath)
@@ -40,8 +40,7 @@ func (c *Cache) Expired(filename string) bool {
 	return time.Since(info.ModTime()) > c.cacheAge
 }
 
-// DownloadFile downloads a file from a URL and saves it to the cache
-func (c *Cache) DownloadFile(url, filename string, referer string) error {
+func (c *Cache) downloadToCache(url, filename string, referer string) error {
 	// Create HTTP client with custom headers
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -67,9 +66,6 @@ func (c *Cache) DownloadFile(url, filename string, referer string) error {
 		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	// Log content length
-	fmt.Printf("Content-Length header: %d\n", resp.ContentLength)
-
 	// Create cache directory if it doesn't exist
 	if err := os.MkdirAll(c.cacheDir, 0755); err != nil {
 		return err
@@ -83,40 +79,37 @@ func (c *Cache) DownloadFile(url, filename string, referer string) error {
 	}
 	defer file.Close()
 
-	// Copy response body to file with progress tracking
-	var bytesCopied int64
-	bytesCopied, err = io.Copy(file, resp.Body)
-	if err != nil {
+	// Copy response body to file
+	if _, err := io.Copy(file, resp.Body); err != nil {
 		return err
-	}
-
-	// Log actual bytes copied
-	fmt.Printf("Bytes copied: %d\n", bytesCopied)
-
-	// Get file info after writing
-	fileInfo, err := os.Stat(filepath)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Cached file size: %d bytes\n", fileInfo.Size())
-
-	// Verify we got all the content
-	if resp.ContentLength > 0 && bytesCopied != resp.ContentLength {
-		return fmt.Errorf("incomplete download: got %d bytes, expected %d", bytesCopied, resp.ContentLength)
 	}
 
 	return nil
 }
 
-// GetFile returns the path to a cached file, downloading it if necessary
-func (c *Cache) GetFile(url, filename string, referer string) (string, error) {
-	filepath := filepath.Join(c.cacheDir, filename)
+// GetContent implements CacheProvider
+func (c *Cache) GetContent(url string, referer string, filename ...string) (io.ReadCloser, error) {
+	// Use provided filename or generate from URL
+	var cacheFilename string
+	if len(filename) > 0 {
+		cacheFilename = filename[0]
+	} else {
+		cacheFilename = filepath.Base(url)
+	}
 
-	if c.Expired(filename) {
-		if err := c.DownloadFile(url, filename, referer); err != nil {
-			return "", err
+	// Check if we need to download
+	if c.isExpired(cacheFilename) {
+		if err := c.downloadToCache(url, cacheFilename, referer); err != nil {
+			return nil, fmt.Errorf("failed to download: %w", err)
 		}
 	}
 
-	return filepath, nil
+	// Open and return the file
+	filepath := filepath.Join(c.cacheDir, cacheFilename)
+	file, err := os.Open(filepath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open cache file: %w", err)
+	}
+
+	return file, nil
 }

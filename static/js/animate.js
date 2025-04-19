@@ -64,11 +64,12 @@ function reloadAnimatedImage(imgId, interval) {
   const img = document.getElementById(imgId);
   if (!img) return;
 
+  // Store the original relative URL without any timestamps
+  const baseUrl = img.getAttribute('src').split('?')[0];
+
   setInterval(() => {
-    // Force reload by adding a timestamp to the URL
+    // Force reload by replacing the timestamp in the URL
     const timestamp = new Date().getTime();
-    const currentSrc = img.src;
-    const separator = currentSrc.includes('?') ? '&' : '?';
-    img.src = currentSrc + separator + 't=' + timestamp;
+    img.src = baseUrl + '?t=' + timestamp;
   }, interval);
 }

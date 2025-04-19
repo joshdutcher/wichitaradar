@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -15,19 +16,27 @@ import (
 
 // setupServer configures the HTTP server with all routes and middleware
 func setupServer(workDir string, skipTemplates bool) error {
-	// Create cache directories with proper permissions
-	cacheDirs := cache.GetCacheDirs(workDir)
+	// Initialize caches
+	projectRoot, err := filepath.Abs(".")
+	if err != nil {
+		log.Fatalf("Failed to get project root directory: %v", err)
+	}
+
+	// Create cache directories
+	cacheDirs := []string{
+		cache.GetXMLCacheDir(projectRoot),
+		cache.GetAnimatedCacheDir(projectRoot),
+	}
+
 	for _, dir := range cacheDirs {
-		if err := os.MkdirAll(dir, 0777); err != nil {
-			return fmt.Errorf("failed to create cache directory %s: %v", dir, err)
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatalf("Failed to create cache directory %s: %v", dir, err)
 		}
 	}
 
 	// Create Cache instances
-	// Adjust cache durations as needed
-	xmlCache := cache.New(cache.GetXMLCacheDir(workDir), 15*time.Minute)
-	// animatedCache := cache.New(cache.GetAnimatedCacheDir(workDir), 5*time.Minute) // Add if needed by other handlers
-	// imagesCache := cache.New(cache.GetImagesCacheDir(workDir), 60*time.Minute) // Add if needed by other handlers
+	xmlCache := cache.NewFileCache(cache.GetXMLCacheDir(projectRoot), 5*time.Minute)
+	animatedCache := cache.NewFileCache(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
 
 	// Initialize templates from the "templates" directory
 	if !skipTemplates {
@@ -37,36 +46,30 @@ func setupServer(workDir string, skipTemplates bool) error {
 		}
 	}
 
-	// Serve static files
-	staticDir := filepath.Join(workDir, "static")
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
-
 	// Create a new mux to wrap with middleware
 	mux := http.NewServeMux()
 
+	// Serve static files
+	staticDir := filepath.Join(workDir, "static")
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+
 	// Register routes
-	mux.HandleFunc("/", handlers.HandleHome)
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
-	mux.HandleFunc("/outlook", handlers.HandleOutlook(xmlCache))
-	mux.HandleFunc("/satellite", handlers.HandleSatellite)
-	mux.HandleFunc("/watches", handlers.HandleSimplePage("watches"))
-	mux.HandleFunc("/temperatures", handlers.HandleTemperatures)
-	mux.HandleFunc("/rainfall", handlers.HandleRainfall)
-	mux.HandleFunc("/resources", handlers.HandleSimplePage("resources"))
-	mux.HandleFunc("/about", handlers.HandleSimplePage("about"))
-	mux.HandleFunc("/disclaimer", handlers.HandleSimplePage("disclaimer"))
-	mux.HandleFunc("/donate", handlers.HandleSimplePage("donate"))
-	mux.HandleFunc("/api/image-error", handlers.HandleImageError)
-	mux.HandleFunc("/api/wunderground/animated-radar", handlers.HandleWundergroundAnimatedRadar)
+	mux.Handle("/", middleware.ErrorHandler(handlers.HandleHome))
+	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
+	mux.Handle("/temperatures", middleware.ErrorHandler(handlers.HandleTemperatures))
+	mux.Handle("/rainfall", middleware.ErrorHandler(handlers.HandleRainfall))
+	mux.Handle("/satellite", middleware.ErrorHandler(handlers.HandleSatellite))
+	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache)))
+	mux.Handle("/api/wunderground/animated-radar", middleware.ErrorHandler(handlers.HandleWundergroundAnimatedRadar(animatedCache)))
+	mux.Handle("/watches", middleware.ErrorHandler(handlers.HandleSimplePage("watches")))
+	mux.Handle("/resources", middleware.ErrorHandler(handlers.HandleSimplePage("resources")))
+	mux.Handle("/about", middleware.ErrorHandler(handlers.HandleSimplePage("about")))
+	mux.Handle("/disclaimer", middleware.ErrorHandler(handlers.HandleSimplePage("disclaimer")))
+	mux.Handle("/donate", middleware.ErrorHandler(handlers.HandleSimplePage("donate")))
+	mux.Handle("/api/image-error", middleware.ErrorHandler(handlers.HandleImageError))
 
-	// Register XML handler using the new factory function
-	mux.HandleFunc("/xml", handlers.HandleXML(xmlCache))
-
-	// Wrap the mux with error handling middleware
-	http.Handle("/", middleware.ErrorHandler(mux))
+	// Set the mux as the default handler for all routes
+	http.Handle("/", mux)
 
 	return nil
 }

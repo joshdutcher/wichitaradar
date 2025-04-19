@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"wichitaradar/internal/middleware"
 	"wichitaradar/menu"
 	"wichitaradar/pkg/templates"
 )
@@ -59,41 +60,38 @@ func checkRemoteFile(url string) bool {
 	return resp.StatusCode == http.StatusOK
 }
 
-func HandleTemperatures(w http.ResponseWriter, r *http.Request) {
+func HandleTemperatures(w http.ResponseWriter, r *http.Request) error {
 	swxco := NewSWXCOFiles()
 	swxcoFiles := swxco.getImagePaths()
 
-	data := struct {
-		Menu        *menu.Menu
-		CurrentPath string
-		SWXCOFiles  map[string]string
-	}{
-		Menu:        menu.New(),
-		CurrentPath: r.URL.Path,
-		SWXCOFiles:  swxcoFiles,
+	// Create menu - if it fails, return an error that will bubble up
+	m := menu.New()
+	if m == nil {
+		return middleware.InternalError(fmt.Errorf("menu.New() returned nil"))
 	}
 
-	// Check if menu creation failed silently
-	if data.Menu == nil {
-		http.Error(w, "menu.New() returned nil", http.StatusInternalServerError)
-		return
-	}
-
-	// Get the specific template set for this page
+	// Get template set - if it fails, return an error that will bubble up
 	ts, err := templates.Get("temperatures")
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to get template set 'temperatures': %v", err), http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to get template set 'temperatures': %w", err))
 	}
 
-	// Add a check to ensure ts is not nil, although Get should handle this
-	if ts == nil {
-		http.Error(w, "Got nil template set from templates.Get", http.StatusInternalServerError)
-		return
+	data := struct {
+		Menu            *menu.Menu
+		CurrentPath     string
+		SWXCOFiles      map[string]string
+		RefreshInterval int
+	}{
+		Menu:            m,
+		CurrentPath:     r.URL.Path,
+		SWXCOFiles:      swxcoFiles,
+		RefreshInterval: 0, // No auto-refresh for temperatures page
 	}
-	// Execute the main template definition within this set
+
+	// Execute template - if it fails, return an error that will bubble up
 	if err := ts.ExecuteTemplate(w, "temperatures", data); err != nil {
-		http.Error(w, fmt.Sprintf("Failed to render template 'temperatures': %v", err), http.StatusInternalServerError)
-		return
+		return middleware.InternalError(fmt.Errorf("failed to render template 'temperatures': %w", err))
 	}
+
+	return nil
 }

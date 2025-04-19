@@ -2,20 +2,45 @@ package handlers
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
-	"wichitaradar/internal/cache"
 	"wichitaradar/internal/testutils"
 )
 
-func TestParseWeatherFeed(t *testing.T) {
-	// Use a fixed time for testing
-	now := time.Unix(1743757570, 0)
+func TestGetDefaultWeatherStory(t *testing.T) {
+	got := getDefaultWeatherStory()
+	want := []WeatherStory{{
+		URL:   "/static/img/nostories.png",
+		Alt:   "No Weather Stories!",
+		Order: 0,
+	}}
+
+	if len(got) != len(want) {
+		t.Errorf("got %d stories, want %d", len(got), len(want))
+		return
+	}
+
+	if got[0].URL != want[0].URL {
+		t.Errorf("URL = %v, want %v", got[0].URL, want[0].URL)
+	}
+	if got[0].Alt != want[0].Alt {
+		t.Errorf("Alt = %v, want %v", got[0].Alt, want[0].Alt)
+	}
+	if got[0].Order != want[0].Order {
+		t.Errorf("Order = %v, want %v", got[0].Order, want[0].Order)
+	}
+}
+
+func TestGetWeatherStoriesFromReader(t *testing.T) {
+	// Calculate timestamps relative to now
+	now := time.Now().Unix()
+	startTime := now - 3600 // 1 hour ago
+	endTime := now + 3600   // 1 hour from now
 
 	tests := []struct {
 		name    string
@@ -24,11 +49,11 @@ func TestParseWeatherFeed(t *testing.T) {
 	}{
 		{
 			name: "valid XML with one active story",
-			xmlData: `<?xml version="1.0" encoding="UTF-8"?>
-<feed><graphicasts><graphicast><StartTime>1743757560</StartTime><EndTime>1743798600</EndTime><description>Rain Showers Continue</description><SmallImage>/images/ict/wxstory/Tab1FileL.png</SmallImage><order>1</order><radar>false</radar></graphicast></graphicasts></feed>`,
+			xmlData: fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
+<xml><graphicasts><graphicast><StartTime>%d</StartTime><EndTime>%d</EndTime><description>Rain Showers Continue</description><SmallImage>/images/ict/wxstory/Tab1FileL.png</SmallImage><order>1</order><radar>0</radar></graphicast></graphicasts></xml>`, startTime, endTime),
 			want: []WeatherStory{
 				{
-					URL:   "https://weather.gov/images/ict/wxstory/Tab1FileL.png",
+					URL:   "/images/ict/wxstory/Tab1FileL.png",
 					Alt:   "Rain Showers Continue",
 					Order: 1,
 				},
@@ -37,7 +62,7 @@ func TestParseWeatherFeed(t *testing.T) {
 		{
 			name: "expired story",
 			xmlData: `<?xml version="1.0" encoding="UTF-8"?>
-<feed><graphicasts><graphicast><StartTime>1643757560</StartTime><EndTime>1643798600</EndTime><description>Old Story</description><SmallImage>/images/ict/wxstory/Tab1FileL.png</SmallImage><order>1</order><radar>false</radar></graphicast></graphicasts></feed>`,
+<xml><graphicasts><graphicast><StartTime>1643757560</StartTime><EndTime>1643798600</EndTime><description>Old Story</description><SmallImage>/images/ict/wxstory/Tab1FileL.png</SmallImage><order>1</order><radar>false</radar></graphicast></graphicasts></xml>`,
 			want: []WeatherStory{{
 				URL:   "/static/img/nostories.png",
 				Alt:   "No Weather Stories!",
@@ -47,7 +72,7 @@ func TestParseWeatherFeed(t *testing.T) {
 		{
 			name: "invalid XML",
 			xmlData: `<?xml version="1.0" encoding="UTF-8"?>
-<feed><graphicasts><graphicast><invalidTag></graphicast></graphicasts></feed>`,
+<xml><graphicasts><graphicast><invalidTag></graphicast></graphicasts></xml>`,
 			want: []WeatherStory{{
 				URL:   "/static/img/nostories.png",
 				Alt:   "No Weather Stories!",
@@ -57,7 +82,7 @@ func TestParseWeatherFeed(t *testing.T) {
 		{
 			name: "radar image should be skipped",
 			xmlData: `<?xml version="1.0" encoding="UTF-8"?>
-<feed><graphicasts><graphicast><StartTime>1743757560</StartTime><EndTime>1743798600</EndTime><description>Radar Image</description><SmallImage>/images/ict/wxstory/radar.gif</SmallImage><order>1</order><radar>true</radar></graphicast></graphicasts></feed>`,
+<xml><graphicasts><graphicast><StartTime>1743757560</StartTime><EndTime>1743798600</EndTime><description>Radar Image</description><SmallImage>/images/ict/wxstory/radar.gif</SmallImage><order>1</order><radar>true</radar></graphicast></graphicasts></xml>`,
 			want: []WeatherStory{{
 				URL:   "/static/img/nostories.png",
 				Alt:   "No Weather Stories!",
@@ -68,15 +93,13 @@ func TestParseWeatherFeed(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Use strings.NewReader instead of writing to a file
-			got, err := getWeatherStoriesFromReader(strings.NewReader(tt.xmlData), now)
+			got, err := parseWeatherStories(strings.NewReader(tt.xmlData))
 			if err != nil {
-				t.Fatalf("getWeatherStoriesFromReader() error = %v", err)
+				t.Fatalf("parseWeatherStories() error = %v", err)
 			}
 
-			// Compare results
 			if len(got) != len(tt.want) {
-				t.Errorf("getWeatherStoriesFromReader() got %d stories, want %d", len(got), len(tt.want))
+				t.Errorf("parseWeatherStories() got %d stories, want %d", len(got), len(tt.want))
 				return
 			}
 
@@ -97,56 +120,61 @@ func TestParseWeatherFeed(t *testing.T) {
 	}
 }
 
+// mockCacheProvider implements cache.CacheProvider for testing
+type mockCacheProvider struct {
+	content string
+}
+
+func (m *mockCacheProvider) GetContent(url string, referer string, filename ...string) (io.ReadCloser, error) {
+	return io.NopCloser(strings.NewReader(m.content)), nil
+}
+
 func TestHandleOutlook(t *testing.T) {
-	// --- Test Setup Start ---
-	// Init templates (required by the handler)
+	// Initialize templates
 	testutils.InitTemplates(t)
 
-	// Create a temporary directory for the test cache
-	tempDir, err := os.MkdirTemp("", "outlook_test_cache")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(tempDir)
+	// Calculate timestamps relative to now
+	now := time.Now().Unix()
+	startTime := now - 3600 // 1 hour ago
+	endTime := now + 3600   // 1 hour from now
 
-	// Create a mock wxstory.xml file with timestamps relative to the current time
-	currentTime := time.Now()
-	startTime := fmt.Sprintf("%d", currentTime.Add(-1*time.Hour).Unix())
-	endTime := fmt.Sprintf("%d", currentTime.Add(1*time.Hour).Unix())
-	testXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
-<feed><graphicasts><graphicast>
-	<StartTime>%s</StartTime><EndTime>%s</EndTime>
-	<description>Mock Outlook Story</description>
-	<SmallImage>/images/ict/wxstory/mock.png</SmallImage>
-	<order>1</order><radar>false</radar>
-</graphicast></graphicasts></feed>`, startTime, endTime)
-	mockXMLPath := filepath.Join(tempDir, "wxstory.xml")
-	if err := os.WriteFile(mockXMLPath, []byte(testXML), 0644); err != nil {
-		t.Fatal(err)
-	}
+	// Create mock cache with test XML
+	mockXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<graphicasts>
+		<graphicast>
+			<StartTime>%d</StartTime>
+			<EndTime>%d</EndTime>
+			<radar>0</radar>
+			<SmallImage>test.jpg</SmallImage>
+			<description>Mock Story</description>
+			<order>1</order>
+		</graphicast>
+	</graphicasts>
+</xml>`, startTime, endTime)
 
-	// Create a test cache instance pointing to the temp dir
-	testCache := cache.New(tempDir, 5*time.Minute) // Use a short cache time for testing
+	// Create mock cache
+	mockCache := &testutils.MockCacheProvider{Content: mockXML}
 
-	// Create the handler instance using the factory and test cache
-	handler := HandleOutlook(testCache)
-	// --- Test Setup End ---
-
-	// Create request and recorder
+	// Create test request
 	req := httptest.NewRequest("GET", "/outlook", nil)
-	rr := httptest.NewRecorder()
+	w := httptest.NewRecorder()
 
-	// Execute the handler
-	handler(rr, req)
-
-	// Check status code
-	if status := rr.Code; status != 200 {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, 200)
+	// Call handler
+	handler := HandleOutlook(mockCache)
+	err := handler(w, req)
+	if err != nil {
+		t.Fatalf("HandleOutlook failed: %v", err)
 	}
 
-	// Check if the body contains expected content (e.g., the mock story description)
-	expectedContent := "Mock Outlook Story"
-	if !strings.Contains(rr.Body.String(), expectedContent) {
-		t.Errorf("handler body does not contain expected string %q", expectedContent)
+	// Check response
+	if w.Code != http.StatusOK {
+		t.Errorf("got status %d, want %d", w.Code, http.StatusOK)
+	}
+
+	// Check response body
+	body := w.Body.String()
+	if !strings.Contains(body, "Mock Story") {
+		t.Error("response body does not contain 'Mock Story'")
 	}
 }
