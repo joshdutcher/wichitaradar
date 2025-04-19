@@ -15,7 +15,7 @@ A Go web application providing real-time weather radar and satellite imagery for
 
 - Built with Go using the standard library `net/http` package
 - Server-side HTML templating with Go's `html/template`
-- Pure CSS for styling with responsive design
+- Uses the "PureCSS" framework for styling with responsive design
 - Client-side JavaScript for image error tracking with Sentry
 - Comprehensive error handling with environment-aware responses
 - Automated testing and deployment pipeline
