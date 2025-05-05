@@ -1,0 +1,27 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+features:
+  - buildpack-stack=ubuntu-22
+ingress:
+  rules:
+    - component:
+        name: wichitaradar
+      match:
+        path:
+          prefix: /
+name: wichitaradar-app
+region: sfo
+services:
+  - build_command: go build -o app ./cmd/server
+    environment_slug: go
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: joshdutcher/wichitaradar
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+    name: wichitaradar
+    run_command: ./app
+    source_dir: /
