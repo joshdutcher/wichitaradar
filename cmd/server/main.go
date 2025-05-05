@@ -36,7 +36,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 
 	// Create Cache instances
 	xmlCache := cache.NewFileCache(cache.GetXMLCacheDir(projectRoot), 5*time.Minute)
-	animatedCache := cache.NewFileCache(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
+	// animatedCache := cache.NewFileCache(cache.GetAnimatedCacheDir(projectRoot), 5*time.Minute)
 
 	// Initialize templates from the "templates" directory
 	if !skipTemplates {
@@ -49,8 +49,17 @@ func setupServer(workDir string, skipTemplates bool) error {
 	// Create a new mux to wrap with middleware
 	mux := http.NewServeMux()
 
+	// Add a test route
+	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Server is running!"))
+	})
+
 	// Serve static files
 	staticDir := filepath.Join(workDir, "static")
+	log.Printf("Serving static files from: %s", staticDir)
+	if _, err := os.Stat(staticDir); err != nil {
+		log.Printf("Warning: static directory not found: %v", err)
+	}
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
 	// Register routes
@@ -60,7 +69,6 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/rainfall", middleware.ErrorHandler(handlers.HandleRainfall))
 	mux.Handle("/satellite", middleware.ErrorHandler(handlers.HandleSatellite))
 	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache)))
-	mux.Handle("/api/wunderground/animated-radar", middleware.ErrorHandler(handlers.HandleWundergroundAnimatedRadar(animatedCache)))
 	mux.Handle("/watches", middleware.ErrorHandler(handlers.HandleSimplePage("watches")))
 	mux.Handle("/resources", middleware.ErrorHandler(handlers.HandleSimplePage("resources")))
 	mux.Handle("/about", middleware.ErrorHandler(handlers.HandleSimplePage("about")))
@@ -81,23 +89,26 @@ func main() {
 		fmt.Printf("Failed to get project root directory: %v\n", err)
 		os.Exit(1)
 	}
+	log.Printf("Project root directory: %s", projectRoot)
 
 	// Setup server
 	if err := setupServer(projectRoot, false); err != nil {
 		fmt.Printf("Failed to setup server: %v\n", err)
 		os.Exit(1)
 	}
+	log.Printf("Server setup completed successfully")
 
 	// Get port from environment or use default
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "80"
 	}
+	log.Printf("Using port: %s", port)
 
 	// Start server
-	fmt.Printf("Server starting on port %s...\n", port)
+	log.Printf("Server starting on port %s...\n", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		fmt.Printf("Failed to start server: %v\n", err)
+		log.Printf("Failed to start server: %v\n", err)
 		os.Exit(1)
 	}
 }

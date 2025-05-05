@@ -1,6 +1,4 @@
 .xml_error
 error_log
 wichitaradar
-scraped/xml/*
-scraped/images/*
-scraped/temp/*
+scraped/*
