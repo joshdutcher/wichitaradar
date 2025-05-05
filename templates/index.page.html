@@ -1,27 +1,29 @@
 {{define "index"}} {{template "base" .}} {{end}} {{define "content"}}
 <div class="pure-g">
-  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-    <!-- Wunderground radar -->
-    <a href="https://www.wunderground.com/maps/radar/current/sln">
+  <div class="pure-u pure-u-md-1-1 pure-u-lg-1-2">
+    <!-- AccuWeather radar -->
+    <a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
       <img
         class="pure-img-responsive"
-        src="/api/wunderground/animated-radar"
+        src="https://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif"
         id="weatherAnimation"
         alt="Current Weather Animation"
         border="0"
       />
     </a>
 
-    <!-- Accuweather radar -->
-    <a href="https://www.accuweather.com/en/us/kansas/weather-radar?play=1">
+    <!-- NWS Central Plains Radar -->
+    <a href="https://radar.weather.gov/ridge/radar.php?rid=kict&product=N0R&overlay=11101111&loop=yes">
       <img
         class="pure-img-responsive"
-        src="https://sirocco.accuweather.com/nx_mosaic_640x480_public/sir/inmasirks_.gif"
+        src="https://radar.weather.gov/ridge/standard/KICT_loop.gif"
+        alt="NWS Central Plains Radar"
+        border="0"
       />
     </a>
   </div>
 
-  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
+  <div class="pure-u pure-u-md-1-1 pure-u-lg-1-2">
     <!-- KSN KS radar -->
     <a href="https://www.ksn.com/weather/images/kansas-radar">
       <img
@@ -48,11 +50,6 @@
         id="ksnWichitaLoop"
       />
     </a>
-  </div>
-
-  <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-    <!-- weather.gov radar loop -->
-    <img class="pure-img-responsive" src="https://radar.weather.gov/ridge/standard/KICT_loop.gif" />
   </div>
 </div>
 
@@ -89,8 +86,7 @@
     };
     animateFrames(ksnWichita, 5, 300, '#ksnWichitaLoop', true);
 
-    // Reload the animation every 5 seconds (5000ms)
-    reloadAnimatedImage('weatherAnimation', 5000);
+    // No need to reload the NWS radar loop as it's an animated GIF
   });
 </script>
 {{end}}

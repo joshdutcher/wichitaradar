@@ -73,3 +73,17 @@ function reloadAnimatedImage(imgId, interval) {
     img.src = baseUrl + '?t=' + timestamp;
   }, interval);
 }
+
+function reloadCachedImage(imgId, interval) {
+  const img = document.getElementById(imgId);
+  if (!img) return;
+
+  // Store the original URL
+  const originalUrl = img.src;
+
+  setInterval(() => {
+    // Force reload from cache by temporarily changing the src
+    img.src = '';
+    img.src = originalUrl;
+  }, interval);
+}
