@@ -10,6 +10,7 @@ services:
       - go-modules:/go/pkg/mod
     environment:
       - PORT=80
+      - ENV=development
     restart: unless-stopped
     tty: true
     stdin_open: true
