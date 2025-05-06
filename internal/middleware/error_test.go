@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -61,6 +62,10 @@ func TestErrorHandler(t *testing.T) {
 			req.Host = "example.com" // Production mode
 			rr := httptest.NewRecorder()
 
+			// Set ENV for production test
+			os.Setenv("ENV", "production")
+			defer os.Unsetenv("ENV")
+
 			handler := ErrorHandler(tt.handler)
 			handler.ServeHTTP(rr, req)
 
@@ -78,6 +83,9 @@ func TestErrorHandler(t *testing.T) {
 			req = httptest.NewRequest("GET", "/", nil)
 			req.Host = "localhost" // Development mode
 			rr = httptest.NewRecorder()
+
+			// Ensure ENV is not set for development test
+			os.Unsetenv("ENV")
 
 			handler.ServeHTTP(rr, req)
 
