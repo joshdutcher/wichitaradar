@@ -12,7 +12,32 @@ import (
 	"wichitaradar/internal/handlers"
 	"wichitaradar/internal/middleware"
 	"wichitaradar/pkg/templates"
+
+	"github.com/getsentry/sentry-go"
 )
+
+func init() {
+	// Initialize Sentry
+	dsn := os.Getenv("SENTRY_DSN")
+	if dsn == "" {
+		log.Printf("Warning: SENTRY_DSN not set, Sentry will not be initialized")
+		return
+	}
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: dsn,
+		Environment: func() string {
+			if os.Getenv("ENV") == "production" {
+				return "production"
+			}
+			return "development"
+		}(),
+		TracesSampleRate: 1.0,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+}
 
 // setupServer configures the HTTP server with all routes and middleware
 func setupServer(workDir string, skipTemplates bool) error {

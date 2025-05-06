@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -157,15 +158,11 @@ func containsError(body []byte) bool {
 
 // handleError writes an error response to the client
 func handleError(w http.ResponseWriter, r *http.Request, err error, message string, status int) {
-	// Determine if we're in production based on hostname
-	host := r.Host
-	if colon := strings.Index(host, ":"); colon != -1 {
-		host = host[:colon]
-	}
-	isProduction := host != "localhost" && host != "127.0.0.1"
+	// Determine if we're in production based on ENV variable
+	isProduction := os.Getenv("ENV") == "production"
 
 	// Only log errors in non-test environments
-	if !strings.HasPrefix(host, "127.0.0.1:") {
+	if !strings.HasPrefix(r.Host, "127.0.0.1:") {
 		log.Printf("Error: %v (status=%d, production=%v)", err, status, isProduction)
 	}
 
