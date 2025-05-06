@@ -42,33 +42,35 @@ function attachImageErrorListener(img) {
   img.dataset.errorListenerAttached = 'true';
 }
 
-// Handle initial images
+// Handle initial images and set up observer
 document.addEventListener('DOMContentLoaded', function () {
+  // Handle initial images
   const images = document.getElementsByTagName('img');
   for (let img of images) {
     attachImageErrorListener(img);
   }
-});
 
-// Handle dynamically added images
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    mutation.addedNodes.forEach(node => {
-      if (node.nodeName === 'IMG') {
-        attachImageErrorListener(node);
-      }
-      // Also check for images within added nodes
-      if (node.getElementsByTagName) {
-        const images = node.getElementsByTagName('img');
-        for (let img of images) {
-          attachImageErrorListener(img);
+  // Handle dynamically added images
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeName === 'IMG') {
+          attachImageErrorListener(node);
         }
-      }
+        // Also check for images within added nodes
+        if (node.getElementsByTagName) {
+          const images = node.getElementsByTagName('img');
+          for (let img of images) {
+            attachImageErrorListener(img);
+          }
+        }
+      });
     });
   });
-});
 
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
+  // Now we can safely observe document.body
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 });
