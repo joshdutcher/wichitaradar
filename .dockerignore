@@ -1,0 +1,51 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+LICENSE
+
+# Development files
+modd.conf
+Makefile
+*.md
+
+# Test files
+*_test.go
+coverage.out
+
+# Build artifacts
+wichitaradar
+*.exe
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local development
+.env
+.env.local
+
+# Large cache/temp directories that shouldn't be in Docker context
+scraped/animated/*
+scraped/images/*
+scraped/temp/*
+scraped/xml/*
+
+# Node modules (if any)
+node_modules/
+
+# Logs
+*.log
+
+# Deployment files
+docker-compose.yml
+render.yaml
