@@ -1,0 +1,11 @@
+[providers]
+go = "1.21"
+
+[variables]
+PORT = "8080"
+
+[build]
+cmd = "go build -o wichitaradar cmd/server/main.go"
+
+[start]
+cmd = "./wichitaradar"
