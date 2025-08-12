@@ -1,5 +1,4 @@
-[providers]
-go = "1.21"
+providers = ["go"]
 
 [variables]
 PORT = "8080"
