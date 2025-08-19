@@ -26,7 +26,7 @@ A Go web application providing real-time weather radar and satellite imagery for
 - GitHub Actions for continuous integration
 - Automated unit testing with race detection
 - Coverage reporting
-- Automatic deployment to Render on successful builds
+- Automatic deployment to Railway on successful builds
 - UptimeRobot monitoring for downtime detection and automatic instance wake-up
 
 ### Local Development
@@ -46,7 +46,7 @@ make coverage
 - UptimeRobot monitors site availability
 - Sentry integration for client-side error tracking
 - Server-side error handling with detailed logging in development and user-friendly messages in production
-- Automatic instance wake-up on Render to prevent cold starts
+- Automatic instance wake-up on Railway to prevent cold starts
 - Daily health checks to ensure service availability
 
 ## Project Structure

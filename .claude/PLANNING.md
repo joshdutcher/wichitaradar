@@ -72,6 +72,7 @@ wichitaradar/
 - **Caching**: File-based caching with configurable TTL
 - **Error Tracking**: Sentry for client-side and server-side error monitoring
 - **Static Assets**: Direct file serving via http.FileServer
+- **Deployment**: Railway hosting with nixpacks.toml configuration
 
 ### Testing
 - **Unit Tests**: Comprehensive test coverage with race detection
@@ -91,7 +92,7 @@ wichitaradar/
 - **Sentry Account**: For error tracking and monitoring
   - Create project and obtain DSN
   - Set SENTRY_DSN environment variable
-- **Render Account**: For production deployment
+- **Railway Account**: For production deployment
   - Connected to GitHub repository
   - Auto-deploy on successful builds
 - **UptimeRobot**: For monitoring and auto wake-up

@@ -9,7 +9,7 @@
 - ✅ Sentry error tracking integration
 - ✅ Comprehensive middleware and error handling
 - ✅ CI/CD pipeline with GitHub Actions
-- ✅ Production deployment on Render
+- ✅ Production deployment on Railway
 - ✅ UptimeRobot monitoring and auto wake-up
 - ✅ File-based caching system for weather data
 - ✅ Full test coverage with race detection

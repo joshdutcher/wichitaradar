@@ -25,7 +25,7 @@
   - **Templating**: Server-side HTML templating with Go's `html/template`
   - **Frontend**: Uses PureCSS framework for responsive styling
   - **Error Tracking**: Client-side JavaScript integration with Sentry for error monitoring
-  - **Deployment**: Hosted on Render with automated CI/CD via GitHub Actions
+  - **Deployment**: Hosted on Railway with automated CI/CD via GitHub Actions
   - **Monitoring**: UptimeRobot monitors availability with automatic instance wake-up
 
   ## Page Structure
