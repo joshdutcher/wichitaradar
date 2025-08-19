@@ -58,25 +58,30 @@ func checkPersistentFailures() {
 			if now.Sub(failure.FirstFailure) >= FailureThreshold &&
 				now.Sub(failure.LastReported) >= FailureThreshold {
 
-				// Log to daily file
+				// Log to daily file (create logs directory if needed)
 				today := now.Format("2006-01-02")
-				logFile := filepath.Join("logs", fmt.Sprintf("persistent-image-errors-%s.log", today))
+				logDir := "logs"
+				if err := os.MkdirAll(logDir, 0755); err == nil {
+					logFile := filepath.Join(logDir, fmt.Sprintf("persistent-image-errors-%s.log", today))
 
-				errorMsg := fmt.Sprintf("[%s] Persistent failure detected:\n"+
-					"Image: %s\n"+
-					"First failure: %s\n"+
-					"Last failure: %s\n"+
-					"Duration: %s\n"+
-					"Failure count: %d\n\n",
-					now.Format(time.RFC3339),
-					src,
-					failure.FirstFailure.Format(time.RFC3339),
-					failure.LastFailure.Format(time.RFC3339),
-					now.Sub(failure.FirstFailure).Round(time.Minute),
-					failure.FailureCount)
+					errorMsg := fmt.Sprintf("[%s] Persistent failure detected:\n"+
+						"Image: %s\n"+
+						"First failure: %s\n"+
+						"Last failure: %s\n"+
+						"Duration: %s\n"+
+						"Failure count: %d\n\n",
+						now.Format(time.RFC3339),
+						src,
+						failure.FirstFailure.Format(time.RFC3339),
+						failure.LastFailure.Format(time.RFC3339),
+						now.Sub(failure.FirstFailure).Round(time.Minute),
+						failure.FailureCount)
 
-				if err := os.WriteFile(logFile, []byte(errorMsg), 0644); err != nil {
-					fmt.Printf("Failed to write to log file: %v\n", err)
+					// Append to log file instead of overwriting
+					if f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err == nil {
+						f.WriteString(errorMsg)
+						f.Close()
+					}
 				}
 
 				// Report to Sentry
@@ -123,18 +128,26 @@ func HandleImageError(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	// Also log to daily file for all errors
+	// Also log to daily file for all errors (create logs directory if needed)
 	today := now.Format("2006-01-02")
-	logFile := filepath.Join("logs", fmt.Sprintf("image-errors-%s.log", today))
+	logDir := "logs"
+	if err := os.MkdirAll(logDir, 0755); err == nil {
+		logFile := filepath.Join(logDir, fmt.Sprintf("image-errors-%s.log", today))
 
-	errorMsg := fmt.Sprintf("[%s] Page: %s, Image: %s, Alt: %s\n",
-		errorData.Timestamp,
-		errorData.Page,
-		errorData.Src,
-		errorData.Alt)
+		errorMsg := fmt.Sprintf("[%s] Page: %s, Image: %s, Alt: %s\n",
+			errorData.Timestamp,
+			errorData.Page,
+			errorData.Src,
+			errorData.Alt)
 
-	if err := os.WriteFile(logFile, []byte(errorMsg), 0644); err != nil {
-		return middleware.InternalError(fmt.Errorf("failed to write to log file: %w", err))
+		// Append to log file instead of overwriting  
+		if f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err != nil {
+			// Don't return error - just skip logging if we can't write
+			// This prevents 500 errors from log file issues
+		} else {
+			f.WriteString(errorMsg)
+			f.Close()
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)

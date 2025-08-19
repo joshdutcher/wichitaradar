@@ -1,0 +1,83 @@
+Starting Container
+
+Initialized 10 page templates
+
+2025/08/19 20:37:04 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:04 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:04 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:04 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:04 CST
+
+2025/08/19 20:37:04 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:04 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:04 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:04 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:04 CST
+
+2025/08/19 20:37:05 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:05 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:05 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:05 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:05 CST
+
+2025/08/19 20:37:05 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:05 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:05 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:05 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:05 CST
+
+2025/08/19 20:37:05 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:05 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:05 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:05 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:05 CST
+
+2025/08/19 20:37:05 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:05 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:05 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:05 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:05 Warning: Failed to load America/Chicago timezone: unknown time zone America/Chicago
+
+2025/08/19 20:37:05 Warning: Failed to load US/Central timezone: unknown time zone US/Central
+
+2025/08/19 20:37:05 Warning: Using fixed CST offset, daylight saving time will not be automatically handled
+
+2025/08/19 20:37:05 Menu timestamp using timezone: CST, current time: 2025-08-19 14:37:05 CST
+
+2025/08/19 20:37:05 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:05 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:06 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:06 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:06 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:06 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:06 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:06 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:06 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:06 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
+
+2025/08/19 20:37:06 Error: Internal error: failed to write to log file: open logs/image-errors-2025-08-19.log: no such file or directory (status=500, production=true)
+
+2025/08/19 20:37:06 http: superfluous response.WriteHeader call from wichitaradar/internal/middleware.handleError (error.go:174)
