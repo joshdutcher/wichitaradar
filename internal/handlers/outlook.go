@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -66,27 +65,21 @@ func HandleOutlook(cache cache.CacheProvider) func(http.ResponseWriter, *http.Re
 func parseWeatherStories(r io.Reader) ([]WeatherStory, error) {
 	var feed WeatherFeed
 
-	// Read the XML into a string for debugging
+	// Read and parse XML
 	xmlBytes, err := io.ReadAll(r)
 	if err != nil {
-		log.Printf("Failed to read XML: %v", err)
 		return getDefaultWeatherStory(), nil
 	}
-	log.Printf("XML content: %s", string(xmlBytes))
 
 	if err := xml.NewDecoder(bytes.NewReader(xmlBytes)).Decode(&feed); err != nil {
-		log.Printf("Failed to decode XML: %v", err)
 		return getDefaultWeatherStory(), nil
 	}
-
-	log.Printf("Found %d graphicasts", len(feed.Graphicasts.Graphicasts))
 
 	timeNow := time.Now().Unix()
 	var stories []WeatherStory
 	for _, g := range feed.Graphicasts.Graphicasts {
 		startTime, _ := strconv.ParseInt(g.StartTime, 10, 64)
 		endTime, _ := strconv.ParseInt(g.EndTime, 10, 64)
-		log.Printf("Checking graphicast: StartTime=%s, EndTime=%s, Radar=%s", g.StartTime, g.EndTime, g.Radar)
 		if startTime <= timeNow && timeNow <= endTime && g.Radar == "0" {
 			stories = append(stories, WeatherStory{
 				URL:   g.SmallImage,
@@ -97,7 +90,6 @@ func parseWeatherStories(r io.Reader) ([]WeatherStory, error) {
 	}
 
 	if len(stories) == 0 {
-		log.Printf("No valid stories found")
 		return getDefaultWeatherStory(), nil
 	}
 
