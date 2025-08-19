@@ -4,6 +4,9 @@ import (
 	"log"
 	"path/filepath"
 	"time"
+	
+	// Import timezone data for environments that don't have it installed
+	_ "time/tzdata"
 )
 
 // MenuItem represents a single item in the navigation menu
@@ -37,22 +40,15 @@ func New() *Menu {
 func (p DefaultMenuProvider) New() *Menu {
 	// Get Central Time location (automatically handles daylight saving)
 	// This ensures Central Time is used regardless of server location
-	var loc *time.Location
-	var now time.Time
-	
-	// Try to load timezone data, but don't spam logs on every menu creation
-	if tzLoc, err := time.LoadLocation("America/Chicago"); err == nil {
-		loc = tzLoc
-	} else if tzLoc, err := time.LoadLocation("US/Central"); err == nil {
-		loc = tzLoc
-	} else {
-		// Last resort: create fixed offset for Central Time
-		// Since we can't access timezone rules, always use CDT (-5) during deployment
-		// This is more accurate than CST during the daylight saving period (Mar-Nov)
-		loc = time.FixedZone("CDT", -5*3600) // Central Daylight Time
+	loc, err := time.LoadLocation("America/Chicago")
+	if err != nil {
+		// This should not happen now that we import time/tzdata
+		// but keep fallback just in case
+		log.Printf("Warning: Failed to load America/Chicago timezone (this should not happen): %v", err)
+		loc = time.FixedZone("CDT", -5*3600) // Central Daylight Time as fallback
 	}
 	
-	now = time.Now().In(loc)
+	now := time.Now().In(loc)
 
 	return &Menu{
 		Items: []MenuItem{
