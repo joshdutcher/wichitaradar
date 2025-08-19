@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"log"
 	"path/filepath"
 	"time"
 )
@@ -35,11 +36,24 @@ func New() *Menu {
 // New creates a new menu
 func (p DefaultMenuProvider) New() *Menu {
 	// Get Central Time location (automatically handles daylight saving)
+	// This ensures Central Time is used regardless of server location
 	loc, err := time.LoadLocation("America/Chicago")
 	if err != nil {
-		// Fallback to UTC if location loading fails
-		loc = time.UTC
+		log.Printf("Warning: Failed to load America/Chicago timezone: %v", err)
+		// If timezone data is not available, try common alternatives
+		loc, err = time.LoadLocation("US/Central")
+		if err != nil {
+			log.Printf("Warning: Failed to load US/Central timezone: %v", err)
+			// Last resort: create fixed offset for Central Time
+			// CST is UTC-6, but this won't handle daylight saving automatically
+			loc = time.FixedZone("CST", -6*3600)
+			log.Printf("Warning: Using fixed CST offset, daylight saving time will not be automatically handled")
+		}
 	}
+
+	// Log the timezone being used for debugging
+	now := time.Now().In(loc)
+	log.Printf("Menu timestamp using timezone: %s, current time: %s", loc.String(), now.Format("2006-01-02 15:04:05 MST"))
 
 	return &Menu{
 		Items: []MenuItem{
@@ -54,7 +68,7 @@ func (p DefaultMenuProvider) New() *Menu {
 			{Label: "Disclaimer", URL: "/disclaimer", Tooltip: ""},
 			{Label: "Donate", URL: "/donate", Tooltip: "Buy me a coffee!"},
 		},
-		LoadTime: time.Now().In(loc),
+		LoadTime: now,
 	}
 }
 
