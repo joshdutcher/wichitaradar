@@ -85,6 +85,9 @@ func TestSetupServer(t *testing.T) {
 	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
 	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(mockCache)))
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(tempDir, "static")))))
+	
+	// Add redirect route
+	mux.Handle("/index.php", middleware.ErrorHandler(handlers.HandleRedirect("/")))
 
 	// Add catch-all handler that handles both home page and 404s
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -132,6 +135,12 @@ func TestSetupServer(t *testing.T) {
 			route:          "/nonexistent",
 			expectedStatus: http.StatusNotFound,
 			expectedBody:   "Not found",
+		},
+		{
+			name:           "index.php redirect",
+			route:          "/index.php",
+			expectedStatus: http.StatusMovedPermanently,
+			expectedBody:   "",
 		},
 	}
 

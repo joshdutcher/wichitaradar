@@ -44,3 +44,11 @@ func HandleSimplePage(templateName string) func(http.ResponseWriter, *http.Reque
 		return nil
 	}
 }
+
+// HandleRedirect creates a handler that performs a 301 permanent redirect
+func HandleRedirect(targetURL string) func(http.ResponseWriter, *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		http.Redirect(w, r, targetURL, http.StatusMovedPermanently)
+		return nil
+	}
+}
