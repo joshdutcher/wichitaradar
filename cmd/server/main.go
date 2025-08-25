@@ -90,6 +90,9 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/disclaimer", middleware.ErrorHandler(handlers.HandleSimplePage("disclaimer")))
 	mux.Handle("/donate", middleware.ErrorHandler(handlers.HandleSimplePage("donate")))
 	mux.Handle("/api/image-error", middleware.ErrorHandler(handlers.HandleImageError))
+	
+	// Redirect common legacy URLs
+	mux.Handle("/index.php", middleware.ErrorHandler(handlers.HandleRedirect("/")))
 
 	// Set the mux as the default handler for all routes
 	http.Handle("/", mux)

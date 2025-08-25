@@ -108,3 +108,57 @@ func TestHandleSimplePage(t *testing.T) {
 		})
 	}
 }
+
+func TestHandleRedirect(t *testing.T) {
+	tests := []struct {
+		name           string
+		targetURL      string
+		requestPath    string
+		expectedStatus int
+		expectedLocation string
+	}{
+		{
+			name:             "redirect index.php to root",
+			targetURL:        "/",
+			requestPath:      "/index.php",
+			expectedStatus:   http.StatusMovedPermanently,
+			expectedLocation: "/",
+		},
+		{
+			name:             "redirect to specific path",
+			targetURL:        "/about",
+			requestPath:      "/legacy-about",
+			expectedStatus:   http.StatusMovedPermanently,
+			expectedLocation: "/about",
+		},
+		{
+			name:             "redirect to external URL",
+			targetURL:        "https://example.com",
+			requestPath:      "/external",
+			expectedStatus:   http.StatusMovedPermanently,
+			expectedLocation: "https://example.com",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create request
+			req := httptest.NewRequest("GET", tt.requestPath, nil)
+			w := httptest.NewRecorder()
+
+			// Execute handler
+			middleware.ErrorHandler(HandleRedirect(tt.targetURL)).ServeHTTP(w, req)
+
+			// Check status code
+			if w.Code != tt.expectedStatus {
+				t.Errorf("expected status %d, got %d", tt.expectedStatus, w.Code)
+			}
+
+			// Check Location header
+			location := w.Header().Get("Location")
+			if location != tt.expectedLocation {
+				t.Errorf("expected Location header %q, got %q", tt.expectedLocation, location)
+			}
+		})
+	}
+}
