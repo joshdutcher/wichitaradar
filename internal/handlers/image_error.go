@@ -21,6 +21,12 @@ type ImageError struct {
 	Timestamp string `json:"timestamp"`
 }
 
+type ImageSuccess struct {
+	Src       string `json:"src"`
+	Page      string `json:"page"`
+	Timestamp string `json:"timestamp"`
+}
+
 // Global state for tracking image failures
 var (
 	failedImages     = make(map[string]*ImageFailure)
@@ -31,11 +37,12 @@ type ImageFailure struct {
 	FirstFailure time.Time
 	LastFailure  time.Time
 	LastReported time.Time
+	LastSuccess  time.Time  // Track when image last loaded successfully
 	FailureCount int
 }
 
 const (
-	FailureThreshold = 4 * time.Hour
+	FailureThreshold = 1 * time.Hour  // Reduced from 4 hours to 1 hour
 	CheckInterval    = 5 * time.Minute
 )
 
@@ -55,8 +62,10 @@ func checkPersistentFailures() {
 			// Only report if:
 			// 1. The image has been failing for more than FailureThreshold
 			// 2. We haven't reported it recently
+			// 3. No successful loads have occurred since the first failure
 			if now.Sub(failure.FirstFailure) >= FailureThreshold &&
-				now.Sub(failure.LastReported) >= FailureThreshold {
+				now.Sub(failure.LastReported) >= FailureThreshold &&
+				(failure.LastSuccess.IsZero() || failure.LastSuccess.Before(failure.FirstFailure)) {
 
 				// Log to daily file (create logs directory if needed)
 				today := now.Format("2006-01-02")
@@ -147,6 +156,60 @@ func HandleImageError(w http.ResponseWriter, r *http.Request) error {
 		} else {
 			f.WriteString(errorMsg)
 			f.Close()
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return nil
+}
+
+// HandleImageFailureStatus returns list of images currently in failure state
+func HandleImageFailureStatus(w http.ResponseWriter, r *http.Request) error {
+	if r.Method != http.MethodGet {
+		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
+	}
+
+	failedImagesLock.RLock()
+	defer failedImagesLock.RUnlock()
+
+	// Return list of currently failing image URLs
+	failedImageURLs := make([]string, 0, len(failedImages))
+	for src := range failedImages {
+		failedImageURLs = append(failedImageURLs, src)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(failedImageURLs); err != nil {
+		return fmt.Errorf("failed to encode response: %v", err)
+	}
+
+	return nil
+}
+
+// HandleImageSuccess handles successful image load reports and clears failure records
+func HandleImageSuccess(w http.ResponseWriter, r *http.Request) error {
+	if r.Method != http.MethodPost {
+		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
+	}
+
+	var successData ImageSuccess
+	if err := json.NewDecoder(r.Body).Decode(&successData); err != nil {
+		return middleware.BadRequestError(err, "Invalid request body")
+	}
+
+	// Update success tracking and clear failure if exists
+	failedImagesLock.Lock()
+	defer failedImagesLock.Unlock()
+
+	now := time.Now()
+	if failure, exists := failedImages[successData.Src]; exists {
+		// Image successfully loaded - update last success time
+		failure.LastSuccess = now
+		
+		// If this success occurred after the current failure period started,
+		// remove the failure record entirely as the issue is resolved
+		if now.After(failure.FirstFailure) {
+			delete(failedImages, successData.Src)
 		}
 	}
 
