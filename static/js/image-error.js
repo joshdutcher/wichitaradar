@@ -21,7 +21,9 @@ function shouldReportImage(img) {
   try {
     // Use currentSrc (actual loaded src) or fall back to src attribute
     const srcUrl = img.currentSrc || img.src;
-    if (!srcUrl) return false;
+    if (!srcUrl) {
+      return false;
+    }
 
     // Parse URL to get hostname
     const u = new URL(srcUrl);
@@ -45,10 +47,12 @@ function shouldReportImage(img) {
 
 function attachImageListeners(img) {
   // Only attach if not already attached
-  if (img.dataset.listenersAttached) return;
+  if (img.dataset.listenersAttached) {
+    return;
+  }
 
   // Track errors
-  img.addEventListener('error', function (e) {
+  img.addEventListener('error', function () {
     // Validate image before reporting
     if (!shouldReportImage(this)) {
       return; // Ignore third-party images, tracking pixels, etc.
@@ -76,7 +80,7 @@ function attachImageListeners(img) {
   });
 
   // Track successful loads
-  img.addEventListener('load', function (e) {
+  img.addEventListener('load', function () {
     // Validate image before reporting
     if (!shouldReportImage(this)) {
       return; // Ignore third-party images, tracking pixels, etc.
@@ -102,10 +106,10 @@ function attachImageListeners(img) {
 }
 
 // Handle initial images and set up observer
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   // Handle initial images
   const images = document.getElementsByTagName('img');
-  for (let img of images) {
+  for (const img of images) {
     attachImageListeners(img);
   }
 
@@ -119,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Also check for images within added nodes
         if (node.getElementsByTagName) {
           const images = node.getElementsByTagName('img');
-          for (let img of images) {
+          for (const img of images) {
             attachImageListeners(img);
           }
         }
