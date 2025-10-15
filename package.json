@@ -1,0 +1,19 @@
+{
+  "name": "wichitaradar",
+  "version": "1.0.0",
+  "description": "Weather radar aggregation service for Wichita, Kansas",
+  "private": true,
+  "scripts": {
+    "lint": "eslint static/js/**/*.js",
+    "lint:fix": "eslint static/js/**/*.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshdutcher/wichitaradar"
+  },
+  "author": "Josh Dutcher",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

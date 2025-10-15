@@ -1,42 +1,71 @@
-// Cache of currently failing images to minimize API calls
-let failingImages = new Set();
-let lastFailingImagesUpdate = 0;
-const FAILING_IMAGES_CACHE_TTL = 60000; // 1 minute
+// Allowlist of hosts we actually care about
+const ALLOWED_HOSTS = new Set([
+  'wichitaradar.com',
+  'www.wichitaradar.com',
+  // External providers embedded in the app
+  'img.shields.io',
+  'www.spc.noaa.gov',
+  's.w-x.co',
+  'sirocco.accuweather.com',
+  'media.psg.nexstardigital.net',
+  'graphical.weather.gov',
+  'www.weather.gov',
+  'weather.gov',
+  'radar.weather.gov',
+  'x-hv1.pivotalweather.com',
+  'cdn.star.nesdis.noaa.gov',
+]);
 
-// Fetch list of currently failing images
-async function updateFailingImages() {
-  const now = Date.now();
-  if (now - lastFailingImagesUpdate < FAILING_IMAGES_CACHE_TTL) {
-    return; // Use cached data
-  }
-
+// Validate that an image is from our domain and not a tracking pixel
+function shouldReportImage(img) {
   try {
-    const response = await fetch('/api/image-failure-status');
-    if (response.ok) {
-      const failingImageUrls = await response.json();
-      failingImages = new Set(failingImageUrls);
-      lastFailingImagesUpdate = now;
+    // Use currentSrc (actual loaded src) or fall back to src attribute
+    const srcUrl = img.currentSrc || img.src;
+    if (!srcUrl) {
+      return false;
     }
+
+    // Parse URL to get hostname
+    const u = new URL(srcUrl);
+
+    // Check if hostname is in our allowlist
+    if (!ALLOWED_HOSTS.has(u.hostname)) {
+      return false; // Not our domain, ignore it
+    }
+
+    // Optional: Skip 1×1 pixels (often tracking pixels)
+    if (img.naturalWidth === 1 && img.naturalHeight === 1) {
+      return false;
+    }
+
+    return true; // Passed all checks
   } catch (err) {
-    console.error('Failed to fetch failing images status:', err);
+    // Ignore bad URLs (invalid, relative, etc.)
+    return false;
   }
 }
 
 function attachImageListeners(img) {
   // Only attach if not already attached
-  if (img.dataset.listenersAttached) return;
+  if (img.dataset.listenersAttached) {
+    return;
+  }
 
   // Track errors
-  img.addEventListener('error', function (e) {
+  img.addEventListener('error', function () {
+    // Validate image before reporting
+    if (!shouldReportImage(this)) {
+      return; // Ignore third-party images, tracking pixels, etc.
+    }
+
     const errorData = {
       src: this.src,
       alt: this.alt || 'No alt text',
       page: window.location.pathname,
       timestamp: new Date().toISOString(),
+      width: this.naturalWidth,
+      height: this.naturalHeight,
     };
-
-    // Add to local failing images cache
-    failingImages.add(this.src);
 
     // Report to server
     fetch('/api/image-error', {
@@ -50,46 +79,37 @@ function attachImageListeners(img) {
     });
   });
 
-  // Track successful loads - but only for images that were failing
-  img.addEventListener('load', async function (e) {
-    // Update failing images cache if it's stale
-    await updateFailingImages();
-    
-    // Only report success if this image was in the failing list
-    if (failingImages.has(this.src)) {
-      const successData = {
-        src: this.src,
-        page: window.location.pathname,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Remove from local cache since it's now working
-      failingImages.delete(this.src);
-
-      // Report success to server
-      fetch('/api/image-success', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(successData),
-      }).catch(err => {
-        console.error('Failed to report image success:', err);
-      });
+  // Track successful loads
+  img.addEventListener('load', function () {
+    // Validate image before reporting
+    if (!shouldReportImage(this)) {
+      return; // Ignore third-party images, tracking pixels, etc.
     }
+
+    const successData = {
+      src: this.src,
+    };
+
+    // Report success to server (server tracks which images were previously failing)
+    fetch('/api/image-success', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(successData),
+    }).catch(err => {
+      console.error('Failed to report image success:', err);
+    });
   });
 
   img.dataset.listenersAttached = 'true';
 }
 
 // Handle initial images and set up observer
-document.addEventListener('DOMContentLoaded', async function () {
-  // Fetch initial failing images status
-  await updateFailingImages();
-  
+document.addEventListener('DOMContentLoaded', () => {
   // Handle initial images
   const images = document.getElementsByTagName('img');
-  for (let img of images) {
+  for (const img of images) {
     attachImageListeners(img);
   }
 
@@ -103,7 +123,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Also check for images within added nodes
         if (node.getElementsByTagName) {
           const images = node.getElementsByTagName('img');
-          for (let img of images) {
+          for (const img of images) {
             attachImageListeners(img);
           }
         }

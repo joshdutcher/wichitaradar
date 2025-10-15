@@ -59,7 +59,9 @@ func (c *Cache) downloadToCache(url, filename string, referer string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	// Check response status
 	if resp.StatusCode != http.StatusOK {
@@ -77,7 +79,9 @@ func (c *Cache) downloadToCache(url, filename string, referer string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// Copy response body to file
 	if _, err := io.Copy(file, resp.Body); err != nil {

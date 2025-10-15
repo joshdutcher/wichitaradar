@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -31,9 +32,9 @@ func (e *AppError) Unwrap() error {
 // InternalError creates an internal server error
 func InternalError(err error) *AppError {
 	return &AppError{
-		Err:        err,
-		StatusCode: http.StatusInternalServerError,
-		DevMessage: fmt.Sprintf("Internal error: %v", err),
+		Err:         err,
+		StatusCode:  http.StatusInternalServerError,
+		DevMessage:  fmt.Sprintf("Internal error: %v", err),
 		ProdMessage: "Internal Server Error",
 	}
 }
@@ -41,9 +42,9 @@ func InternalError(err error) *AppError {
 // NotFoundError creates a not found error
 func NotFoundError(err error, resource string) *AppError {
 	return &AppError{
-		Err:        err,
-		StatusCode: http.StatusNotFound,
-		DevMessage: fmt.Sprintf("%s not found: %v", resource, err),
+		Err:         err,
+		StatusCode:  http.StatusNotFound,
+		DevMessage:  fmt.Sprintf("%s not found: %v", resource, err),
 		ProdMessage: "Not found",
 	}
 }
@@ -51,9 +52,9 @@ func NotFoundError(err error, resource string) *AppError {
 // BadRequestError creates a bad request error
 func BadRequestError(err error, message string) *AppError {
 	return &AppError{
-		Err:        err,
-		StatusCode: http.StatusBadRequest,
-		DevMessage: fmt.Sprintf("Bad request: %s: %v", message, err),
+		Err:         err,
+		StatusCode:  http.StatusBadRequest,
+		DevMessage:  fmt.Sprintf("Bad request: %s: %v", message, err),
 		ProdMessage: message,
 	}
 }
@@ -93,7 +94,8 @@ func ErrorHandler(next interface{}) http.Handler {
 		if handlerErr != nil {
 			status := http.StatusInternalServerError
 			message := "Internal server error"
-			if appErr, ok := handlerErr.(*AppError); ok {
+			var appErr *AppError
+			if errors.As(handlerErr, &appErr) {
 				status = appErr.StatusCode
 				message = appErr.ProdMessage
 			}
@@ -175,25 +177,4 @@ func handleError(w http.ResponseWriter, r *http.Request, err error, message stri
 	} else {
 		http.Error(w, fmt.Sprintf("%s\n\nError: %v", message, err), status)
 	}
-}
-
-// responseWriter is a custom response writer that captures the status code
-type responseWriter struct {
-	http.ResponseWriter
-	status        int
-	headerWritten bool
-}
-
-// WriteHeader captures the status code
-func (rw *responseWriter) WriteHeader(code int) {
-	if !rw.headerWritten {
-		rw.status = code
-		rw.headerWritten = true
-		rw.ResponseWriter.WriteHeader(code)
-	}
-}
-
-// Write passes through to the underlying writer
-func (rw *responseWriter) Write(b []byte) (int, error) {
-	return rw.ResponseWriter.Write(b)
 }

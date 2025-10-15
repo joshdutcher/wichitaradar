@@ -3,216 +3,323 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
-
-	"wichitaradar/internal/middleware"
 
 	"github.com/getsentry/sentry-go"
 )
 
-type ImageError struct {
-	Src       string `json:"src"`
-	Alt       string `json:"alt"`
-	Page      string `json:"page"`
-	Timestamp string `json:"timestamp"`
+// ==============================
+// Configuration knobs (tweak me)
+// ==============================
+
+// Only these hosts are considered "ours" and eligible for logging/escalation.
+// Add your CDN / subdomains here.
+var allowedImageHosts = map[string]bool{
+	"wichitaradar.com":     true,
+	"www.wichitaradar.com": true,
+	// External providers embedded in the app
+	"img.shields.io":               true,
+	"www.spc.noaa.gov":             true,
+	"s.w-x.co":                     true,
+	"sirocco.accuweather.com":      true,
+	"media.psg.nexstardigital.net": true,
+	"graphical.weather.gov":        true,
+	"www.weather.gov":              true,
+	"weather.gov":                  true,
+	"radar.weather.gov":            true,
+	"x-hv1.pivotalweather.com":     true,
+	"cdn.star.nesdis.noaa.gov":     true,
 }
 
-type ImageSuccess struct {
+// Ignore trivial 1×1 pixels (often trackers) to cut noise at the source.
+const ignoreOneByOnePixels = true
+
+// We normalize URLs by host + path and DROP query strings to avoid a million uniques.
+const dropQueryStringsInKey = true
+
+// How long a failure must persist (with no subsequent success) before we’ll consider escalating.
+var failureThreshold = 4 * time.Hour // was ~1h; raise to 4–12h to be safer
+
+// Minimum number of failures for a given normalized key before we escalate.
+const reportMinCount = 10
+
+// We won’t escalate the same key more than once within this cool-down window.
+var escalateCooldown = 6 * time.Hour
+
+// Background sweep cadence for persistent failures.
+var sweepInterval = 2 * time.Minute
+
+// ==============================
+// Data structures
+// ==============================
+
+type imageErrorPayload struct {
 	Src       string `json:"src"`
-	Page      string `json:"page"`
-	Timestamp string `json:"timestamp"`
+	Referrer  string `json:"referrer,omitempty"`
+	UserAgent string `json:"userAgent,omitempty"`
+	Width     int    `json:"width,omitempty"`
+	Height    int    `json:"height,omitempty"`
+	Error     string `json:"error,omitempty"`
+	// Optional client timestamp; we treat it as informational only.
+	Timestamp string `json:"timestamp,omitempty"`
 }
 
-// Global state for tracking image failures
-var (
-	failedImages     = make(map[string]*ImageFailure)
-	failedImagesLock sync.RWMutex
-)
+type imageSuccessPayload struct {
+	Src string `json:"src"`
+}
 
-type ImageFailure struct {
+type failureRecord struct {
+	Host         string
+	Path         string
+	OriginalSrc  string // last seen full src (for debugging)
 	FirstFailure time.Time
 	LastFailure  time.Time
 	LastReported time.Time
-	LastSuccess  time.Time  // Track when image last loaded successfully
+	LastSuccess  time.Time
 	FailureCount int
 }
 
-const (
-	FailureThreshold = 1 * time.Hour  // Reduced from 4 hours to 1 hour
-	CheckInterval    = 5 * time.Minute
+var (
+	mu           sync.Mutex
+	failedImages = make(map[string]*failureRecord) // key = normalized(host+path) OR full src
+	once         sync.Once
 )
 
-func init() {
-	// Start background checker
-	go checkPersistentFailures()
+// ==================================
+// Public bootstrap: start the sweeper
+// ==================================
+
+func InitImageFailureMonitor() {
+	once.Do(func() {
+		go persistentFailureSweeper()
+	})
 }
 
-func checkPersistentFailures() {
-	ticker := time.NewTicker(CheckInterval)
-	defer ticker.Stop()
+// ==================================
+// HTTP Handlers
+// ==================================
 
-	for range ticker.C {
-		now := time.Now()
-		failedImagesLock.Lock()
-		for src, failure := range failedImages {
-			// Only report if:
-			// 1. The image has been failing for more than FailureThreshold
-			// 2. We haven't reported it recently
-			// 3. No successful loads have occurred since the first failure
-			if now.Sub(failure.FirstFailure) >= FailureThreshold &&
-				now.Sub(failure.LastReported) >= FailureThreshold &&
-				(failure.LastSuccess.IsZero() || failure.LastSuccess.Before(failure.FirstFailure)) {
-
-				// Log to daily file (create logs directory if needed)
-				today := now.Format("2006-01-02")
-				logDir := "logs"
-				if err := os.MkdirAll(logDir, 0755); err == nil {
-					logFile := filepath.Join(logDir, fmt.Sprintf("persistent-image-errors-%s.log", today))
-
-					errorMsg := fmt.Sprintf("[%s] Persistent failure detected:\n"+
-						"Image: %s\n"+
-						"First failure: %s\n"+
-						"Last failure: %s\n"+
-						"Duration: %s\n"+
-						"Failure count: %d\n\n",
-						now.Format(time.RFC3339),
-						src,
-						failure.FirstFailure.Format(time.RFC3339),
-						failure.LastFailure.Format(time.RFC3339),
-						now.Sub(failure.FirstFailure).Round(time.Minute),
-						failure.FailureCount)
-
-					// Append to log file instead of overwriting
-					if f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err == nil {
-						f.WriteString(errorMsg)
-						f.Close()
-					}
-				}
-
-				// Report to Sentry
-				sentry.WithScope(func(scope *sentry.Scope) {
-					scope.SetTag("image", src)
-					scope.SetTag("duration", now.Sub(failure.FirstFailure).Round(time.Minute).String())
-					scope.SetTag("failure_count", fmt.Sprintf("%d", failure.FailureCount))
-					scope.SetExtra("first_failure", failure.FirstFailure.Format(time.RFC3339))
-					scope.SetExtra("last_failure", failure.LastFailure.Format(time.RFC3339))
-					sentry.CaptureMessage("Persistent image loading failure detected")
-				})
-
-				// Update last reported time
-				failure.LastReported = now
-			}
-		}
-		failedImagesLock.Unlock()
-	}
-}
-
+// POST /image-error
+// Body: { src, referrer?, userAgent?, width?, height?, error?, timestamp? }
 func HandleImageError(w http.ResponseWriter, r *http.Request) error {
-	if r.Method != http.MethodPost {
-		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
+	var p imageErrorPayload
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return nil
+	}
+	if p.Src == "" {
+		w.WriteHeader(http.StatusOK)
+		return nil
 	}
 
-	var errorData ImageError
-	if err := json.NewDecoder(r.Body).Decode(&errorData); err != nil {
-		return middleware.BadRequestError(err, "Invalid request body")
+	u, ok := parseAndAllow(p.Src)
+	if !ok {
+		// Not our host (or bad URL) → ignore
+		w.WriteHeader(http.StatusOK)
+		return nil
 	}
 
-	// Update failure tracking
-	failedImagesLock.Lock()
-	defer failedImagesLock.Unlock()
+	// Optionally drop obvious tracker pixels early
+	if ignoreOneByOnePixels && p.Width == 1 && p.Height == 1 {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+
+	key := normalizeKey(u)
 
 	now := time.Now()
-	if failure, exists := failedImages[errorData.Src]; exists {
-		failure.LastFailure = now
-		failure.FailureCount++
-	} else {
-		failedImages[errorData.Src] = &ImageFailure{
+	mu.Lock()
+	rec := failedImages[key]
+	if rec == nil {
+		rec = &failureRecord{
+			Host:         strings.ToLower(u.Host),
+			Path:         u.Path,
+			OriginalSrc:  p.Src,
 			FirstFailure: now,
 			LastFailure:  now,
 			FailureCount: 1,
 		}
+		failedImages[key] = rec
+	} else {
+		rec.LastFailure = now
+		rec.FailureCount++
+		rec.OriginalSrc = p.Src // keep last-seen for context
 	}
-
-	// Also log to daily file for all errors (create logs directory if needed)
-	today := now.Format("2006-01-02")
-	logDir := "logs"
-	if err := os.MkdirAll(logDir, 0755); err == nil {
-		logFile := filepath.Join(logDir, fmt.Sprintf("image-errors-%s.log", today))
-
-		errorMsg := fmt.Sprintf("[%s] Page: %s, Image: %s, Alt: %s\n",
-			errorData.Timestamp,
-			errorData.Page,
-			errorData.Src,
-			errorData.Alt)
-
-		// Append to log file instead of overwriting  
-		if f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err != nil {
-			// Don't return error - just skip logging if we can't write
-			// This prevents 500 errors from log file issues
-		} else {
-			f.WriteString(errorMsg)
-			f.Close()
-		}
-	}
+	mu.Unlock()
 
 	w.WriteHeader(http.StatusOK)
 	return nil
 }
 
-// HandleImageFailureStatus returns list of images currently in failure state
-func HandleImageFailureStatus(w http.ResponseWriter, r *http.Request) error {
-	if r.Method != http.MethodGet {
-		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
-	}
-
-	failedImagesLock.RLock()
-	defer failedImagesLock.RUnlock()
-
-	// Return list of currently failing image URLs
-	failedImageURLs := make([]string, 0, len(failedImages))
-	for src := range failedImages {
-		failedImageURLs = append(failedImageURLs, src)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(failedImageURLs); err != nil {
-		return fmt.Errorf("failed to encode response: %v", err)
-	}
-
-	return nil
-}
-
-// HandleImageSuccess handles successful image load reports and clears failure records
+// POST /image-success
+// Body: { src }
 func HandleImageSuccess(w http.ResponseWriter, r *http.Request) error {
-	if r.Method != http.MethodPost {
-		return middleware.BadRequestError(fmt.Errorf("method not allowed"), "Method not allowed")
+	var p imageSuccessPayload
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return nil
+	}
+	if p.Src == "" {
+		w.WriteHeader(http.StatusOK)
+		return nil
 	}
 
-	var successData ImageSuccess
-	if err := json.NewDecoder(r.Body).Decode(&successData); err != nil {
-		return middleware.BadRequestError(err, "Invalid request body")
+	u, ok := parseAndAllow(p.Src)
+	if !ok {
+		// Success for a non-allowed host is irrelevant.
+		w.WriteHeader(http.StatusOK)
+		return nil
 	}
 
-	// Update success tracking and clear failure if exists
-	failedImagesLock.Lock()
-	defer failedImagesLock.Unlock()
-
+	key := normalizeKey(u)
 	now := time.Now()
-	if failure, exists := failedImages[successData.Src]; exists {
-		// Image successfully loaded - update last success time
-		failure.LastSuccess = now
-		
-		// If this success occurred after the current failure period started,
-		// remove the failure record entirely as the issue is resolved
-		if now.After(failure.FirstFailure) {
-			delete(failedImages, successData.Src)
+
+	mu.Lock()
+	if rec, exists := failedImages[key]; exists {
+		rec.LastSuccess = now
+		// If we’ve had a success after the failure window started, clear the record.
+		if now.After(rec.FirstFailure) {
+			delete(failedImages, key)
 		}
 	}
+	mu.Unlock()
 
 	w.WriteHeader(http.StatusOK)
 	return nil
+}
+
+// ==============================
+// Background Sweeper & Escalation
+// ==============================
+
+func persistentFailureSweeper() {
+	t := time.NewTicker(sweepInterval)
+	defer t.Stop()
+
+	for range t.C {
+		sweepPersistentFailures()
+	}
+}
+
+func sweepPersistentFailures() {
+	now := time.Now()
+
+	var toEscalate []*failureRecord
+	var toLog []*failureRecord
+
+	mu.Lock()
+	for key, rec := range failedImages {
+		_ = key // key unused except for map ops
+
+		// Basic guards: only our hosts; minimum count; cool-down respected
+		if !allowedImageHosts[rec.Host] {
+			continue
+		}
+		if rec.FailureCount < reportMinCount {
+			continue
+		}
+		if !rec.LastReported.IsZero() && now.Sub(rec.LastReported) < escalateCooldown {
+			continue
+		}
+		// Must have persisted for the threshold window
+		if now.Sub(rec.FirstFailure) < failureThreshold {
+			continue
+		}
+		// If a success ever occurred after the first failure, treat issue as resolved.
+		if !rec.LastSuccess.IsZero() && rec.LastSuccess.After(rec.FirstFailure) {
+			continue
+		}
+
+		// If we passed all checks, queue for escalation & logging
+		toEscalate = append(toEscalate, rec)
+		toLog = append(toLog, rec)
+		// Mark "reported" stamp so we don't spam
+		rec.LastReported = now
+	}
+	mu.Unlock()
+
+	// Side-effect outside lock: file log + Sentry
+	for _, rec := range toLog {
+		logPersistent(rec, now)
+	}
+	for _, rec := range toEscalate {
+		sendSentry(rec)
+	}
+}
+
+func logPersistent(rec *failureRecord, now time.Time) {
+	// Append to daily file, best-effort only.
+	today := now.Format("2006-01-02")
+	_ = os.MkdirAll("logs", 0o750)
+	f := filepath.Join("logs", fmt.Sprintf("persistent-image-errors-%s.log", today))
+	msg := fmt.Sprintf("[%s] Persistent failure detected\nHost: %s\nPath: %s\nLastSrc: %s\nFirstFailure: %s\nLastFailure: %s\nFailures: %d\n\n",
+		now.Format(time.RFC3339),
+		rec.Host,
+		rec.Path,
+		rec.OriginalSrc,
+		rec.FirstFailure.Format(time.RFC3339),
+		rec.LastFailure.Format(time.RFC3339),
+		rec.FailureCount,
+	)
+	_ = appendFile(f, msg)
+}
+
+func sendSentry(rec *failureRecord) {
+	sentry.WithScope(func(scope *sentry.Scope) {
+		scope.SetTag("image.host", rec.Host)
+		scope.SetTag("image.path", rec.Path)
+		scope.SetTag("image.src.last", rec.OriginalSrc)
+		scope.SetLevel(sentry.LevelWarning)
+		scope.SetFingerprint([]string{"image-load-persistent", rec.Host, rec.Path})
+		sentry.CaptureMessage("Persistent image loading failure detected")
+	})
+}
+
+// ==============================
+// Helpers
+// ==============================
+
+func parseAndAllow(raw string) (*url.URL, bool) {
+	u, err := url.Parse(raw)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return nil, false
+	}
+	host := strings.ToLower(u.Host)
+	if !allowedImageHosts[host] {
+		return nil, false
+	}
+	return u, true
+}
+
+func normalizeKey(u *url.URL) string {
+	host := strings.ToLower(u.Host)
+	path := u.Path
+	if path == "" {
+		path = "/"
+	}
+	if dropQueryStringsInKey {
+		return host + "|" + path
+	}
+	return host + "|" + path + "?" + u.RawQuery
+}
+
+func appendFile(path, s string) error {
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o600)
+	if err != nil {
+		// Fall back to stderr — don't crash the sweeper for logging problems.
+		log.Printf("appendFile: %v", err)
+		return err
+	}
+	defer func() {
+		_ = f.Close()
+	}()
+	_, err = f.WriteString(s)
+	return err
 }

@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 	"time"
-	
+
 	// Import timezone data for environments that don't have it installed
 	_ "time/tzdata"
 )
@@ -47,7 +47,7 @@ func (p DefaultMenuProvider) New() *Menu {
 		log.Printf("Warning: Failed to load America/Chicago timezone (this should not happen): %v", err)
 		loc = time.FixedZone("CDT", -5*3600) // Central Daylight Time as fallback
 	}
-	
+
 	now := time.Now().In(loc)
 
 	return &Menu{

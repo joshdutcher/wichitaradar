@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Third-party libraries (PureCSS, etc.)
+static/css/pure/
+
+# Build artifacts
+dist/
+build/
+
+# Coverage
+coverage/
+*.lcov
+
+# Logs
+*.log
+logs/

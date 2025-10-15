@@ -1,31 +1,10 @@
-function preloadImages(fileInfo) {
-  var promises = [];
-  for (var i = fileInfo.startingFrame; i <= fileInfo.numImages; i++) {
-    var frameNum = fileInfo.leadingZero ? ('00' + i).slice(-2) : i;
-    var url = fileInfo.urlPrefix + frameNum + fileInfo.urlSuffix;
-    promises.push(loadImage(url));
-  }
-  return Promise.all(promises);
-}
-
-function loadImage(url) {
-  return new Promise(function (resolve, reject) {
-    var img = new Image();
-    img.onload = function () {
-      resolve(img);
-    };
-    img.onerror = function () {
-      reject(new Error('Failed to load image: ' + url));
-    };
-    img.src = url;
-  });
-}
-
+// Function is called from inline scripts in HTML templates
+// eslint-disable-next-line no-unused-vars
 function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse) {
-  var currentFrame = reverse ? fileInfo.numImages : fileInfo.startingFrame;
-  var direction = reverse ? -1 : 1;
-  var pauseCounter = 0;
-  var isPaused = false;
+  let currentFrame = reverse ? fileInfo.numImages : fileInfo.startingFrame;
+  const direction = reverse ? -1 : 1;
+  let pauseCounter = 0;
+  let isPaused = false;
 
   function updateFrame() {
     if (isPaused) {
@@ -35,8 +14,8 @@ function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse) {
         pauseCounter = 0;
       }
     } else {
-      var frameNum = fileInfo.leadingZero ? ('00' + currentFrame).slice(-2) : currentFrame;
-      var url = fileInfo.urlPrefix + frameNum + fileInfo.urlSuffix;
+      const frameNum = fileInfo.leadingZero ? ('00' + currentFrame).slice(-2) : currentFrame;
+      const url = fileInfo.urlPrefix + frameNum + fileInfo.urlSuffix;
       document.querySelector(imgDomId).src = url;
 
       currentFrame += direction;
@@ -58,18 +37,4 @@ function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse) {
   }
 
   updateFrame();
-}
-
-function reloadAnimatedImage(imgId, interval) {
-  const img = document.getElementById(imgId);
-  if (!img) return;
-
-  // Store the original relative URL without any timestamps
-  const baseUrl = img.getAttribute('src').split('?')[0];
-
-  setInterval(() => {
-    // Force reload by replacing the timestamp in the URL
-    const timestamp = new Date().getTime();
-    img.src = baseUrl + '?t=' + timestamp;
-  }, interval);
 }

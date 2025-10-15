@@ -37,7 +37,7 @@ type Graphicasts struct {
 }
 
 type WeatherFeed struct {
-	XMLName     xml.Name `xml:"xml"`
+	XMLName     xml.Name    `xml:"xml"`
 	Graphicasts Graphicasts `xml:"graphicasts"`
 }
 
@@ -50,7 +50,9 @@ func HandleOutlook(cache cache.CacheProvider) func(http.ResponseWriter, *http.Re
 		if err != nil {
 			return middleware.InternalError(fmt.Errorf("failed to get XML: %w", err))
 		}
-		defer xmlReader.Close()
+		defer func() {
+			_ = xmlReader.Close()
+		}()
 
 		// Parse stories from XML
 		stories, err := parseWeatherStories(xmlReader)
@@ -118,9 +120,9 @@ func renderOutlook(w http.ResponseWriter, r *http.Request, stories []WeatherStor
 	}
 
 	data := struct {
-		Menu            *menu.Menu
-		CurrentPath     string
-		Stories         []struct {
+		Menu        *menu.Menu
+		CurrentPath string
+		Stories     []struct {
 			Image       string
 			Description string
 		}

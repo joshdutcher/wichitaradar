@@ -57,6 +57,9 @@ func checkRemoteFile(url string) bool {
 	if err != nil {
 		return false
 	}
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	return resp.StatusCode == http.StatusOK
 }
 
