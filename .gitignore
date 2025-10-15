@@ -2,3 +2,4 @@
 error_log
 wichitaradar
 scraped/*
+logs/

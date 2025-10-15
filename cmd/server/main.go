@@ -62,6 +62,9 @@ func setupServer(workDir string, skipTemplates bool) error {
 	// Create Cache instances
 	xmlCache := cache.NewFileCache(cache.GetXMLCacheDir(projectRoot), 5*time.Minute)
 
+	// Initialize image failure monitoring background sweeper
+	handlers.InitImageFailureMonitor()
+
 	// Initialize templates from the "templates" directory
 	if !skipTemplates {
 		templateFS := os.DirFS(filepath.Join(workDir, "templates"))
@@ -91,7 +94,6 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/donate", middleware.ErrorHandler(handlers.HandleSimplePage("donate")))
 	mux.Handle("/api/image-error", middleware.ErrorHandler(handlers.HandleImageError))
 	mux.Handle("/api/image-success", middleware.ErrorHandler(handlers.HandleImageSuccess))
-	mux.Handle("/api/image-failure-status", middleware.ErrorHandler(handlers.HandleImageFailureStatus))
 	
 	// Redirect common legacy URLs
 	mux.Handle("/index.php", middleware.ErrorHandler(handlers.HandleRedirect("/")))
