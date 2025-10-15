@@ -1,13 +1,13 @@
 (function () {
   // Get menu elements
-  var layout = document.getElementById('layout');
-  var menu = document.getElementById('menu');
-  var menuLink = document.getElementById('menuLink');
+  const layout = document.getElementById('layout');
+  const menu = document.getElementById('menu');
+  const menuLink = document.getElementById('menuLink');
 
   function toggleClass(element, className) {
-    var classes = element.className.split(/\s+/);
-    var length = classes.length;
-    var i = 0;
+    const classes = element.className.split(/\s+/);
+    const length = classes.length;
+    let i = 0;
 
     for (; i < length; i++) {
       if (classes[i] === className) {
@@ -31,13 +31,13 @@
   }
 
   // Event handler for menu clicks
-  menuLink.addEventListener('click', function (e) {
+  menuLink.addEventListener('click', (e) => {
     e.preventDefault();
     toggleMenu();
   });
 
   // Close menu when clicking outside
-  document.addEventListener('click', function (e) {
+  document.addEventListener('click', (e) => {
     // If menu is active and click is outside menu and not on menu toggle
     if (
       layout.className.indexOf('active') !== -1 &&

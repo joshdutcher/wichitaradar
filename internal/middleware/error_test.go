@@ -14,7 +14,7 @@ func TestErrorHandler(t *testing.T) {
 		handler        interface{}
 		expectedStatus int
 		expectedBody   string
-		prodBody      string
+		prodBody       string
 	}{
 		{
 			name: "standard http.Handler",
@@ -24,7 +24,7 @@ func TestErrorHandler(t *testing.T) {
 			}),
 			expectedStatus: http.StatusOK,
 			expectedBody:   "OK",
-			prodBody:      "OK",
+			prodBody:       "OK",
 		},
 		{
 			name: "HandlerFunc returning error",
@@ -33,7 +33,7 @@ func TestErrorHandler(t *testing.T) {
 			}),
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody:   "Internal Server Error\n\nError: Internal error: test error\n",
-			prodBody:      "Internal Server Error\n",
+			prodBody:       "Internal Server Error\n",
 		},
 		{
 			name: "func returning error",
@@ -42,7 +42,7 @@ func TestErrorHandler(t *testing.T) {
 			},
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   "Invalid input\n\nError: Bad request: Invalid input: invalid input\n",
-			prodBody:      "Invalid input\n",
+			prodBody:       "Invalid input\n",
 		},
 		{
 			name: "unsupported handler type",
@@ -51,7 +51,7 @@ func TestErrorHandler(t *testing.T) {
 			},
 			expectedStatus: http.StatusOK,
 			expectedBody:   "",
-			prodBody:      "",
+			prodBody:       "",
 		},
 	}
 

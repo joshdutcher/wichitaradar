@@ -22,10 +22,20 @@ import (
 // Only these hosts are considered "ours" and eligible for logging/escalation.
 // Add your CDN / subdomains here.
 var allowedImageHosts = map[string]bool{
-	"wichitaradar.com":      true,
-	"www.wichitaradar.com":  true,
-	"static.wichitaradar.com": true,
-	// "img.cdn.example.com": true, // example: add your CDN if used
+	"wichitaradar.com":     true,
+	"www.wichitaradar.com": true,
+	// External providers embedded in the app
+	"img.shields.io":               true,
+	"www.spc.noaa.gov":             true,
+	"s.w-x.co":                     true,
+	"sirocco.accuweather.com":      true,
+	"media.psg.nexstardigital.net": true,
+	"graphical.weather.gov":        true,
+	"www.weather.gov":              true,
+	"weather.gov":                  true,
+	"radar.weather.gov":            true,
+	"x-hv1.pivotalweather.com":     true,
+	"cdn.star.nesdis.noaa.gov":     true,
 }
 
 // Ignore trivial 1×1 pixels (often trackers) to cut noise at the source.
@@ -66,14 +76,14 @@ type imageSuccessPayload struct {
 }
 
 type failureRecord struct {
-	Host          string
-	Path          string
-	OriginalSrc   string // last seen full src (for debugging)
-	FirstFailure  time.Time
-	LastFailure   time.Time
-	LastReported  time.Time
-	LastSuccess   time.Time
-	FailureCount  int
+	Host         string
+	Path         string
+	OriginalSrc  string // last seen full src (for debugging)
+	FirstFailure time.Time
+	LastFailure  time.Time
+	LastReported time.Time
+	LastSuccess  time.Time
+	FailureCount int
 }
 
 var (
@@ -214,7 +224,7 @@ func sweepPersistentFailures() {
 		}
 		if rec.FailureCount < reportMinCount {
 			continue
-	 }
+		}
 		if !rec.LastReported.IsZero() && now.Sub(rec.LastReported) < escalateCooldown {
 			continue
 		}
@@ -227,7 +237,7 @@ func sweepPersistentFailures() {
 			continue
 		}
 
-        // If we passed all checks, queue for escalation & logging
+		// If we passed all checks, queue for escalation & logging
 		toEscalate = append(toEscalate, rec)
 		toLog = append(toLog, rec)
 		// Mark "reported" stamp so we don't spam
@@ -247,7 +257,7 @@ func sweepPersistentFailures() {
 func logPersistent(rec *failureRecord, now time.Time) {
 	// Append to daily file, best-effort only.
 	today := now.Format("2006-01-02")
-	_ = os.MkdirAll("logs", 0o755)
+	_ = os.MkdirAll("logs", 0o750)
 	f := filepath.Join("logs", fmt.Sprintf("persistent-image-errors-%s.log", today))
 	msg := fmt.Sprintf("[%s] Persistent failure detected\nHost: %s\nPath: %s\nLastSrc: %s\nFirstFailure: %s\nLastFailure: %s\nFailures: %d\n\n",
 		now.Format(time.RFC3339),
@@ -301,13 +311,15 @@ func normalizeKey(u *url.URL) string {
 }
 
 func appendFile(path, s string) error {
-	f, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o600)
 	if err != nil {
-		// Fall back to stderr — don’t crash the sweeper for logging problems.
+		// Fall back to stderr — don't crash the sweeper for logging problems.
 		log.Printf("appendFile: %v", err)
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 	_, err = f.WriteString(s)
 	return err
 }

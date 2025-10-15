@@ -34,41 +34,34 @@ func TestParseAndAllow(t *testing.T) {
 			wantScheme: "https",
 		},
 		{
-			name:       "valid static.wichitaradar.com URL",
-			rawURL:     "https://static.wichitaradar.com/image.png",
-			wantHost:   "static.wichitaradar.com",
-			wantOK:     true,
-			wantScheme: "https",
+			name:   "third-party domain rejected",
+			rawURL: "https://nickletto.com/metric",
+			wantOK: false,
 		},
 		{
-			name:    "third-party domain rejected",
-			rawURL:  "https://nickletto.com/metric",
-			wantOK:  false,
+			name:   "tracking pixel domain rejected",
+			rawURL: "https://boxclone.com/tracking.gif",
+			wantOK: false,
 		},
 		{
-			name:    "tracking pixel domain rejected",
-			rawURL:  "https://boxclone.com/tracking.gif",
-			wantOK:  false,
+			name:   "invalid URL rejected",
+			rawURL: "not-a-valid-url",
+			wantOK: false,
 		},
 		{
-			name:    "invalid URL rejected",
-			rawURL:  "not-a-valid-url",
-			wantOK:  false,
+			name:   "relative URL rejected",
+			rawURL: "/relative/path.png",
+			wantOK: false,
 		},
 		{
-			name:    "relative URL rejected",
-			rawURL:  "/relative/path.png",
-			wantOK:  false,
+			name:   "URL without scheme rejected",
+			rawURL: "wichitaradar.com/image.png",
+			wantOK: false,
 		},
 		{
-			name:    "URL without scheme rejected",
-			rawURL:  "wichitaradar.com/image.png",
-			wantOK:  false,
-		},
-		{
-			name:    "empty URL rejected",
-			rawURL:  "",
-			wantOK:  false,
+			name:   "empty URL rejected",
+			rawURL: "",
+			wantOK: false,
 		},
 	}
 
@@ -98,34 +91,34 @@ func TestParseAndAllow(t *testing.T) {
 
 func TestNormalizeKey(t *testing.T) {
 	tests := []struct {
-		name    string
-		rawURL  string
-		want    string
+		name   string
+		rawURL string
+		want   string
 	}{
 		{
-			name:    "URL with query string normalized",
-			rawURL:  "https://wichitaradar.com/image.png?cachebuster=123",
-			want:    "wichitaradar.com|/image.png",
+			name:   "URL with query string normalized",
+			rawURL: "https://wichitaradar.com/image.png?cachebuster=123",
+			want:   "wichitaradar.com|/image.png",
 		},
 		{
-			name:    "URL without query string",
-			rawURL:  "https://www.wichitaradar.com/path/image.jpg",
-			want:    "www.wichitaradar.com|/path/image.jpg",
+			name:   "URL without query string",
+			rawURL: "https://www.wichitaradar.com/path/image.jpg",
+			want:   "www.wichitaradar.com|/path/image.jpg",
 		},
 		{
-			name:    "URL with multiple query params",
-			rawURL:  "https://static.wichitaradar.com/img.png?v=1&t=2",
-			want:    "static.wichitaradar.com|/img.png",
+			name:   "URL with multiple query params",
+			rawURL: "https://www.wichitaradar.com/img.png?v=1&t=2",
+			want:   "www.wichitaradar.com|/img.png",
 		},
 		{
-			name:    "root path URL",
-			rawURL:  "https://wichitaradar.com",
-			want:    "wichitaradar.com|/",
+			name:   "root path URL",
+			rawURL: "https://wichitaradar.com",
+			want:   "wichitaradar.com|/",
 		},
 		{
-			name:    "URL with fragment",
-			rawURL:  "https://wichitaradar.com/page#section",
-			want:    "wichitaradar.com|/page",
+			name:   "URL with fragment",
+			rawURL: "https://wichitaradar.com/page#section",
+			want:   "wichitaradar.com|/page",
 		},
 	}
 

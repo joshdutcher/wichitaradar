@@ -111,10 +111,10 @@ func TestHandleSimplePage(t *testing.T) {
 
 func TestHandleRedirect(t *testing.T) {
 	tests := []struct {
-		name           string
-		targetURL      string
-		requestPath    string
-		expectedStatus int
+		name             string
+		targetURL        string
+		requestPath      string
+		expectedStatus   int
 		expectedLocation string
 	}{
 		{

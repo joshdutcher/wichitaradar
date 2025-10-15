@@ -2,8 +2,18 @@
 const ALLOWED_HOSTS = new Set([
   'wichitaradar.com',
   'www.wichitaradar.com',
-  'static.wichitaradar.com',
-  // Add your CDN or other subdomains here if needed
+  // External providers embedded in the app
+  'img.shields.io',
+  'www.spc.noaa.gov',
+  's.w-x.co',
+  'sirocco.accuweather.com',
+  'media.psg.nexstardigital.net',
+  'graphical.weather.gov',
+  'www.weather.gov',
+  'weather.gov',
+  'radar.weather.gov',
+  'x-hv1.pivotalweather.com',
+  'cdn.star.nesdis.noaa.gov',
 ]);
 
 // Validate that an image is from our domain and not a tracking pixel

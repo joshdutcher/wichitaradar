@@ -69,7 +69,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	if !skipTemplates {
 		templateFS := os.DirFS(filepath.Join(workDir, "templates"))
 		if err := templates.Init(templateFS); err != nil {
-			return fmt.Errorf("failed to initialize templates: %v", err)
+			return fmt.Errorf("failed to initialize templates: %w", err)
 		}
 	}
 
@@ -94,7 +94,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/donate", middleware.ErrorHandler(handlers.HandleSimplePage("donate")))
 	mux.Handle("/api/image-error", middleware.ErrorHandler(handlers.HandleImageError))
 	mux.Handle("/api/image-success", middleware.ErrorHandler(handlers.HandleImageSuccess))
-	
+
 	// Redirect common legacy URLs
 	mux.Handle("/index.php", middleware.ErrorHandler(handlers.HandleRedirect("/")))
 

@@ -85,7 +85,7 @@ func TestSetupServer(t *testing.T) {
 	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
 	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(mockCache)))
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(tempDir, "static")))))
-	
+
 	// Add redirect route
 	mux.Handle("/index.php", middleware.ErrorHandler(handlers.HandleRedirect("/")))
 
