@@ -41,8 +41,10 @@ func (c *Cache) isExpired(filename string) bool {
 }
 
 func (c *Cache) downloadToCache(url, filename string, referer string) error {
-	// Create HTTP client with custom headers
-	client := &http.Client{}
+	// Create HTTP client with timeout to prevent indefinite hangs
+	client := &http.Client{
+		Timeout: 15 * time.Second,
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
