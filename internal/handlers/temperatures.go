@@ -10,6 +10,11 @@ import (
 	"wichitaradar/pkg/templates"
 )
 
+// HTTP client with timeout for external image validation
+var imageCheckClient = &http.Client{
+	Timeout: 5 * time.Second,
+}
+
 type SWXCOFiles struct {
 	runtime     time.Time
 	prefix      string
@@ -53,7 +58,7 @@ func (s *SWXCOFiles) getImagePaths() map[string]string {
 }
 
 func checkRemoteFile(url string) bool {
-	resp, err := http.Head(url)
+	resp, err := imageCheckClient.Head(url)
 	if err != nil {
 		return false
 	}
