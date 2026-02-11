@@ -1,49 +1,39 @@
 # SESSION.md - Current Session State
 
-## Current Session - October 15, 2025
+## Current Session - January 8, 2026
 **Status**: Complete
-**Focus**: Sentry alert optimization and comprehensive test coverage
+**Focus**: Workflow cleanup and security maintenance
 
 ### Session Context
-Fixed false positive Sentry alerts caused by browser extensions injecting tracking pixels. Implemented client-side and server-side filtering to prevent third-party image errors from triggering alerts, then added comprehensive unit tests to ensure reliability.
+Removed failing automated year update workflow and fixed security vulnerability in development dependencies.
 
 ### Session Accomplishments
-1. ✅ Added client-side JavaScript filtering to prevent false positive image errors
-   - Implemented host allowlist validation (wichitaradar.com, www, static)
-   - Added 1×1 pixel detection to filter tracking pixels
-   - Early bailout prevents unnecessary API calls for third-party content
+1. ✅ Removed automated year update workflow
+   - Deleted `.github/workflows/update-year.yml` that was failing due to branch protection rules
+   - Updated LICENSE copyright year from 2025 to 2026
+   - Simplified maintenance approach - manual annual updates preferred over automation complexity
 
-2. ✅ Enhanced server-side image error handling
-   - Verified existing allowlist filtering in image_error.go
-   - Confirmed query string normalization prevents cache-buster explosion
-   - Validated thresholds: 4h persistence, 10+ failures, 6h cooldown
+2. ✅ Fixed js-yaml security vulnerability
+   - Resolved CVE-2025-64718 (GHSA-mh29-5h37-fv8m)
+   - Updated js-yaml from 4.1.0 to 4.1.1 via `npm audit fix`
+   - Transitive dependency through eslint (development only, no production impact)
 
-3. ✅ Created comprehensive unit test suite (560 lines)
-   - TestParseAndAllow: Host allowlist validation (9 cases)
-   - TestNormalizeKey: URL normalization (5 cases)
-   - TestHandleImageError: Error tracking (6 cases)
-   - TestHandleImageSuccess: Success handling (5 cases)
-   - TestSweepPersistentFailures: Background sweep logic (5 cases)
-   - TestInitImageFailureMonitor: Initialization safety (1 case)
-
-4. ✅ Integrated tests into CI/CD pipeline
-   - Tests auto-discovered by existing GitHub Actions workflow
-   - Race detection passes with zero issues
-   - Coverage improved from 0% → 71.4-100% for image_error.go
-   - Overall handlers package: 40.4% → 79.4% coverage
+3. ✅ Repository maintenance
+   - Cleaned up merged feature branches (local and remote)
+   - Pruned stale remote references
+   - Merged PRs #38 and #39
 
 ### Technical Achievements
-- **Client-Side Filtering**: Browser extensions blocked before API calls
-- **Test Coverage**: 86.5% handlers package, 69.5% project total
-- **Zero Race Conditions**: All concurrency properly handled
-- **CI/CD Ready**: Automated testing in pipeline
+- **Simplified Workflow**: Removed unnecessary automation complexity
+- **Security**: Zero npm audit vulnerabilities
+- **Clean Repository**: All feature branches cleaned up
 
 ### Files Modified
-- `static/js/image-error.js`: Added shouldReportImage() validation
-- `cmd/server/main.go`: Added InitImageFailureMonitor() call, removed unused route
-- `internal/handlers/image_error_test.go`: Created (new file)
+- `.github/workflows/update-year.yml`: Deleted
+- `LICENSE`: Copyright updated to 2026
+- `package-lock.json`: js-yaml updated to 4.1.1
 
-### Expected Impact
-- ~90%+ reduction in false positive Sentry events
-- Sentry budget preserved for legitimate issues
-- Improved code reliability through comprehensive tests
+### Impact
+- Eliminated workflow failures from branch protection conflicts
+- Resolved Dependabot security alert
+- Cleaner repository state with only main branch
