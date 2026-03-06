@@ -51,6 +51,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	cacheDirs := []string{
 		cache.GetXMLCacheDir(projectRoot),
 		cache.GetAnimatedCacheDir(projectRoot),
+		cache.GetSPCCacheDir(projectRoot),
 	}
 
 	for _, dir := range cacheDirs {
@@ -61,6 +62,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 
 	// Create Cache instances
 	xmlCache := cache.NewFileCache(cache.GetXMLCacheDir(projectRoot), 5*time.Minute)
+	spcCache := cache.NewFileCache(cache.GetSPCCacheDir(projectRoot), 30*time.Minute)
 
 	// Initialize image failure monitoring background sweeper
 	handlers.InitImageFailureMonitor()
@@ -86,7 +88,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/temperatures", middleware.ErrorHandler(handlers.HandleTemperatures))
 	mux.Handle("/rainfall", middleware.ErrorHandler(handlers.HandleRainfall))
 	mux.Handle("/satellite", middleware.ErrorHandler(handlers.HandleSatellite))
-	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache)))
+	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache, spcCache)))
 	mux.Handle("/watches", middleware.ErrorHandler(handlers.HandleSimplePage("watches")))
 	mux.Handle("/resources", middleware.ErrorHandler(handlers.HandleSimplePage("resources")))
 	mux.Handle("/about", middleware.ErrorHandler(handlers.HandleSimplePage("about")))
