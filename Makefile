@@ -1,4 +1,17 @@
-.PHONY: test test-race coverage lint lint-fix
+.PHONY: test test-race coverage lint lint-fix dev build clean
+
+# Start development server
+dev:
+	PORT=8080 go run cmd/server/main.go
+
+# Build production binary
+build:
+	go build -o wichitaradar cmd/server/main.go
+
+# Remove build artifacts and test cache
+clean:
+	go clean -testcache
+	rm -f wichitaradar coverage.out
 
 # Run all tests
 test:
