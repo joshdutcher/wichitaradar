@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
 	"time"
@@ -41,12 +42,48 @@ type WeatherFeed struct {
 	Graphicasts Graphicasts `xml:"graphicasts"`
 }
 
+var outlookTimestampRe = regexp.MustCompile(`["']otlk_(\d{4})["']`)
+
+// extractOutlookTimestamp extracts the issuance timestamp from SPC outlook HTML.
+func extractOutlookTimestamp(html string) string {
+	m := outlookTimestampRe.FindStringSubmatch(html)
+	if len(m) < 2 {
+		return ""
+	}
+	return m[1]
+}
+
+// resolveSPCOutlookURL fetches an SPC outlook HTML page via cache, extracts the
+// current issuance timestamp, and returns the corresponding PNG URL. On any
+// error it returns the fallback URL.
+func resolveSPCOutlookURL(spcCache cache.CacheProvider, pageURL, dayPrefix, fallbackURL string) string {
+	reader, err := spcCache.GetContent(pageURL, "https://www.spc.noaa.gov/products/outlook/", dayPrefix+".html")
+	if err != nil {
+		return fallbackURL
+	}
+	defer func() {
+		_ = reader.Close()
+	}()
+
+	body, err := io.ReadAll(reader)
+	if err != nil {
+		return fallbackURL
+	}
+
+	ts := extractOutlookTimestamp(string(body))
+	if ts == "" {
+		return fallbackURL
+	}
+
+	return fmt.Sprintf("https://www.spc.noaa.gov/products/outlook/%s_%s.png", dayPrefix, ts)
+}
+
 // HandleOutlook handles the outlook page
-func HandleOutlook(cache cache.CacheProvider) func(http.ResponseWriter, *http.Request) error {
+func HandleOutlook(xmlCache, spcCache cache.CacheProvider) func(http.ResponseWriter, *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		// Fetch weather stories using the cache
 		url := "https://www.weather.gov/source/ict/wxstory/wxstory.xml"
-		xmlReader, err := cache.GetContent(url, "https://www.weather.gov/ict/", "wxstory.xml")
+		xmlReader, err := xmlCache.GetContent(url, "https://www.weather.gov/ict/", "wxstory.xml")
 		if err != nil {
 			return middleware.InternalError(fmt.Errorf("failed to get XML: %w", err))
 		}
@@ -60,7 +97,17 @@ func HandleOutlook(cache cache.CacheProvider) func(http.ResponseWriter, *http.Re
 			return middleware.InternalError(fmt.Errorf("failed to parse XML: %w", err))
 		}
 
-		return renderOutlook(w, r, stories)
+		// Resolve SPC convective outlook image URLs
+		spcBase := "https://www.spc.noaa.gov/products/outlook/"
+		outlookURLs := make([]string, 3)
+		for i := 1; i <= 3; i++ {
+			dayPrefix := fmt.Sprintf("day%dotlk", i)
+			pageURL := spcBase + dayPrefix + ".html"
+			fallbackURL := spcBase + dayPrefix + ".gif"
+			outlookURLs[i-1] = resolveSPCOutlookURL(spcCache, pageURL, dayPrefix, fallbackURL)
+		}
+
+		return renderOutlook(w, r, stories, outlookURLs)
 	}
 }
 
@@ -103,7 +150,7 @@ func parseWeatherStories(r io.Reader) ([]WeatherStory, error) {
 	return stories, nil
 }
 
-func renderOutlook(w http.ResponseWriter, r *http.Request, stories []WeatherStory) error {
+func renderOutlook(w http.ResponseWriter, r *http.Request, stories []WeatherStory, outlookURLs []string) error {
 	processedStories := make([]struct {
 		Image       string
 		Description string
@@ -126,11 +173,13 @@ func renderOutlook(w http.ResponseWriter, r *http.Request, stories []WeatherStor
 			Image       string
 			Description string
 		}
+		OutlookURLs     []string
 		RefreshInterval int
 	}{
 		Menu:            menu.New(),
 		CurrentPath:     r.URL.Path,
 		Stories:         processedStories,
+		OutlookURLs:     outlookURLs,
 		RefreshInterval: 1800,
 	}
 

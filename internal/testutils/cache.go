@@ -1,6 +1,7 @@
 package testutils
 
 import (
+	"fmt"
 	"io"
 	"strings"
 )
@@ -12,4 +13,11 @@ type MockCacheProvider struct {
 
 func (m *MockCacheProvider) GetContent(url string, referer string, filename ...string) (io.ReadCloser, error) {
 	return io.NopCloser(strings.NewReader(m.Content)), nil
+}
+
+// MockErrorCacheProvider always returns an error from GetContent
+type MockErrorCacheProvider struct{}
+
+func (m *MockErrorCacheProvider) GetContent(url string, referer string, filename ...string) (io.ReadCloser, error) {
+	return nil, fmt.Errorf("mock cache error")
 }

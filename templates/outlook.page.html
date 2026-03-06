@@ -32,9 +32,9 @@
   <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
     <div class="pure-u textbox">Convective outlook</div>
     <a href="https://www.spc.noaa.gov/products/outlook/">
-      <img class="pure-img-responsive" src="https://www.spc.noaa.gov/products/outlook/day1otlk.gif" />
-      <img class="pure-img-responsive" src="https://www.spc.noaa.gov/products/outlook/day2otlk.gif" />
-      <img class="pure-img-responsive" src="https://www.spc.noaa.gov/products/outlook/day3otlk.gif" />
+      {{range .OutlookURLs}}
+      <img class="pure-img-responsive" src="{{.}}" />
+      {{end}}
     </a>
   </div>
 </div>

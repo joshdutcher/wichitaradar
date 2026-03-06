@@ -129,6 +129,107 @@ func (m *mockCacheProvider) GetContent(url string, referer string, filename ...s
 	return io.NopCloser(strings.NewReader(m.content)), nil
 }
 
+func TestExtractOutlookTimestamp(t *testing.T) {
+	tests := []struct {
+		name string
+		html string
+		want string
+	}{
+		{
+			name: "valid timestamp with double quotes",
+			html: `<script>var defined = "otlk_1630";</script>`,
+			want: "1630",
+		},
+		{
+			name: "valid timestamp with single quotes",
+			html: `<script>var defined = 'otlk_0100';</script>`,
+			want: "0100",
+		},
+		{
+			name: "no match",
+			html: `<html><body>no outlook data here</body></html>`,
+			want: "",
+		},
+		{
+			name: "empty string",
+			html: "",
+			want: "",
+		},
+		{
+			name: "multiple matches returns first",
+			html: `"otlk_1300" and "otlk_1630"`,
+			want: "1300",
+		},
+		{
+			name: "realistic SPC HTML snippet",
+			html: `<script language="JavaScript">
+var defined = "otlk_2000";
+var defined2 = "otlk_2000_torn";
+</script>`,
+			want: "2000",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := extractOutlookTimestamp(tt.html)
+			if got != tt.want {
+				t.Errorf("extractOutlookTimestamp() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestResolveSPCOutlookURL(t *testing.T) {
+	fallbackURL := "https://www.spc.noaa.gov/products/outlook/day1otlk.gif"
+
+	tests := []struct {
+		name      string
+		html      string
+		cacheErr  bool
+		dayPrefix string
+		want      string
+	}{
+		{
+			name:      "success extracts PNG URL",
+			html:      `<script>var defined = "otlk_1630";</script>`,
+			dayPrefix: "day1otlk",
+			want:      "https://www.spc.noaa.gov/products/outlook/day1otlk_1630.png",
+		},
+		{
+			name:      "cache error returns fallback",
+			cacheErr:  true,
+			dayPrefix: "day1otlk",
+			want:      fallbackURL,
+		},
+		{
+			name:      "no timestamp match returns fallback",
+			html:      `<html><body>nothing here</body></html>`,
+			dayPrefix: "day1otlk",
+			want:      fallbackURL,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var cache interface {
+				GetContent(url string, referer string, filename ...string) (io.ReadCloser, error)
+			}
+			if tt.cacheErr {
+				cache = &testutils.MockErrorCacheProvider{}
+			} else {
+				cache = &testutils.MockCacheProvider{Content: tt.html}
+			}
+
+			pageURL := "https://www.spc.noaa.gov/products/outlook/" + tt.dayPrefix + ".html"
+			got := resolveSPCOutlookURL(cache, pageURL, tt.dayPrefix, fallbackURL)
+			if got != tt.want {
+				t.Errorf("resolveSPCOutlookURL() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestHandleOutlook(t *testing.T) {
 	// Initialize templates
 	testutils.InitTemplates(t)
@@ -153,15 +254,16 @@ func TestHandleOutlook(t *testing.T) {
 	</graphicasts>
 </xml>`, startTime, endTime)
 
-	// Create mock cache
-	mockCache := &testutils.MockCacheProvider{Content: mockXML}
+	// Create mock caches
+	mockXMLCache := &testutils.MockCacheProvider{Content: mockXML}
+	mockSPCCache := &testutils.MockCacheProvider{Content: `<script>var defined = "otlk_1630";</script>`}
 
 	// Create test request
 	req := httptest.NewRequest("GET", "/outlook", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
-	handler := HandleOutlook(mockCache)
+	handler := HandleOutlook(mockXMLCache, mockSPCCache)
 	err := handler(w, req)
 	if err != nil {
 		t.Fatalf("HandleOutlook failed: %v", err)
@@ -176,5 +278,67 @@ func TestHandleOutlook(t *testing.T) {
 	body := w.Body.String()
 	if !strings.Contains(body, "Mock Story") {
 		t.Error("response body does not contain 'Mock Story'")
+	}
+
+	// Verify PNG URLs are rendered (not old GIF URLs)
+	if !strings.Contains(body, "day1otlk_1630.png") {
+		t.Error("response body does not contain day1otlk_1630.png")
+	}
+	if !strings.Contains(body, "day2otlk_1630.png") {
+		t.Error("response body does not contain day2otlk_1630.png")
+	}
+	if !strings.Contains(body, "day3otlk_1630.png") {
+		t.Error("response body does not contain day3otlk_1630.png")
+	}
+}
+
+func TestHandleOutlookWithSPCFallback(t *testing.T) {
+	// Initialize templates
+	testutils.InitTemplates(t)
+
+	now := time.Now().Unix()
+	startTime := now - 3600
+	endTime := now + 3600
+
+	mockXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<graphicasts>
+		<graphicast>
+			<StartTime>%d</StartTime>
+			<EndTime>%d</EndTime>
+			<radar>0</radar>
+			<SmallImage>test.jpg</SmallImage>
+			<description>Mock Story</description>
+			<order>1</order>
+		</graphicast>
+	</graphicasts>
+</xml>`, startTime, endTime)
+
+	mockXMLCache := &testutils.MockCacheProvider{Content: mockXML}
+	mockSPCCache := &testutils.MockErrorCacheProvider{}
+
+	req := httptest.NewRequest("GET", "/outlook", nil)
+	w := httptest.NewRecorder()
+
+	handler := HandleOutlook(mockXMLCache, mockSPCCache)
+	err := handler(w, req)
+	if err != nil {
+		t.Fatalf("HandleOutlook with SPC fallback failed: %v", err)
+	}
+
+	if w.Code != http.StatusOK {
+		t.Errorf("got status %d, want %d", w.Code, http.StatusOK)
+	}
+
+	// Verify fallback GIF URLs are rendered
+	body := w.Body.String()
+	if !strings.Contains(body, "day1otlk.gif") {
+		t.Error("response body does not contain fallback day1otlk.gif")
+	}
+	if !strings.Contains(body, "day2otlk.gif") {
+		t.Error("response body does not contain fallback day2otlk.gif")
+	}
+	if !strings.Contains(body, "day3otlk.gif") {
+		t.Error("response body does not contain fallback day3otlk.gif")
 	}
 }

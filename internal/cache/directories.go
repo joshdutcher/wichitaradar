@@ -8,6 +8,7 @@ func GetCacheDirs(projectRoot string) []string {
 		GetXMLCacheDir(projectRoot),
 		GetImagesCacheDir(projectRoot),
 		GetTempCacheDir(projectRoot),
+		GetSPCCacheDir(projectRoot),
 	}
 }
 
@@ -29,4 +30,9 @@ func GetXMLCacheDir(projectRoot string) string {
 // GetTempCacheDir returns the path to the temporary cache directory
 func GetTempCacheDir(projectRoot string) string {
 	return filepath.Join(projectRoot, "scraped", "temp")
+}
+
+// GetSPCCacheDir returns the path to the SPC outlook cache directory
+func GetSPCCacheDir(projectRoot string) string {
+	return filepath.Join(projectRoot, "scraped", "spc")
 }

@@ -75,15 +75,16 @@ func TestSetupServer(t *testing.T) {
 	</graphicasts>
 </xml>`
 
-	// Create mock cache
+	// Create mock caches
 	mockCache := &mockCacheProvider{content: mockXML}
+	mockSPCCache := &mockCacheProvider{content: `<script>var defined = "otlk_1630";</script>`}
 
 	// Create a new mux for testing
 	mux := http.NewServeMux()
 
 	// Register routes for testing
 	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
-	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(mockCache)))
+	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(mockCache, mockSPCCache)))
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(tempDir, "static")))))
 
 	// Add redirect route
@@ -122,7 +123,7 @@ func TestSetupServer(t *testing.T) {
 			name:           "outlook route",
 			route:          "/outlook",
 			expectedStatus: http.StatusOK,
-			expectedBody:   `src="https://weather.gov/test.jpg"`,
+			expectedBody:   "day1otlk_1630.png",
 		},
 		{
 			name:           "static file",
