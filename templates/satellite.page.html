@@ -20,7 +20,11 @@
   <div class="pure-u pure-u-1 pure-u-md-1-1 pure-u-lg-1-2">
     <!-- Wunderground Regional Infrared -->
     <a href="https://www.wunderground.com/maps/satellite/regional-infrared/usace">
-      <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png" />
+      <img
+        id="wu-radar"
+        class="pure-img-responsive"
+        src="https://s.w-x.co/staticmaps/wu/wu/satir1200_cur/usace/animate.png"
+      />
     </a>
     <!-- AccuWeather Satellite -->
     <a href="https://www.accuweather.com/en/us/kansas/satellite">
@@ -28,4 +32,25 @@
     </a>
   </div>
 </div>
+
+<script>
+  (function () {
+    var img = document.getElementById('wu-radar');
+    var src = img.src;
+
+    fetch(src)
+      .then(function (r) {
+        return r.blob();
+      })
+      .then(function (blob) {
+        img.src = URL.createObjectURL(blob);
+
+        setInterval(function () {
+          var prev = img.src;
+          img.src = URL.createObjectURL(blob);
+          URL.revokeObjectURL(prev);
+        }, 3500);
+      });
+  })();
+</script>
 {{end}}
