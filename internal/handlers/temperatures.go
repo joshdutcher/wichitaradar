@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"wichitaradar/internal/middleware"
@@ -34,23 +35,43 @@ func NewSWXCOFiles() *SWXCOFiles {
 }
 
 func (s *SWXCOFiles) getImagePaths() map[string]string {
-	for _, imagetype := range s.images {
-		imageFound := false
-		for hoursAgo := 0; hoursAgo < s.maxHoursAgo; hoursAgo++ {
-			timeToCheck := s.runtime.Add(-time.Duration(hoursAgo) * time.Hour)
-			imageUrl := fmt.Sprintf("%s/%s/%s/%s00z.jpg",
-				s.prefix,
-				imagetype,
-				timeToCheck.Format("20060102"),
-				timeToCheck.Format("15"))
+	type hit struct {
+		imagetype string
+		hoursAgo  int
+		url       string
+	}
+	hits := make(chan hit, len(s.images)*s.maxHoursAgo)
+	var wg sync.WaitGroup
 
-			if checkRemoteFile(imageUrl) {
-				s.imagePaths[imagetype] = imageUrl
-				imageFound = true
-				break
-			}
+	for _, imagetype := range s.images {
+		for hoursAgo := 0; hoursAgo < s.maxHoursAgo; hoursAgo++ {
+			wg.Add(1)
+			go func(imagetype string, hoursAgo int) {
+				defer wg.Done()
+				timeToCheck := s.runtime.Add(-time.Duration(hoursAgo) * time.Hour)
+				imageUrl := fmt.Sprintf("%s/%s/%s/%s00z.jpg",
+					s.prefix,
+					imagetype,
+					timeToCheck.Format("20060102"),
+					timeToCheck.Format("15"))
+				if checkRemoteFile(imageUrl) {
+					hits <- hit{imagetype, hoursAgo, imageUrl}
+				}
+			}(imagetype, hoursAgo)
 		}
-		if !imageFound {
+	}
+	wg.Wait()
+	close(hits)
+
+	best := make(map[string]int)
+	for h := range hits {
+		if existing, ok := best[h.imagetype]; !ok || h.hoursAgo < existing {
+			best[h.imagetype] = h.hoursAgo
+			s.imagePaths[h.imagetype] = h.url
+		}
+	}
+	for _, imagetype := range s.images {
+		if _, ok := s.imagePaths[imagetype]; !ok {
 			s.imagePaths[imagetype] = ""
 		}
 	}
