@@ -9,36 +9,42 @@
       <img
         class="pure-img-responsive"
         src="https://media.psg.nexstardigital.net/ksnw/weather/images/ksnow_full.jpg"
+        alt="Current Kansas temps map from KSN"
         border="0"
       />
     </a>
 
-    {{if .SWXCOFiles.ddc}}
-    <!-- ****** wunderground dodge city ****** -->
-    <a href="https://www.wunderground.com/maps/temperature/us-current/ddc">
-      <img class="pure-img-responsive" src="{{.SWXCOFiles.ddc}}" border="0" />
-    </a>
-    {{end}}
+    <!-- ****** wunderground dodge city (populated by JS) ****** -->
+    <div
+      class="wu-slot"
+      data-wu-key="ddc"
+      data-wu-href="https://www.wunderground.com/maps/temperature/us-current/ddc"
+      data-wu-alt="Current Dodge City area temps map from Wunderground"
+    ></div>
   </div>
 
   <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
-    <!-- ****** Weather.com **** -->
-    <a href="https://weather.com/maps/ustemperaturemap">
-      <img class="pure-img-responsive" src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg" border="0" />
-    </a>
+    <!-- ****** Weather.com (loaded via JS with loading/failed states) **** -->
+    <div
+      class="wu-slot"
+      data-wu-src="https://s.w-x.co/staticmaps/acttemp_1280x720.jpg"
+      data-wu-href="https://weather.com/maps/ustemperaturemap"
+      data-wu-alt="Current US temps map from Weather.com"
+    ></div>
 
-    {{if .SWXCOFiles.usa}}
-    <!-- ****** wunderground ****** -->
-    <a href="https://www.wunderground.com/maps/temperature/us-current/usa">
-      <img class="pure-img-responsive" src="{{.SWXCOFiles.usa}}" border="0" />
-    </a>
-    {{end}}
+    <!-- ****** wunderground (populated by JS) ****** -->
+    <div
+      class="wu-slot"
+      data-wu-key="usa"
+      data-wu-href="https://www.wunderground.com/maps/temperature/us-current/usa"
+      data-wu-alt="Current US temps map from Wunderground"
+    ></div>
   </div>
 
   <div class="pure-u pure-u-md-1 pure-u-lg-1-2 pure-u-xl-1-3">
     <!-- ****** Weather.gov ***** -->
     <a href="https://graphical.weather.gov/sectors/conus.php#tabs">
-      <img class="pure-img-responsive" src="https://graphical.weather.gov/images/conus/MaxT1_conus.png" border="0" />
+      <img class="pure-img-responsive" src="https://graphical.weather.gov/images/conus/MaxT1_conus.png" alt="National current temps from NOAA" border="0" />
     </a>
 
     <!-- ****** Weather.gov ***** -->
@@ -46,14 +52,16 @@
       <img
         class="pure-img-responsive"
         src="https://graphical.weather.gov/images/centplains/MaxT1_centplains.png"
+        alt="Central Plains current temps from NOAA"
         border="0"
       />
     </a>
 
     <!-- ****** Weather.gov ***** -->
     <a href="https://graphical.weather.gov/sectors/kansas.php#tabs">
-      <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" border="0" />
+      <img class="pure-img-responsive" src="https://graphical.weather.gov/images/kansas/MaxT1_kansas.png" alt="Kansas current temps from NOAA" border="0" />
     </a>
   </div>
 </div>
+<script src="/static/js/wu-temperature-images.js"></script>
 {{end}}

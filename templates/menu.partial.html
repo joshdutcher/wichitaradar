@@ -11,7 +11,7 @@
       {{range .Menu.Items}}
       <li class="pure-menu-item{{if $.Menu.IsSelected . $.CurrentPath}} selected{{end}}">
         {{if .IsNew}}
-        <div class="new-menu-link"><img id="new" src="/static/img/new.png" /></div>
+        <div class="new-menu-link"><img id="new" src="/static/img/new.png" alt="New!" /></div>
         {{end}}
         <a href="{{.URL}}" class="pure-menu-link" title="{{.Tooltip}}">{{.Label}}</a>
       </li>

@@ -42,8 +42,8 @@
       type="text/css"
     />
     <link rel="stylesheet" href="/static/css/wx.css" />
-    <!-- Load our custom error tracking -->
-    <script src="/static/js/image-error.js"></script>
+    <!-- Image lifecycle: loading placeholders, failure fallbacks, error/success reporting -->
+    <script src="/static/js/image-loading.js"></script>
     {{if gt .RefreshInterval 0}}
     <meta http-equiv="refresh" content="{{.RefreshInterval}}" />
     {{end}}
