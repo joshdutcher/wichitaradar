@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"sync"
@@ -90,16 +91,11 @@ func checkRemoteFile(url string) bool {
 }
 
 func HandleTemperatures(w http.ResponseWriter, r *http.Request) error {
-	swxco := NewSWXCOFiles()
-	swxcoFiles := swxco.getImagePaths()
-
-	// Create menu - if it fails, return an error that will bubble up
 	m := menu.New()
 	if m == nil {
 		return middleware.InternalError(fmt.Errorf("menu.New() returned nil"))
 	}
 
-	// Get template set - if it fails, return an error that will bubble up
 	ts, err := templates.Get("temperatures")
 	if err != nil {
 		return middleware.InternalError(fmt.Errorf("failed to get template set 'temperatures': %w", err))
@@ -108,19 +104,30 @@ func HandleTemperatures(w http.ResponseWriter, r *http.Request) error {
 	data := struct {
 		Menu            *menu.Menu
 		CurrentPath     string
-		SWXCOFiles      map[string]string
 		RefreshInterval int
 	}{
 		Menu:            m,
 		CurrentPath:     r.URL.Path,
-		SWXCOFiles:      swxcoFiles,
-		RefreshInterval: 0, // No auto-refresh for temperatures page
+		RefreshInterval: 0,
 	}
 
-	// Execute template - if it fails, return an error that will bubble up
 	if err := ts.ExecuteTemplate(w, "temperatures", data); err != nil {
 		return middleware.InternalError(fmt.Errorf("failed to render template 'temperatures': %w", err))
 	}
 
+	return nil
+}
+
+// HandleWUTemperatureImages probes the Weather Underground static-map host
+// in parallel and returns the most recent available image URL per region as JSON.
+// Missing/stale regions come back with an empty string so the client can render
+// a failure state.
+func HandleWUTemperatureImages(w http.ResponseWriter, r *http.Request) error {
+	paths := NewSWXCOFiles().getImagePaths()
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	if err := json.NewEncoder(w).Encode(paths); err != nil {
+		return middleware.InternalError(fmt.Errorf("failed to encode WU image paths: %w", err))
+	}
 	return nil
 }

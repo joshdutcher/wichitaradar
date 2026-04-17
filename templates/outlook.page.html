@@ -5,18 +5,22 @@
       <img
         class="pure-img-responsive"
         src="https://media.psg.nexstardigital.net/ksnw/weather/images/wx_weekly_full.jpg"
+        alt="7-day forecast from KSN"
       />
       <img
         class="pure-img-responsive"
         src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsToday.jpg"
+        alt="Today's forecast highs from KSN"
       />
       <img
         class="pure-img-responsive"
         src="https://media.psg.nexstardigital.net/ksnw/weather/images/QELowsTonight.jpg"
+        alt="Tonight's forecast lows from KSN"
       />
       <img
         class="pure-img-responsive"
         src="https://media.psg.nexstardigital.net/ksnw/weather/images/QEHighsTomorrow.jpg"
+        alt="Tomorrow's forecast highs from KSN"
       />
     </a>
   </div>
@@ -33,7 +37,7 @@
     <div class="pure-u textbox">Convective outlook</div>
     <a href="https://www.spc.noaa.gov/products/outlook/">
       {{range .OutlookURLs}}
-      <img class="pure-img-responsive" src="{{.}}" />
+      <img class="pure-img-responsive" src="{{.}}" alt="SPC convective outlook" />
       {{end}}
     </a>
   </div>

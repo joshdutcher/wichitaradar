@@ -86,6 +86,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/", middleware.ErrorHandler(handlers.HandleHome))
 	mux.Handle("/health", middleware.ErrorHandler(handlers.HandleHealth))
 	mux.Handle("/temperatures", middleware.ErrorHandler(handlers.HandleTemperatures))
+	mux.Handle("/api/wu-temperature-images", middleware.ErrorHandler(handlers.HandleWUTemperatureImages))
 	mux.Handle("/rainfall", middleware.ErrorHandler(handlers.HandleRainfall))
 	mux.Handle("/satellite", middleware.ErrorHandler(handlers.HandleSatellite))
 	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache, spcCache)))

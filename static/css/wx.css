@@ -123,6 +123,100 @@ textarea,
   margin: 1em auto;
 }
 
+/* Image loading / failure states (applied by image-loading.js) */
+
+.img-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.img-wrapper.img-wrapper-responsive {
+  display: block;
+  width: 100%;
+}
+
+.img-wrapper img {
+  display: block;
+  max-width: 100%;
+}
+
+.img-loading {
+  box-sizing: border-box;
+  border: 1px solid #014884;
+  background: linear-gradient(90deg, #1f1f1f 0%, #3a3a3a 50%, #1f1f1f 100%);
+  background-size: 200% 100%;
+  animation: img-shimmer 1.2s linear infinite;
+  min-height: 60px;
+  min-width: 60px;
+}
+
+.img-wrapper-responsive.img-loading {
+  display: block;
+  width: 100%;
+  min-height: 240px;
+}
+
+.img-wrapper.img-loading img {
+  visibility: hidden;
+}
+
+@keyframes img-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.img-failed {
+  box-sizing: border-box;
+  border: 1px dashed #4c484a;
+  color: #8f8f8f;
+  font-size: 0.8em;
+  padding: 1em;
+  min-height: 60px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-wrapper-responsive.img-failed {
+  display: flex;
+  width: 100%;
+  min-height: 120px;
+}
+
+.img-wrapper.img-failed img {
+  display: none;
+}
+
+.img-failed::after {
+  content: attr(data-failed-label);
+}
+
+/* Disable the surrounding anchor while the failed placeholder is showing so
+   the "Image unavailable" text isn't a live hyperlink. */
+a:has(.img-failed) {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+}
+
+.img-failed {
+  cursor: default;
+  text-decoration: none;
+}
+
+/* Wunderground temperature slots: the slot element itself acts as a
+   responsive wrapper that hosts the loaded image or a failed placeholder. */
+.wu-slot {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 180px;
+}
+
 .accuweather {
   background-color: #fff;
   display: inline-block;
