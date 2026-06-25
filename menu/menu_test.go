@@ -12,6 +12,7 @@ func TestNew(t *testing.T) {
 		"Radar",
 		"Satellite",
 		"Watches/Warnings",
+		"Alerts",
 		"Current Temps",
 		"Outlook",
 		"Rainfall Amounts",

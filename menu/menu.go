@@ -55,6 +55,7 @@ func (p DefaultMenuProvider) New() *Menu {
 			{Label: "Radar", URL: "/", Tooltip: "What you really came here for"},
 			{Label: "Satellite", URL: "/satellite", Tooltip: ""},
 			{Label: "Watches/Warnings", URL: "/watches", Tooltip: ""},
+			{Label: "Alerts", URL: "/alerts", Tooltip: "Full text of active NWS alerts for Sedgwick County", IsNew: true},
 			{Label: "Current Temps", URL: "/temperatures", Tooltip: ""},
 			{Label: "Outlook", URL: "/outlook", Tooltip: ""},
 			{Label: "Rainfall Amounts", URL: "/rainfall", Tooltip: ""},

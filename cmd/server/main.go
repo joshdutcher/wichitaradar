@@ -64,7 +64,7 @@ func setupServer(workDir string, skipTemplates bool) error {
 	// Create Cache instances
 	xmlCache := cache.NewFileCache(cache.GetXMLCacheDir(projectRoot), 5*time.Minute)
 	spcCache := cache.NewFileCache(cache.GetSPCCacheDir(projectRoot), 30*time.Minute)
-	floodAlertCache := cache.NewFileCache(filepath.Join(cache.GetFloodingCacheDir(projectRoot), "alerts"), 2*time.Minute)
+	alertsCache := cache.NewFileCache(filepath.Join(cache.GetFloodingCacheDir(projectRoot), "alerts"), 2*time.Minute)
 	floodGaugeCache := cache.NewFileCache(filepath.Join(cache.GetFloodingCacheDir(projectRoot), "gauges"), 5*time.Minute)
 	floodClosureCache := cache.NewFileCache(filepath.Join(cache.GetFloodingCacheDir(projectRoot), "closures"), 2*time.Minute)
 
@@ -94,8 +94,9 @@ func setupServer(workDir string, skipTemplates bool) error {
 	mux.Handle("/rainfall", middleware.ErrorHandler(handlers.HandleRainfall))
 	mux.Handle("/satellite", middleware.ErrorHandler(handlers.HandleSatellite))
 	mux.Handle("/outlook", middleware.ErrorHandler(handlers.HandleOutlook(xmlCache, spcCache)))
-	mux.Handle("/flooding", middleware.ErrorHandler(handlers.HandleFlooding(floodAlertCache, floodGaugeCache, floodClosureCache)))
+	mux.Handle("/flooding", middleware.ErrorHandler(handlers.HandleFlooding(alertsCache, floodGaugeCache, floodClosureCache)))
 	mux.Handle("/watches", middleware.ErrorHandler(handlers.HandleSimplePage("watches")))
+	mux.Handle("/alerts", middleware.ErrorHandler(handlers.HandleAlerts(alertsCache)))
 	mux.Handle("/resources", middleware.ErrorHandler(handlers.HandleSimplePage("resources")))
 	mux.Handle("/about", middleware.ErrorHandler(handlers.HandleSimplePage("about")))
 	mux.Handle("/disclaimer", middleware.ErrorHandler(handlers.HandleSimplePage("disclaimer")))
