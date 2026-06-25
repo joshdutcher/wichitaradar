@@ -16,6 +16,13 @@ a {
   outline: 0;
 }
 
+a:has(> img.pure-img-responsive),
+a:has(> .img-wrapper-responsive) {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
 img {
   border: 0;
 }
