@@ -58,6 +58,7 @@ func (p DefaultMenuProvider) New() *Menu {
 			{Label: "Current Temps", URL: "/temperatures", Tooltip: ""},
 			{Label: "Outlook", URL: "/outlook", Tooltip: ""},
 			{Label: "Rainfall Amounts", URL: "/rainfall", Tooltip: ""},
+			{Label: "Flooding", URL: "/flooding", Tooltip: "Real-time flood alerts, river gauges, and street closures", IsNew: true},
 			{Label: "Resources", URL: "/resources", Tooltip: ""},
 			{Label: "About", URL: "/about", Tooltip: ""},
 			{Label: "Disclaimer", URL: "/disclaimer", Tooltip: ""},

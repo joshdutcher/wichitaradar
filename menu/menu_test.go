@@ -15,6 +15,7 @@ func TestNew(t *testing.T) {
 		"Current Temps",
 		"Outlook",
 		"Rainfall Amounts",
+		"Flooding",
 		"Resources",
 		"About",
 		"Disclaimer",
