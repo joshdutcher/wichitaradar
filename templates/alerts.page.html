@@ -1,0 +1,32 @@
+{{define "alerts"}} {{template "base" .}} {{end}} {{define "content"}}
+<div class="pure-g">
+  {{if not .Available}}
+    <div class="pure-u textbox-watch">Alert data temporarily unavailable.</div>
+  {{else if eq (len .Alerts) 0}}
+    <div class="pure-u textbox-ok">No active NWS alerts for Sedgwick County.</div>
+  {{else}}
+    <div class="pure-u textbox-warn">{{len .Alerts}} active alert{{if ne (len .Alerts) 1}}s{{end}} for Sedgwick County</div>
+  {{end}}
+</div>
+
+{{if and .Available (gt (len .Alerts) 0)}}
+  <div class="pure-g">
+    <div class="pure-u pure-u-1">
+      {{range .Alerts}}
+      <div class="pure-g">
+        <div class="pure-u {{if ge .SeverityRank 3}}textbox-warn{{else if eq .SeverityRank 2}}textbox-watch{{else}}textbox{{end}}">{{.Event}}</div>
+      </div>
+      <div class="flood-alert-body">
+        {{if .Headline}}{{.Headline}}<br />{{end}}
+        {{if .AreaDesc}}<em>{{.AreaDesc}}</em><br />{{end}}
+        {{if .Sent}}Issued {{.Sent}}{{if .Expires}} &middot; {{end}}{{end}}
+        {{if .Expires}}Expires {{.Expires}}{{end}}
+        {{if .Description}}<div class="dot-matrix">{{.Description}}</div>{{end}}
+      </div>
+      {{end}}
+    </div>
+  </div>
+{{end}}
+
+<div class="flood-generated">Last refreshed {{.GeneratedAt}}</div>
+{{end}}

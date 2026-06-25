@@ -106,6 +106,7 @@ linters-settings:
       - G114  # HTTP server without timeouts (production uses reverse proxy)
       - G301  # Directory permissions (0755 is standard for cache/log dirs)
       - G304  # File path from variable (sanitized via filepath package)
+      - G203  # template.JS on internally-marshaled JSON (no user input in raw JS sink)
 
 issues:
   # Exclude some linters from running on tests files

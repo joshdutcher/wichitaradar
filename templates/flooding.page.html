@@ -1,0 +1,235 @@
+{{define "flooding"}} {{template "base" .}} {{end}} {{define "content"}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+{{/* Banner: textbox-warn for warning+flash, textbox-watch for watch+advisory, textbox-ok for clear. */}}
+<div class="pure-g">
+  <div class="pure-u {{if or (eq .BannerLevel "warning") (eq .BannerLevel "flash")}}textbox-warn{{else if or (eq .BannerLevel "watch") (eq .BannerLevel "advisory")}}textbox-watch{{else}}textbox-ok{{end}}">
+    {{.BannerText}}
+  </div>
+</div>
+
+<div class="pure-g">
+  {{/* Column 1: map + active alerts + active road closures */}}
+  <div class="pure-u pure-u-1 pure-u-md-1-2">
+    <div id="flood-map"></div>
+
+    <div class="pure-u textbox">Active flood alerts</div>
+    {{if not .AlertsAvailable}}
+      <div class="flood-note">Alert data temporarily unavailable.</div>
+    {{else if eq (len .Alerts) 0}}
+      <div class="flood-note">No flood alerts or warnings are currently in effect for Sedgwick County.</div>
+    {{else}}
+      {{range .Alerts}}
+      <div class="pure-g">
+        <div class="pure-u textbox-warn">{{.Event}}</div>
+      </div>
+      <div class="flood-alert-body">
+        {{if .Headline}}{{.Headline}}<br />{{end}}
+        {{if .AreaDesc}}<em>{{.AreaDesc}}</em><br />{{end}}
+        {{if .Expires}}Expires {{.Expires}}{{end}}
+        {{if .Description}}<div class="dot-matrix">{{.Description}}</div>{{end}}
+      </div>
+      {{end}}
+    {{end}}
+
+    <div class="pure-u textbox">Active road closures (flood &amp; storm damage)</div>
+    {{if not .ClosuresAvailable}}
+      <div class="flood-note">Sedgwick County closure data temporarily unavailable.</div>
+    {{else if eq (len .Closures) 0}}
+      <div class="flood-note">No active flood or storm-damage road closures reported in Sedgwick County.</div>
+    {{else}}
+      <table class="pure-table pure-table-horizontal pure-table-striped">
+        <thead>
+          <tr>
+            <th>Street</th>
+            <th>Between</th>
+            <th>City</th>
+            <th>Reason</th>
+            <th>Started</th>
+            <th>Alt route</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Closures}}
+          <tr>
+            <td>{{.Street}}{{if .Description}}<br /><span class="closure-sub">{{.Description}}</span>{{end}}</td>
+            <td>{{if or .Begin .End}}{{.Begin}} &mdash; {{.End}}{{end}}</td>
+            <td>{{.City}}</td>
+            <td>{{.Reason}}</td>
+            <td>{{.StartedAt}}</td>
+            <td>{{.AltRoute}}</td>
+          </tr>
+        {{end}}
+        </tbody>
+      </table>
+    {{end}}
+  </div>
+
+  {{/* Column 2: river and creek gauges */}}
+  <div class="pure-u pure-u-1 pure-u-md-1-2">
+    <div class="pure-u textbox">River and creek gauges</div>
+    {{if not .GaugesAvailable}}
+      <div class="flood-note">Gauge data temporarily unavailable.</div>
+    {{else}}
+      <table class="pure-table pure-table-horizontal pure-table-striped">
+        <thead>
+          <tr>
+            <th>Gauge</th>
+            <th>Current</th>
+            <th>Flood</th>
+            <th>Status</th>
+            <th>Observed</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Gauges}}
+          <tr>
+            <td>{{.Name}}</td>
+            <td>{{.Stage}}</td>
+            <td>{{.FloodStage}}</td>
+            <td><span class="gauge-status gauge-status-{{.Status}}">{{.Status}}</span></td>
+            <td>{{.Observed}}</td>
+          </tr>
+        {{end}}
+        </tbody>
+      </table>
+    {{end}}
+  </div>
+</div>
+
+<div class="flood-disclaimer">
+  <strong>What this page shows.</strong>
+  River and creek levels are measured live by NWS/USGS gauges (15&ndash;60 minute updates). Active flood
+  warnings and watches come straight from the National Weather Service and may include storm-based
+  polygons that cover only a few neighborhoods. The optional <em>FEMA flood zones</em> overlay shows
+  the city's mapped 100-year (high risk) and 500-year (moderate risk) floodplains &mdash; static
+  data, not real time, but useful for seeing <em>where</em> warnings are most likely to translate
+  into actual flooding.
+  <br /><br />
+  <strong>Active road closures</strong> come from Sedgwick County Public Works' public road-closure
+  feed, filtered to in-progress flood and storm-damage closures. The feed covers all of Sedgwick
+  County including the city of Wichita, but only shows streets after county or city crews have
+  reported a barricade &mdash; actual flooding can occur before a closure is posted.
+  <br /><br />
+  <strong>What it doesn't show.</strong>
+  There is no public real-time per-intersection flood-sensor feed. The City of Wichita's separate
+  road-closure layer publishes only construction and event closures, not high-water barricades, so
+  it's not used here. Always defer to <a href="https://www.weather.gov/ict/">NWS Wichita</a> and
+  local emergency officials, and never drive through flooded roadways.
+</div>
+
+<div class="flood-generated">Last refreshed {{.GeneratedAt}}</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"
+  integrity="sha512-O3PvLPDvuHmpFqK56QlSnFvAcKxAyB9OqA0Qe+lQs6Y4QXQEZuSDuYn14d2KqGsB3zSP9aE0riZcWStpwfvuvA=="
+  crossorigin=""></script>
+<script>
+(function () {
+  var map = L.map('flood-map').setView([37.69, -97.34], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  function alertStyle(feature) {
+    var event = ((feature.properties || {}).event || '').toLowerCase();
+    var color = '#b08d00';
+    if (event.indexOf('flash flood warning') !== -1) color = '#5a0d56';
+    else if (event.indexOf('flood warning') !== -1) color = '#9a2820';
+    else if (event.indexOf('watch') !== -1) color = '#c47a00';
+    return { color: color, weight: 2, fillOpacity: 0.25, fillColor: color };
+  }
+
+  var alertsLayer = L.layerGroup();
+  var alerts = {{.AlertsGeoJSON}};
+  if (alerts && alerts.features && alerts.features.length) {
+    L.geoJSON(alerts, {
+      style: alertStyle,
+      onEachFeature: function (f, layer) {
+        var p = f.properties || {};
+        var html = '<strong>' + (p.event || 'Alert') + '</strong>';
+        if (p.headline) html += '<br/>' + p.headline;
+        if (p.areaDesc) html += '<br/><em>' + p.areaDesc + '</em>';
+        layer.bindPopup(html);
+      }
+    }).addTo(alertsLayer);
+  }
+  alertsLayer.addTo(map);
+
+  var statusColors = {
+    'None': '#1f6b3a', 'Action': '#b08d00', 'Minor': '#c47a00',
+    'Moderate': '#9a2820', 'Major': '#5a0d56', 'Unknown': '#555'
+  };
+  var gaugesLayer = L.layerGroup();
+  var gauges = {{.GaugesGeoJSON}};
+  if (gauges && gauges.features) {
+    L.geoJSON(gauges, {
+      pointToLayer: function (f, latlng) {
+        var p = f.properties || {};
+        return L.circleMarker(latlng, {
+          radius: 7,
+          color: '#000', weight: 1,
+          fillColor: statusColors[p.status] || '#555',
+          fillOpacity: 0.9
+        });
+      },
+      onEachFeature: function (f, layer) {
+        var p = f.properties || {};
+        var html = '<strong>' + (p.name || p.id) + '</strong><br/>';
+        html += 'Stage: ' + (p.stage || 'n/a') + '<br/>';
+        html += 'Flood stage: ' + (p.floodStage || 'n/a') + '<br/>';
+        html += 'Status: ' + (p.status || 'Unknown');
+        if (p.observed) html += '<br/><em>' + p.observed + '</em>';
+        layer.bindPopup(html);
+      }
+    }).addTo(gaugesLayer);
+  }
+  gaugesLayer.addTo(map);
+
+  // Sedgwick County active flood / storm-damage road closures.
+  var closuresLayer = L.layerGroup();
+  var closures = {{.ClosuresGeoJSON}};
+  if (closures && closures.features && closures.features.length) {
+    var redIcon = L.divIcon({
+      className: 'flood-closure-marker',
+      html: '<div style="width:14px;height:14px;border-radius:50%;background:#d62728;border:2px solid #fff;box-shadow:0 0 2px #000"></div>',
+      iconSize: [18, 18], iconAnchor: [9, 9]
+    });
+    L.geoJSON(closures, {
+      pointToLayer: function (f, latlng) { return L.marker(latlng, { icon: redIcon }); },
+      onEachFeature: function (f, layer) {
+        var p = f.properties || {};
+        var html = '<strong>' + (p.street || 'Closure') + '</strong>';
+        if (p.begin || p.end) html += '<br/>' + (p.begin || '') + ' &mdash; ' + (p.end || '');
+        if (p.city)        html += '<br/>' + p.city;
+        if (p.reason)      html += '<br/><strong>' + p.reason + '</strong>';
+        if (p.description) html += '<br/>' + p.description;
+        if (p.altRoute)    html += '<br/><em>Alt route: ' + p.altRoute + '</em>';
+        if (p.startedAt)   html += '<br/><em>Started ' + p.startedAt + '</em>';
+        layer.bindPopup(html);
+      }
+    }).addTo(closuresLayer);
+  }
+  closuresLayer.addTo(map);
+
+  // FEMA flood zones (City of Wichita public MapServer, layer 4 = Flood Zones).
+  // Off by default; toggle in the layer control.
+  var floodZonesLayer = L.esri.dynamicMapLayer({
+    url: 'https://gismaps.wichita.gov/ageweb/rest/services/MISC/Flood_Zones/MapServer',
+    layers: [4],
+    opacity: 0.45,
+    f: 'image'
+  });
+
+  L.control.layers(null, {
+    'Flood warnings/watches': alertsLayer,
+    'River gauges': gaugesLayer,
+    'Active road closures': closuresLayer,
+    'FEMA flood zones (Wichita)': floodZonesLayer
+  }, { collapsed: false }).addTo(map);
+})();
+</script>
+{{end}}

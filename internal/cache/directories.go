@@ -36,3 +36,8 @@ func GetTempCacheDir(projectRoot string) string {
 func GetSPCCacheDir(projectRoot string) string {
 	return filepath.Join(projectRoot, "scraped", "spc")
 }
+
+// GetFloodingCacheDir returns the path to the flooding data cache directory
+func GetFloodingCacheDir(projectRoot string) string {
+	return filepath.Join(projectRoot, "scraped", "flooding")
+}

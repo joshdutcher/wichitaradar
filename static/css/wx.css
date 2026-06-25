@@ -123,6 +123,91 @@ textarea,
   margin: 1em auto;
 }
 
+.textbox-watch {
+  width: 90%;
+  text-align: center;
+  background-color: #b06000;
+  color: #fff !important;
+  font-size: 0.8em;
+  border-top: 1px solid #ff9933;
+  border-bottom: 1px solid #ff9933;
+  padding: 0.5em 1em;
+  margin: 1em auto;
+}
+
+.textbox-ok {
+  width: 90%;
+  text-align: center;
+  background-color: #1f6b3a;
+  color: #fff !important;
+  font-size: 0.8em;
+  border-top: 1px solid #4cc878;
+  border-bottom: 1px solid #4cc878;
+  padding: 0.5em 1em;
+  margin: 1em auto;
+}
+
+/* Monospace block for forecast/alert text */
+.dot-matrix {
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  color: #c8c8c8;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  padding: 0.75em 1em;
+  margin: 0.5em 0 0;
+}
+
+/* Flooding page */
+
+#flood-map {
+  width: 100%;
+  height: 520px;
+  margin: 0.5em 0 1em;
+  border: 1px solid #444;
+}
+
+/* Dark-theme overrides for Pure's table classes. */
+.pure-table { width: 100%; color: #c8c8c8; background-color: #1c1c1c; border-color: #333; }
+.pure-table thead { background-color: #014884; color: #fff; }
+.pure-table td, .pure-table th { border-color: #333; font-size: 0.9em; }
+/* Override Pure's light-theme stripes so text stays readable on the dark site
+   and even rows don't blend into the body bg (#252525). */
+.pure-table-striped tr:nth-child(2n-1) td { background-color: #1c1c1c; }
+.pure-table-striped tr:nth-child(2n)   td { background-color: #2e2e2e; }
+
+.gauge-status {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 0.85em;
+}
+.gauge-status-None     { background-color: #1f6b3a; }
+.gauge-status-Action   { background-color: #b08d00; }
+.gauge-status-Minor    { background-color: #c47a00; }
+.gauge-status-Moderate { background-color: #9a2820; }
+.gauge-status-Major    { background-color: #5a0d56; }
+.gauge-status-Unknown  { background-color: #555;    }
+
+.flood-alert-body { padding: 0 0.5em 1em; color: #c8c8c8; font-size: 0.9em; text-align: left; }
+.flood-disclaimer {
+  font-size: 0.85em;
+  color: #888;
+  border: 1px dashed #444;
+  padding: 0.5em 0.75em;
+  margin: 1em auto;
+  width: 90%;
+  text-align: left;
+}
+.flood-note      { padding: 0.5em 0; color: #888; font-size: 0.9em; font-style: italic; text-align: left; }
+.pure-table td, .pure-table th { text-align: left; }
+.dot-matrix { text-align: left; }
+.flood-generated { font-size: 0.8em; color: #777; text-align: right; margin: 0.5em 5%; }
+.closure-sub     { color: #888; font-size: 0.85em; }
+
 /* Image loading / failure states (applied by image-loading.js) */
 
 .img-wrapper {
