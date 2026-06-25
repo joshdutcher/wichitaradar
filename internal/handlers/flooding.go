@@ -54,13 +54,13 @@ var gaugesForWichita = []floodGauge{
 
 // Alert is a normalized NWS flood alert ready for display.
 type Alert struct {
-	Event       string
-	Headline    string
-	Severity    string
-	Description string
-	AreaDesc    string
-	Expires     string
-	Sent        string
+	Event        string
+	Headline     string
+	Severity     string
+	Description  string
+	AreaDesc     string
+	Expires      string
+	Sent         string
 	SeverityRank int
 }
 
@@ -227,10 +227,18 @@ type nwpsGaugeResponse struct {
 	Flood struct {
 		StageUnits string `json:"stageUnits"`
 		Categories struct {
-			Action   struct{ Stage float64 `json:"stage"` } `json:"action"`
-			Minor    struct{ Stage float64 `json:"stage"` } `json:"minor"`
-			Moderate struct{ Stage float64 `json:"stage"` } `json:"moderate"`
-			Major    struct{ Stage float64 `json:"stage"` } `json:"major"`
+			Action struct {
+				Stage float64 `json:"stage"`
+			} `json:"action"`
+			Minor struct {
+				Stage float64 `json:"stage"`
+			} `json:"minor"`
+			Moderate struct {
+				Stage float64 `json:"stage"`
+			} `json:"moderate"`
+			Major struct {
+				Stage float64 `json:"stage"`
+			} `json:"major"`
 		} `json:"categories"`
 	} `json:"flood"`
 }
@@ -282,7 +290,7 @@ func parseNWPSGauge(r io.Reader, g floodGauge) Gauge {
 		status = categorize(resp.Status.Observed.Primary, resp)
 	}
 	// Normalize casing: NWPS sometimes returns "minor" / "no_flooding".
-	status = strings.Title(strings.ReplaceAll(strings.ToLower(status), "_", " "))
+	status = titleCase(strings.ReplaceAll(strings.ToLower(status), "_", " "))
 	if status == "" || status == "No Flooding" {
 		status = "None"
 	}
@@ -329,6 +337,22 @@ func parseNWPSGauge(r io.Reader, g floodGauge) Gauge {
 		FloodStage: floodStage,
 		Observed:   observed,
 	}
+}
+
+func titleCase(s string) string {
+	b := []byte(s)
+	upper := true
+	for i, c := range b {
+		if c == ' ' {
+			upper = true
+			continue
+		}
+		if upper && c >= 'a' && c <= 'z' {
+			b[i] = c - 32
+		}
+		upper = false
+	}
+	return string(b)
 }
 
 func gaugesGeoJSON(gauges []Gauge) []byte {
