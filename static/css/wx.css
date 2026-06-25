@@ -192,7 +192,7 @@ textarea,
 .gauge-status-Major    { background-color: #5a0d56; }
 .gauge-status-Unknown  { background-color: #555;    }
 
-.flood-alert-body { padding: 0 0.5em 1em; color: #c8c8c8; font-size: 0.9em; }
+.flood-alert-body { padding: 0 0.5em 1em; color: #c8c8c8; font-size: 0.9em; text-align: left; }
 .flood-disclaimer {
   font-size: 0.85em;
   color: #888;
@@ -200,8 +200,11 @@ textarea,
   padding: 0.5em 0.75em;
   margin: 1em auto;
   width: 90%;
+  text-align: left;
 }
-.flood-note      { padding: 0.5em 0; color: #888; font-size: 0.9em; font-style: italic; }
+.flood-note      { padding: 0.5em 0; color: #888; font-size: 0.9em; font-style: italic; text-align: left; }
+.pure-table td, .pure-table th { text-align: left; }
+.dot-matrix { text-align: left; }
 .flood-generated { font-size: 0.8em; color: #777; text-align: right; margin: 0.5em 5%; }
 .closure-sub     { color: #888; font-size: 0.85em; }
 
