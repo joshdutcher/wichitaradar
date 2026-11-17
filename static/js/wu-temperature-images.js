@@ -18,7 +18,7 @@
   const REQUEST_TIMEOUT_MS = 5000;
 
   const apiSlots = [];
-  slots.forEach((slot) => {
+  slots.forEach(slot => {
     if (slot.dataset.wuSrc) {
       mountImage(slot, slot.dataset.wuSrc);
     } else if (slot.dataset.wuKey) {
@@ -32,7 +32,7 @@
 
   function resolveUrlsAndMount(targetSlots) {
     const loadingTimer = setTimeout(() => {
-      targetSlots.forEach((s) => {
+      targetSlots.forEach(s => {
         if (!s.dataset.state) {
           s.classList.add('img-loading', 'img-wrapper-responsive');
         }
@@ -45,16 +45,16 @@
     }, REQUEST_TIMEOUT_MS);
 
     fetch('/api/wu-temperature-images', { signal: controller.signal })
-      .then((res) => {
+      .then(res => {
         if (!res.ok) {
           throw new Error('bad status ' + res.status);
         }
         return res.json();
       })
-      .then((data) => {
+      .then(data => {
         clearTimeout(loadingTimer);
         clearTimeout(abortTimer);
-        targetSlots.forEach((s) => {
+        targetSlots.forEach(s => {
           const url = data[s.dataset.wuKey];
           if (url) {
             mountImage(s, url);
@@ -66,7 +66,7 @@
       .catch(() => {
         clearTimeout(loadingTimer);
         clearTimeout(abortTimer);
-        targetSlots.forEach((s) => {
+        targetSlots.forEach(s => {
           if (s.dataset.state !== 'loaded') {
             markFailed(s);
           }

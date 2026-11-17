@@ -1,0 +1,16 @@
+# Go templates: Prettier's HTML parser doesn't understand {{ }} syntax
+templates/
+
+# Third-party / reference CSS (kept unformatted for comparison with upstream)
+static/css/pure/
+static/css/layouts/
+
+node_modules/
+coverage.out
+
+# Docs and Claude Code project files: not code, leave hand-formatted
+*.md
+.claude/
+
+# Generated favicon manifest
+static/img/

@@ -3,7 +3,7 @@
     "browser": true,
     "es2021": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "prettier"],
   "parserOptions": {
     "ecmaVersion": 2021,
     "sourceType": "script"
@@ -25,11 +25,14 @@
     "arrow-spacing": ["error", { "before": true, "after": true }],
     "no-trailing-spaces": "error",
     "eol-last": ["error", "always"],
-    "space-before-function-paren": ["error", {
-      "anonymous": "always",
-      "named": "never",
-      "asyncArrow": "always"
-    }],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
     "keyword-spacing": ["error", { "before": true, "after": true }],
     "space-infix-ops": "error",
     "object-curly-spacing": ["error", "always"],

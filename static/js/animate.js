@@ -22,7 +22,7 @@ function animateFrames(fileInfo, pauseFrames, frameDelay, imgDomId, reverse) {
     frameUrls.push(fileInfo.urlPrefix + frameNum + fileInfo.urlSuffix);
   }
 
-  const preloads = frameUrls.map((url) => {
+  const preloads = frameUrls.map(url => {
     return new Promise((resolve, reject) => {
       const preloader = new Image();
       preloader.addEventListener('load', () => resolve(url));

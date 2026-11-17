@@ -1,4 +1,4 @@
-.PHONY: test test-race coverage lint lint-fix dev build clean
+.PHONY: test test-race coverage lint lint-fix format format-check dev build clean
 
 # Start development server
 dev:
@@ -40,6 +40,8 @@ lint:
 	golangci-lint run ./...
 	@echo "Running JavaScript linter..."
 	npm run lint
+	@echo "Checking formatting..."
+	npm run format:check
 
 # Run linters with auto-fix
 lint-fix:
@@ -47,3 +49,12 @@ lint-fix:
 	golangci-lint run ./... --fix
 	@echo "Running JavaScript linter with auto-fix..."
 	npm run lint:fix
+	@echo "Formatting with Prettier..."
+	npm run format
+# Format JS/CSS/config with Prettier
+format:
+	npm run format
+
+# Check formatting without writing
+format-check:
+	npm run format:check
