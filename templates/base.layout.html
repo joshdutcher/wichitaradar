@@ -45,14 +45,25 @@
     <!-- Image lifecycle: loading placeholders, failure fallbacks, error/success reporting -->
     <script src="/static/js/image-loading.js"></script>
     {{if gt .RefreshInterval 0}}
-    <meta http-equiv="refresh" content="{{.RefreshInterval}}" />
+    <script src="/static/js/auto-refresh.js" data-interval="{{.RefreshInterval}}"></script>
+    <noscript><meta http-equiv="refresh" content="{{.RefreshInterval}}" /></noscript>
     {{end}}
 
     <!-- Matomo -->
     <script>
       var _paq = (window._paq = window._paq || []);
       /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-      _paq.push(['trackPageView']);
+      // Auto-refresh reloads (see auto-refresh.js) carry ?refresh=1. Send a ping to keep
+      // the visit alive instead of counting another pageview, and strip the flag so it
+      // isn't bookmarked or shared.
+      var pageUrl = new URL(window.location.href);
+      if (pageUrl.searchParams.get('refresh') === '1') {
+        pageUrl.searchParams.delete('refresh');
+        history.replaceState(null, '', pageUrl.toString());
+        _paq.push(['ping']);
+      } else {
+        _paq.push(['trackPageView']);
+      }
       _paq.push(['enableLinkTracking']);
       (function () {
         var u = '//analytics.joshdutcher.com/';

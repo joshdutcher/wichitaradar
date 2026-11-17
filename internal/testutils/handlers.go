@@ -44,23 +44,23 @@ func TestHandler(t *testing.T, handler http.HandlerFunc, path string) {
 	// Check for RefreshInterval in the response body based on the page
 	switch path {
 	case "/":
-		if !strings.Contains(body, `<meta http-equiv="refresh" content="300" />`) {
+		if !strings.Contains(body, `<script src="/static/js/auto-refresh.js" data-interval="300"></script>`) {
 			t.Error("home page should have refreshInterval set to 300")
 		}
 	case "/satellite":
-		if !strings.Contains(body, `<meta http-equiv="refresh" content="300" />`) {
+		if !strings.Contains(body, `<script src="/static/js/auto-refresh.js" data-interval="300"></script>`) {
 			t.Error("satellite page should have refreshInterval set to 300")
 		}
 	case "/watches":
-		if !strings.Contains(body, `<meta http-equiv="refresh" content="600" />`) {
+		if !strings.Contains(body, `<script src="/static/js/auto-refresh.js" data-interval="600"></script>`) {
 			t.Error("watches page should have refreshInterval set to 600")
 		}
 	case "/outlook":
-		if !strings.Contains(body, `<meta http-equiv="refresh" content="1800" />`) {
+		if !strings.Contains(body, `<script src="/static/js/auto-refresh.js" data-interval="1800"></script>`) {
 			t.Error("outlook page should have refreshInterval set to 1800")
 		}
 	case "/about", "/disclaimer", "/donate", "/resources":
-		if strings.Contains(body, `<meta http-equiv="refresh"`) {
+		if strings.Contains(body, `auto-refresh.js`) {
 			t.Errorf("%s page should not have a refresh meta tag", path)
 		}
 	}
