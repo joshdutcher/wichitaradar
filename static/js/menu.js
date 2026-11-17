@@ -31,13 +31,13 @@
   }
 
   // Event handler for menu clicks
-  menuLink.addEventListener('click', (e) => {
+  menuLink.addEventListener('click', e => {
     e.preventDefault();
     toggleMenu();
   });
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     // If menu is active and click is outside menu and not on menu toggle
     if (
       layout.className.indexOf('active') !== -1 &&
